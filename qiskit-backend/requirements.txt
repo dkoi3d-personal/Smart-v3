@@ -1,0 +1,18 @@
+# Qiskit Backend Requirements
+# Install with: pip install -r requirements.txt
+
+# Core Qiskit packages
+qiskit>=1.0.0
+qiskit-aer>=0.13.0
+
+# IBM Quantum (optional - for real quantum hardware)
+qiskit-ibm-runtime>=0.20.0
+
+# Web server
+flask>=3.0.0
+flask-cors>=4.0.0
+
+# Utilities
+numpy>=1.24.0
+scipy>=1.11.0
+matplotlib>=3.7.0

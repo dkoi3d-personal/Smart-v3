@@ -1,0 +1,698 @@
+{
+  "id": "modern-dark",
+  "name": "Modern Dark",
+  "description": "A polished dark theme with violet accents, optimized for developer tools and dashboards. Clean, minimal aesthetic with excellent contrast and readability.",
+  "version": "1.1.0",
+  "isDefault": false,
+  "isBuiltIn": true,
+  "createdAt": "2024-12-01T00:00:00.000Z",
+  "updatedAt": "2024-12-20T00:00:00.000Z",
+  "source": {
+    "type": "builtin"
+  },
+  "tokens": {
+    "colors": {
+      "background": "#09090b",
+      "foreground": "#fafafa",
+      "card": "#0f0f12",
+      "cardForeground": "#fafafa",
+      "popover": "#141419",
+      "popoverForeground": "#fafafa",
+      "primary": "#8b5cf6",
+      "primaryForeground": "#ffffff",
+      "secondary": "#1c1c22",
+      "secondaryForeground": "#fafafa",
+      "muted": "#18181b",
+      "mutedForeground": "#a1a1aa",
+      "accent": "#6d28d9",
+      "accentForeground": "#ffffff",
+      "destructive": "#dc2626",
+      "destructiveForeground": "#ffffff",
+      "border": "#27272a",
+      "input": "#1a1a1f",
+      "ring": "#8b5cf6",
+      "chart1": "#8b5cf6",
+      "chart2": "#10b981",
+      "chart3": "#f59e0b",
+      "chart4": "#ec4899",
+      "chart5": "#06b6d4",
+      "success": "#10b981",
+      "successForeground": "#ffffff",
+      "warning": "#f59e0b",
+      "warningForeground": "#000000",
+      "error": "#dc2626",
+      "errorForeground": "#ffffff",
+      "info": "#0ea5e9",
+      "infoForeground": "#ffffff"
+    },
+    "spacing": {
+      "unit": 4,
+      "scale": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        8,
+        10,
+        12,
+        14,
+        16,
+        20,
+        24,
+        28,
+        32,
+        36,
+        40,
+        44,
+        48,
+        52,
+        56,
+        60,
+        64,
+        72,
+        80,
+        96
+      ]
+    },
+    "typography": {
+      "fontFamily": {
+        "sans": "var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
+        "mono": "var(--font-geist-mono), ui-monospace, SFMono-Regular, \"SF Mono\", Menlo, Consolas, \"Liberation Mono\", monospace"
+      },
+      "fontSize": {
+        "xs": {
+          "size": "0.75rem",
+          "lineHeight": "1rem"
+        },
+        "sm": {
+          "size": "0.875rem",
+          "lineHeight": "1.25rem"
+        },
+        "base": {
+          "size": "1rem",
+          "lineHeight": "1.5rem"
+        },
+        "lg": {
+          "size": "1.125rem",
+          "lineHeight": "1.75rem"
+        },
+        "xl": {
+          "size": "1.25rem",
+          "lineHeight": "1.75rem"
+        },
+        "2xl": {
+          "size": "1.5rem",
+          "lineHeight": "2rem"
+        },
+        "3xl": {
+          "size": "1.875rem",
+          "lineHeight": "2.25rem"
+        },
+        "4xl": {
+          "size": "2.25rem",
+          "lineHeight": "2.5rem"
+        },
+        "5xl": {
+          "size": "3rem",
+          "lineHeight": "1"
+        }
+      },
+      "fontWeight": {
+        "normal": 400,
+        "medium": 500,
+        "semibold": 600,
+        "bold": 700
+      }
+    },
+    "radii": {
+      "none": "0",
+      "sm": "calc(0.625rem - 4px)",
+      "md": "calc(0.625rem - 2px)",
+      "lg": "0.625rem",
+      "xl": "calc(0.625rem + 4px)",
+      "2xl": "1rem",
+      "full": "9999px"
+    },
+    "shadows": {
+      "sm": "0 1px 2px 0 rgb(0 0 0 / 0.05)",
+      "md": "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)",
+      "lg": "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)",
+      "xl": "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)",
+      "glow": "0 0 20px rgba(139, 92, 246, 0.3)"
+    },
+    "transitions": {
+      "duration": {
+        "fast": "150ms",
+        "normal": "200ms",
+        "slow": "300ms",
+        "slower": "500ms"
+      },
+      "easing": {
+        "default": "cubic-bezier(0.4, 0, 0.2, 1)",
+        "in": "cubic-bezier(0.4, 0, 1, 1)",
+        "out": "cubic-bezier(0, 0, 0.2, 1)",
+        "bounce": "cubic-bezier(0.68, -0.55, 0.265, 1.55)"
+      }
+    }
+  },
+  "components": {
+    "button": {
+      "name": "Button",
+      "description": "Interactive button component for user actions. Use primary for main CTAs, secondary for less prominent actions.",
+      "variants": [
+        "default",
+        "destructive",
+        "outline",
+        "secondary",
+        "ghost",
+        "link"
+      ],
+      "sizes": [
+        "default",
+        "sm",
+        "lg",
+        "icon"
+      ],
+      "states": [
+        "default",
+        "hover",
+        "focus",
+        "active",
+        "disabled"
+      ],
+      "props": {
+        "variant": {
+          "type": "string",
+          "default": "default",
+          "options": [
+            "default",
+            "destructive",
+            "outline",
+            "secondary",
+            "ghost",
+            "link"
+          ]
+        },
+        "size": {
+          "type": "string",
+          "default": "default",
+          "options": [
+            "default",
+            "sm",
+            "lg",
+            "icon"
+          ]
+        },
+        "disabled": {
+          "type": "boolean",
+          "default": "false"
+        },
+        "asChild": {
+          "type": "boolean",
+          "default": "false",
+          "description": "Render as child element using Radix Slot"
+        }
+      },
+      "usage": "```tsx\nimport { Button } from '@/components/ui/button';\n\n// Primary action\n<Button>Save Changes</Button>\n\n// Secondary action\n<Button variant=\"secondary\">Cancel</Button>\n\n// Destructive action\n<Button variant=\"destructive\">Delete</Button>\n\n// Icon button\n<Button variant=\"ghost\" size=\"icon\">\n  <Settings className=\"h-4 w-4\" />\n</Button>\n```",
+      "doAndDont": {
+        "do": [
+          "Use primary variant for the main action on a page",
+          "Include an icon for clarity when space allows",
+          "Use descriptive action verbs (Save, Create, Delete)",
+          "Disable button while action is processing"
+        ],
+        "dont": [
+          "Use multiple primary buttons in the same section",
+          "Use ghost buttons for important actions",
+          "Make buttons too wide (max-width recommended)",
+          "Use vague labels like \"Click here\" or \"Submit\""
+        ]
+      },
+      "relatedComponents": [
+        "link",
+        "icon-button"
+      ]
+    },
+    "card": {
+      "name": "Card",
+      "description": "Container component for grouping related content with consistent styling.",
+      "variants": [
+        "default",
+        "bordered",
+        "elevated"
+      ],
+      "states": [
+        "default",
+        "hover",
+        "selected"
+      ],
+      "props": {
+        "className": {
+          "type": "string",
+          "description": "Additional CSS classes"
+        }
+      },
+      "usage": "```tsx\nimport { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';\n\n<Card className=\"w-[350px]\">\n  <CardHeader>\n    <CardTitle>Account Settings</CardTitle>\n    <CardDescription>Manage your account preferences</CardDescription>\n  </CardHeader>\n  <CardContent>\n    <p>Your settings content here...</p>\n  </CardContent>\n  <CardFooter className=\"flex justify-between\">\n    <Button variant=\"outline\">Cancel</Button>\n    <Button>Save</Button>\n  </CardFooter>\n</Card>\n```",
+      "doAndDont": {
+        "do": [
+          "Use cards to group related information",
+          "Include a clear title when content needs context",
+          "Use consistent padding within cards",
+          "Add hover states for interactive cards"
+        ],
+        "dont": [
+          "Nest cards within cards",
+          "Use cards for single pieces of information",
+          "Mix bordered and non-bordered cards in the same view"
+        ]
+      },
+      "relatedComponents": [
+        "dialog",
+        "sheet"
+      ]
+    },
+    "badge": {
+      "name": "Badge",
+      "description": "Small label component for status indicators, counts, or categories.",
+      "variants": [
+        "default",
+        "secondary",
+        "destructive",
+        "outline"
+      ],
+      "states": [
+        "default"
+      ],
+      "props": {
+        "variant": {
+          "type": "string",
+          "default": "default",
+          "options": [
+            "default",
+            "secondary",
+            "destructive",
+            "outline"
+          ]
+        }
+      },
+      "usage": "```tsx\nimport { Badge } from '@/components/ui/badge';\n\n// Status indicators\n<Badge>Active</Badge>\n<Badge variant=\"secondary\">Pending</Badge>\n<Badge variant=\"destructive\">Failed</Badge>\n\n// With custom colors\n<Badge className=\"bg-blue-500/10 text-blue-400 border-blue-500/20\">\n  In Progress\n</Badge>\n```",
+      "doAndDont": {
+        "do": [
+          "Use badges for status indicators",
+          "Keep badge text short (1-2 words)",
+          "Use consistent colors for the same status across the app"
+        ],
+        "dont": [
+          "Use badges for primary actions",
+          "Put long text in badges",
+          "Use too many badge variants in one view"
+        ]
+      }
+    },
+    "input": {
+      "name": "Input",
+      "description": "Text input field for user data entry.",
+      "variants": [
+        "default",
+        "error"
+      ],
+      "sizes": [
+        "default",
+        "sm",
+        "lg"
+      ],
+      "states": [
+        "default",
+        "focus",
+        "error",
+        "disabled"
+      ],
+      "props": {
+        "type": {
+          "type": "string",
+          "default": "text",
+          "options": [
+            "text",
+            "email",
+            "password",
+            "number",
+            "search",
+            "tel",
+            "url"
+          ]
+        },
+        "placeholder": {
+          "type": "string"
+        },
+        "disabled": {
+          "type": "boolean",
+          "default": "false"
+        }
+      },
+      "usage": "```tsx\nimport { Input } from '@/components/ui/input';\nimport { Label } from '@/components/ui/label';\n\n<div className=\"space-y-2\">\n  <Label htmlFor=\"email\">Email</Label>\n  <Input\n    id=\"email\"\n    type=\"email\"\n    placeholder=\"you@example.com\"\n  />\n</div>\n```",
+      "doAndDont": {
+        "do": [
+          "Always include a label for accessibility",
+          "Use appropriate input types (email, password, etc.)",
+          "Provide helpful placeholder text",
+          "Show validation errors clearly"
+        ],
+        "dont": [
+          "Use placeholder as a substitute for labels",
+          "Use generic \"Enter value\" placeholders",
+          "Hide error messages on focus"
+        ]
+      },
+      "relatedComponents": [
+        "textarea",
+        "select",
+        "label"
+      ]
+    },
+    "progress": {
+      "name": "Progress",
+      "description": "Visual progress indicator for loading states or completion percentages.",
+      "variants": [
+        "default"
+      ],
+      "sizes": [
+        "default",
+        "sm",
+        "lg"
+      ],
+      "states": [
+        "default",
+        "indeterminate"
+      ],
+      "props": {
+        "value": {
+          "type": "number",
+          "description": "Progress value 0-100"
+        },
+        "max": {
+          "type": "number",
+          "default": "100"
+        }
+      },
+      "usage": "```tsx\nimport { Progress } from '@/components/ui/progress';\n\n// Basic progress\n<Progress value={45} className=\"h-2\" />\n\n// With label\n<div className=\"space-y-2\">\n  <div className=\"flex justify-between text-sm\">\n    <span>Upload progress</span>\n    <span>45%</span>\n  </div>\n  <Progress value={45} />\n</div>\n```",
+      "doAndDont": {
+        "do": [
+          "Show percentage text alongside progress bar",
+          "Use appropriate sizes for context (h-1.5 for inline, h-3 for prominent)",
+          "Animate progress changes smoothly"
+        ],
+        "dont": [
+          "Use for unknown duration tasks (use spinner instead)",
+          "Hide progress indicators when task completes - show success state"
+        ]
+      }
+    },
+    "tabs": {
+      "name": "Tabs",
+      "description": "Navigation component for switching between related views.",
+      "variants": [
+        "default",
+        "underline"
+      ],
+      "states": [
+        "default",
+        "active",
+        "disabled"
+      ],
+      "props": {
+        "defaultValue": {
+          "type": "string",
+          "required": true,
+          "description": "Default active tab value"
+        },
+        "value": {
+          "type": "string",
+          "description": "Controlled active tab value"
+        },
+        "onValueChange": {
+          "type": "function",
+          "description": "Callback when tab changes"
+        }
+      },
+      "usage": "```tsx\nimport { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';\n\n<Tabs defaultValue=\"overview\">\n  <TabsList>\n    <TabsTrigger value=\"overview\">Overview</TabsTrigger>\n    <TabsTrigger value=\"settings\">Settings</TabsTrigger>\n    <TabsTrigger value=\"activity\">Activity</TabsTrigger>\n  </TabsList>\n  <TabsContent value=\"overview\">\n    Overview content...\n  </TabsContent>\n  <TabsContent value=\"settings\">\n    Settings content...\n  </TabsContent>\n  <TabsContent value=\"activity\">\n    Activity content...\n  </TabsContent>\n</Tabs>\n```",
+      "doAndDont": {
+        "do": [
+          "Use tabs for switching between related content",
+          "Keep tab labels short and descriptive",
+          "Show active tab clearly"
+        ],
+        "dont": [
+          "Use more than 5-6 tabs (consider dropdown or sidebar)",
+          "Use tabs for sequential steps (use stepper instead)",
+          "Mix icons and text inconsistently"
+        ]
+      }
+    },
+    "dialog": {
+      "name": "Dialog",
+      "description": "Modal overlay for focused interactions that require user attention.",
+      "variants": [
+        "default"
+      ],
+      "sizes": [
+        "default",
+        "sm",
+        "lg",
+        "xl",
+        "full"
+      ],
+      "states": [
+        "open",
+        "closed"
+      ],
+      "props": {
+        "open": {
+          "type": "boolean",
+          "description": "Controlled open state"
+        },
+        "onOpenChange": {
+          "type": "function",
+          "description": "Callback when dialog opens/closes"
+        }
+      },
+      "usage": "```tsx\nimport {\n  Dialog,\n  DialogContent,\n  DialogDescription,\n  DialogHeader,\n  DialogTitle,\n  DialogTrigger,\n  DialogFooter,\n} from '@/components/ui/dialog';\n\n<Dialog>\n  <DialogTrigger asChild>\n    <Button>Open Dialog</Button>\n  </DialogTrigger>\n  <DialogContent>\n    <DialogHeader>\n      <DialogTitle>Edit Profile</DialogTitle>\n      <DialogDescription>\n        Make changes to your profile here.\n      </DialogDescription>\n    </DialogHeader>\n    {/* Dialog body content */}\n    <DialogFooter>\n      <Button variant=\"outline\">Cancel</Button>\n      <Button>Save</Button>\n    </DialogFooter>\n  </DialogContent>\n</Dialog>\n```",
+      "doAndDont": {
+        "do": [
+          "Use dialogs for important actions requiring confirmation",
+          "Include a clear title and description",
+          "Provide cancel/close options",
+          "Focus the first interactive element on open"
+        ],
+        "dont": [
+          "Use dialogs for simple messages (use toast instead)",
+          "Stack multiple dialogs",
+          "Use dialogs for long forms (use a page instead)"
+        ]
+      },
+      "relatedComponents": [
+        "alert-dialog",
+        "sheet"
+      ]
+    },
+    "select": {
+      "name": "Select",
+      "description": "Dropdown selection component for choosing from a list of options.",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "default",
+        "open",
+        "disabled"
+      ],
+      "props": {
+        "value": {
+          "type": "string",
+          "description": "Controlled value"
+        },
+        "defaultValue": {
+          "type": "string",
+          "description": "Default value"
+        },
+        "onValueChange": {
+          "type": "function",
+          "description": "Callback when value changes"
+        },
+        "disabled": {
+          "type": "boolean",
+          "default": "false"
+        }
+      },
+      "usage": "```tsx\nimport {\n  Select,\n  SelectContent,\n  SelectItem,\n  SelectTrigger,\n  SelectValue,\n} from '@/components/ui/select';\n\n<Select>\n  <SelectTrigger className=\"w-[180px]\">\n    <SelectValue placeholder=\"Select status\" />\n  </SelectTrigger>\n  <SelectContent>\n    <SelectItem value=\"pending\">Pending</SelectItem>\n    <SelectItem value=\"in-progress\">In Progress</SelectItem>\n    <SelectItem value=\"completed\">Completed</SelectItem>\n  </SelectContent>\n</Select>\n```",
+      "doAndDont": {
+        "do": [
+          "Use for 4+ options (use radio for fewer)",
+          "Include a placeholder or default value",
+          "Sort options logically (alphabetical, by frequency, etc.)"
+        ],
+        "dont": [
+          "Use for binary choices (use switch/checkbox)",
+          "Include too many options (consider search/autocomplete)"
+        ]
+      }
+    },
+    "scrollArea": {
+      "name": "ScrollArea",
+      "description": "Custom scrollable container with styled scrollbars.",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "default",
+        "scrolling"
+      ],
+      "props": {
+        "className": {
+          "type": "string"
+        },
+        "orientation": {
+          "type": "string",
+          "default": "vertical",
+          "options": [
+            "vertical",
+            "horizontal",
+            "both"
+          ]
+        }
+      },
+      "usage": "```tsx\nimport { ScrollArea } from '@/components/ui/scroll-area';\n\n<ScrollArea className=\"h-[400px] rounded-md border p-4\">\n  {/* Long content here */}\n</ScrollArea>\n```",
+      "doAndDont": {
+        "do": [
+          "Use for long lists or content areas",
+          "Set explicit height/width",
+          "Consider virtualization for very long lists"
+        ],
+        "dont": [
+          "Use for short content that fits without scrolling",
+          "Nest scroll areas"
+        ]
+      }
+    },
+    "tooltip": {
+      "name": "Tooltip",
+      "description": "Contextual information popup that appears on hover.",
+      "variants": [
+        "default"
+      ],
+      "states": [
+        "default",
+        "open"
+      ],
+      "props": {
+        "content": {
+          "type": "ReactNode",
+          "required": true,
+          "description": "Tooltip content"
+        },
+        "side": {
+          "type": "string",
+          "default": "top",
+          "options": [
+            "top",
+            "right",
+            "bottom",
+            "left"
+          ]
+        },
+        "align": {
+          "type": "string",
+          "default": "center",
+          "options": [
+            "start",
+            "center",
+            "end"
+          ]
+        }
+      },
+      "usage": "```tsx\nimport {\n  Tooltip,\n  TooltipContent,\n  TooltipProvider,\n  TooltipTrigger,\n} from '@/components/ui/tooltip';\n\n<TooltipProvider>\n  <Tooltip>\n    <TooltipTrigger asChild>\n      <Button variant=\"ghost\" size=\"icon\">\n        <HelpCircle className=\"h-4 w-4\" />\n      </Button>\n    </TooltipTrigger>\n    <TooltipContent>\n      <p>This is helpful information</p>\n    </TooltipContent>\n  </Tooltip>\n</TooltipProvider>\n```",
+      "doAndDont": {
+        "do": [
+          "Use for supplementary information",
+          "Keep tooltip text short",
+          "Wrap app in TooltipProvider"
+        ],
+        "dont": [
+          "Put essential information only in tooltips",
+          "Use tooltips on touch devices as primary info",
+          "Include interactive elements in tooltips"
+        ]
+      }
+    }
+  },
+  "guidelines": "# Modern Dark Design System Guidelines\n\n## Overview\nThis design system is optimized for developer tools and dashboards. It uses a dark color scheme with purple accents for a modern, professional appearance.\n\n## Color Usage\n\n### Primary Colors\n- **Primary (Purple)**: Use for main interactive elements, CTAs, and active states\n- **Secondary (Dark Gray)**: Use for secondary buttons and less prominent elements\n- **Destructive (Red)**: Use sparingly for dangerous or destructive actions\n\n### Semantic Colors\n- **Background**: Very dark (`oklch(0.10 0 0)`) for main app background\n- **Card**: Slightly lighter (`oklch(0.15 0 0)`) for elevated surfaces\n- **Muted**: For disabled states and secondary text\n- **Border**: Subtle borders that don't distract\n\n### Status Colors\n- **Success (Green)**: Completed, passed, active states\n- **Warning (Amber)**: Pending, attention needed\n- **Error (Red)**: Failed, errors, destructive\n- **Info (Blue)**: Informational, in-progress\n\n## Typography\n\n### Font Stack\n- **Sans**: Geist Sans for UI text\n- **Mono**: Geist Mono for code and technical content\n\n### Hierarchy\n- **Headings**: Use semibold (600) or bold (700)\n- **Body**: Use normal (400) or medium (500)\n- **Labels**: Use text-sm with medium weight\n- **Captions**: Use text-xs with muted-foreground\n\n## Spacing\n\n### Base Unit\nAll spacing uses a 4px base unit. Common values:\n- **Tight**: 4px, 8px (gap-1, gap-2)\n- **Normal**: 12px, 16px (gap-3, gap-4)\n- **Loose**: 24px, 32px (gap-6, gap-8)\n\n### Component Padding\n- **Buttons**: px-4 py-2 (16px horizontal, 8px vertical)\n- **Cards**: p-4 or p-6 (16px or 24px all sides)\n- **Inputs**: px-3 py-2 (12px horizontal, 8px vertical)\n\n## Border Radius\n\nUse consistent border radius:\n- **Small elements** (badges, chips): rounded-sm\n- **Medium elements** (buttons, inputs): rounded-md\n- **Large elements** (cards, modals): rounded-lg\n- **Full round** (avatars, circular buttons): rounded-full\n\n## Shadows\n\nUse shadows sparingly in dark mode:\n- **Subtle elevation**: shadow-sm\n- **Cards/Modals**: shadow-md to shadow-lg\n- **Glow effects**: Use primary color with low opacity for focus states\n\n## Transitions\n\nAll interactive elements should have smooth transitions:\n- **Duration**: 150ms for micro-interactions, 200ms for normal, 300ms for larger changes\n- **Easing**: Use cubic-bezier(0.4, 0, 0.2, 1) for most transitions\n\n## Accessibility\n\n### Color Contrast\n- Maintain 4.5:1 contrast ratio for normal text\n- Maintain 3:1 contrast ratio for large text and UI elements\n\n### Focus States\n- All interactive elements must have visible focus indicators\n- Use the ring color (purple) with ring-2 or ring-[3px]\n\n### Keyboard Navigation\n- All interactive elements must be keyboard accessible\n- Use logical tab order\n- Provide skip links for long pages\n\n## Animation Guidelines\n\n### Micro-interactions\n- Button hover: subtle color change + shadow\n- Card hover: border highlight + slight shadow increase\n- Input focus: ring appearance with transition\n\n### Loading States\n- Use animate-spin for spinners\n- Use animate-pulse for skeleton loading\n- Use Progress component for determinate loading\n\n### Status Indicators\n- Use animate-pulse for \"in progress\" states\n- Avoid excessive animation that distracts from content\n",
+  "examples": [
+    {
+      "id": "button-variants",
+      "title": "Button Variants",
+      "description": "All available button variants for different contexts",
+      "language": "tsx",
+      "code": "import { Button } from '@/components/ui/button';\nimport { Loader2, Plus, Settings, Trash2 } from 'lucide-react';\n\nexport function ButtonExamples() {\n  return (\n    <div className=\"flex flex-wrap gap-4\">\n      {/* Primary action */}\n      <Button>\n        <Plus className=\"h-4 w-4 mr-2\" />\n        Create New\n      </Button>\n\n      {/* Secondary action */}\n      <Button variant=\"secondary\">\n        <Settings className=\"h-4 w-4 mr-2\" />\n        Settings\n      </Button>\n\n      {/* Destructive action */}\n      <Button variant=\"destructive\">\n        <Trash2 className=\"h-4 w-4 mr-2\" />\n        Delete\n      </Button>\n\n      {/* Outline button */}\n      <Button variant=\"outline\">Cancel</Button>\n\n      {/* Ghost button */}\n      <Button variant=\"ghost\">Learn More</Button>\n\n      {/* Loading state */}\n      <Button disabled>\n        <Loader2 className=\"h-4 w-4 mr-2 animate-spin\" />\n        Processing...\n      </Button>\n    </div>\n  );\n}",
+      "tags": [
+        "button",
+        "variants",
+        "icons",
+        "loading"
+      ]
+    },
+    {
+      "id": "card-with-content",
+      "title": "Card with Header and Footer",
+      "description": "Standard card layout pattern with all sections",
+      "language": "tsx",
+      "code": "import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';\nimport { Button } from '@/components/ui/button';\nimport { Badge } from '@/components/ui/badge';\nimport { Progress } from '@/components/ui/progress';\n\nexport function ProjectCard() {\n  return (\n    <Card className=\"w-[350px] hover:border-primary/50 transition-colors\">\n      <CardHeader>\n        <div className=\"flex items-center justify-between\">\n          <CardTitle className=\"text-lg\">Authentication System</CardTitle>\n          <Badge className=\"bg-blue-500/10 text-blue-400\">In Progress</Badge>\n        </div>\n        <CardDescription>\n          Implementing OAuth2 and JWT authentication\n        </CardDescription>\n      </CardHeader>\n      <CardContent className=\"space-y-4\">\n        <div>\n          <div className=\"flex justify-between text-sm mb-2\">\n            <span className=\"text-muted-foreground\">Progress</span>\n            <span className=\"font-medium\">65%</span>\n          </div>\n          <Progress value={65} className=\"h-2\" />\n        </div>\n        <div className=\"flex gap-2\">\n          <Badge variant=\"outline\">Backend</Badge>\n          <Badge variant=\"outline\">Security</Badge>\n        </div>\n      </CardContent>\n      <CardFooter className=\"flex justify-between\">\n        <Button variant=\"ghost\" size=\"sm\">View Details</Button>\n        <Button size=\"sm\">Continue</Button>\n      </CardFooter>\n    </Card>\n  );\n}",
+      "tags": [
+        "card",
+        "badge",
+        "progress",
+        "layout"
+      ]
+    },
+    {
+      "id": "data-table-row",
+      "title": "Data Table Row Pattern",
+      "description": "Table row with status, actions, and hover state",
+      "language": "tsx",
+      "code": "import { Badge } from '@/components/ui/badge';\nimport { Button } from '@/components/ui/button';\nimport { MoreHorizontal, Play, Pause, CheckCircle2 } from 'lucide-react';\n\nconst STATUS_STYLES = {\n  pending: 'bg-slate-500/10 text-slate-400',\n  running: 'bg-blue-500/10 text-blue-400',\n  completed: 'bg-emerald-500/10 text-emerald-400',\n  failed: 'bg-red-500/10 text-red-400',\n} as const;\n\nexport function StoryRow({ story }) {\n  return (\n    <div className=\"flex items-center justify-between p-4 border-b hover:bg-muted/50 transition-colors\">\n      <div className=\"flex items-center gap-3\">\n        <div className=\"p-2 rounded-lg bg-primary/10\">\n          <CheckCircle2 className=\"h-4 w-4 text-primary\" />\n        </div>\n        <div>\n          <p className=\"font-medium text-sm\">{story.title}</p>\n          <p className=\"text-xs text-muted-foreground\">{story.epic}</p>\n        </div>\n      </div>\n      <div className=\"flex items-center gap-4\">\n        <Badge className={STATUS_STYLES[story.status]}>\n          {story.status}\n        </Badge>\n        <div className=\"flex gap-1\">\n          <Button variant=\"ghost\" size=\"icon\" className=\"h-8 w-8\">\n            {story.status === 'running' ? (\n              <Pause className=\"h-4 w-4\" />\n            ) : (\n              <Play className=\"h-4 w-4\" />\n            )}\n          </Button>\n          <Button variant=\"ghost\" size=\"icon\" className=\"h-8 w-8\">\n            <MoreHorizontal className=\"h-4 w-4\" />\n          </Button>\n        </div>\n      </div>\n    </div>\n  );\n}",
+      "tags": [
+        "table",
+        "row",
+        "status",
+        "actions"
+      ]
+    },
+    {
+      "id": "status-indicators",
+      "title": "Status Indicator Patterns",
+      "description": "Consistent status colors and animations",
+      "language": "tsx",
+      "code": "import { Badge } from '@/components/ui/badge';\nimport { cn } from '@/lib/utils';\n\n// Status color map for consistent usage\nexport const STATUS_COLORS = {\n  pending: {\n    badge: 'bg-slate-500/10 text-slate-400 border-slate-500/20',\n    dot: 'bg-slate-500',\n  },\n  in_progress: {\n    badge: 'bg-blue-500/10 text-blue-400 border-blue-500/20',\n    dot: 'bg-blue-500 animate-pulse',\n  },\n  completed: {\n    badge: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',\n    dot: 'bg-emerald-500',\n  },\n  failed: {\n    badge: 'bg-red-500/10 text-red-400 border-red-500/20',\n    dot: 'bg-red-500',\n  },\n  warning: {\n    badge: 'bg-amber-500/10 text-amber-400 border-amber-500/20',\n    dot: 'bg-amber-500',\n  },\n} as const;\n\nexport function StatusBadge({ status }: { status: keyof typeof STATUS_COLORS }) {\n  const colors = STATUS_COLORS[status];\n  return (\n    <Badge className={cn('capitalize', colors.badge)}>\n      <span className={cn('h-1.5 w-1.5 rounded-full mr-2', colors.dot)} />\n      {status.replace('_', ' ')}\n    </Badge>\n  );\n}",
+      "tags": [
+        "status",
+        "badge",
+        "colors",
+        "animation"
+      ]
+    },
+    {
+      "id": "form-layout",
+      "title": "Form Layout Pattern",
+      "description": "Standard form with labels, inputs, and validation",
+      "language": "tsx",
+      "code": "import { Input } from '@/components/ui/input';\nimport { Label } from '@/components/ui/label';\nimport { Textarea } from '@/components/ui/textarea';\nimport { Button } from '@/components/ui/button';\nimport { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';\n\nexport function CreateProjectForm() {\n  return (\n    <form className=\"space-y-6\">\n      <div className=\"space-y-2\">\n        <Label htmlFor=\"name\">Project Name</Label>\n        <Input\n          id=\"name\"\n          placeholder=\"My Awesome Project\"\n          className=\"w-full\"\n        />\n        <p className=\"text-xs text-muted-foreground\">\n          Choose a unique name for your project\n        </p>\n      </div>\n\n      <div className=\"space-y-2\">\n        <Label htmlFor=\"description\">Description</Label>\n        <Textarea\n          id=\"description\"\n          placeholder=\"Describe your project...\"\n          rows={4}\n        />\n      </div>\n\n      <div className=\"space-y-2\">\n        <Label htmlFor=\"type\">Project Type</Label>\n        <Select>\n          <SelectTrigger>\n            <SelectValue placeholder=\"Select type\" />\n          </SelectTrigger>\n          <SelectContent>\n            <SelectItem value=\"web\">Web Application</SelectItem>\n            <SelectItem value=\"api\">API Service</SelectItem>\n            <SelectItem value=\"mobile\">Mobile App</SelectItem>\n          </SelectContent>\n        </Select>\n      </div>\n\n      <div className=\"flex justify-end gap-3\">\n        <Button variant=\"outline\" type=\"button\">Cancel</Button>\n        <Button type=\"submit\">Create Project</Button>\n      </div>\n    </form>\n  );\n}",
+      "tags": [
+        "form",
+        "input",
+        "select",
+        "layout"
+      ]
+    }
+  ]
+}

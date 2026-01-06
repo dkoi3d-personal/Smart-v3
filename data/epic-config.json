@@ -1,0 +1,6 @@
+{
+  "clientId": "22333d82-4e9f-4985-ba10-0114ffe3a3fb",
+  "environment": "sandbox",
+  "jwksUrl": "https://gist.githubusercontent.com/dkoi3d-personal/3d88b85b624d116c90d646204fbda064/raw/epic_fhir_jwks.txt",
+  "configuredAt": "2026-01-04T21:00:00.000Z"
+}

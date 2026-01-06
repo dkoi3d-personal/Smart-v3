@@ -1,0 +1,1308 @@
+[
+  {
+    "projectId": "qb-1767730493867-bl9vfw",
+    "templateId": "patient-dashboard",
+    "templateConfig": {
+      "templateId": "patient-dashboard",
+      "appName": "Patient Dashboard",
+      "epicApis": [
+        {
+          "apiId": "allergy-intolerance",
+          "resourceType": "AllergyIntolerance",
+          "displayName": "Allergies",
+          "isFromTemplate": true,
+          "isRequired": false,
+          "generateComponents": [
+            "AllergyList",
+            "AllergyBadge",
+            "AllergySeverityIcon"
+          ],
+          "generateHooks": [
+            "useAllergies"
+          ]
+        },
+        {
+          "apiId": "patient",
+          "resourceType": "Patient",
+          "displayName": "Patient Demographics",
+          "isFromTemplate": true,
+          "isRequired": true,
+          "generateComponents": [
+            "PatientBanner",
+            "PatientCard",
+            "PatientSearch",
+            "PatientDemographics"
+          ],
+          "generateHooks": [
+            "usePatient",
+            "usePatientSearch"
+          ]
+        },
+        {
+          "apiId": "medication-request",
+          "resourceType": "MedicationRequest",
+          "displayName": "Medications",
+          "isFromTemplate": true,
+          "isRequired": false,
+          "generateComponents": [
+            "MedicationList",
+            "MedicationCard",
+            "HighRiskMedicationAlert",
+            "DrugInteractionWarning"
+          ],
+          "generateHooks": [
+            "useMedications"
+          ]
+        },
+        {
+          "apiId": "observation-vitals",
+          "resourceType": "Observation",
+          "displayName": "Vital Signs",
+          "isFromTemplate": true,
+          "isRequired": false,
+          "generateComponents": [
+            "VitalSignsChart",
+            "VitalSignsCard",
+            "BloodPressureDisplay"
+          ],
+          "generateHooks": [
+            "useVitalSigns"
+          ]
+        }
+      ],
+      "enabledFeatures": [
+        "demographics",
+        "vitals",
+        "medications",
+        "allergies"
+      ]
+    },
+    "status": "complete",
+    "createdAt": "2026-01-06T20:14:53.867Z",
+    "updatedAt": "2026-01-06T20:15:16.666Z"
+  },
+  {
+    "projectId": "qb-1767578151871-ebpt1x",
+    "templateId": "custom",
+    "templateConfig": {
+      "templateId": "custom",
+      "appName": "Custom Build",
+      "epicApis": [
+        {
+          "apiId": "explanation-of-benefit",
+          "resourceType": "ExplanationOfBenefit",
+          "displayName": "Explanation of Benefits",
+          "isFromTemplate": false,
+          "isRequired": false,
+          "generateComponents": [
+            "EOBViewer",
+            "PaymentBreakdown"
+          ],
+          "generateHooks": [
+            "useEOB"
+          ]
+        },
+        {
+          "apiId": "patient",
+          "resourceType": "Patient",
+          "displayName": "Patient Demographics",
+          "isFromTemplate": true,
+          "isRequired": true,
+          "generateComponents": [
+            "PatientBanner",
+            "PatientCard",
+            "PatientSearch",
+            "PatientDemographics"
+          ],
+          "generateHooks": [
+            "usePatient",
+            "usePatientSearch"
+          ]
+        },
+        {
+          "apiId": "coverage",
+          "resourceType": "Coverage",
+          "displayName": "Insurance Coverage",
+          "isFromTemplate": false,
+          "isRequired": false,
+          "generateComponents": [
+            "InsuranceCard",
+            "CoverageDetails"
+          ],
+          "generateHooks": [
+            "useCoverage"
+          ]
+        },
+        {
+          "apiId": "procedure",
+          "resourceType": "Procedure",
+          "displayName": "Procedures",
+          "isFromTemplate": false,
+          "isRequired": false,
+          "generateComponents": [
+            "ProcedureHistory",
+            "ProcedureCard"
+          ],
+          "generateHooks": [
+            "useProcedures"
+          ]
+        },
+        {
+          "apiId": "diagnostic-report",
+          "resourceType": "DiagnosticReport",
+          "displayName": "Diagnostic Reports",
+          "isFromTemplate": false,
+          "isRequired": false,
+          "generateComponents": [
+            "DiagnosticReportViewer",
+            "ReportSummaryCard"
+          ],
+          "generateHooks": [
+            "useDiagnosticReports"
+          ]
+        },
+        {
+          "apiId": "condition",
+          "resourceType": "Condition",
+          "displayName": "Conditions",
+          "isFromTemplate": false,
+          "isRequired": false,
+          "generateComponents": [
+            "ConditionsList",
+            "ProblemList",
+            "ConditionBadge"
+          ],
+          "generateHooks": [
+            "useConditions"
+          ]
+        },
+        {
+          "apiId": "observation-labs",
+          "resourceType": "Observation",
+          "displayName": "Lab Results",
+          "isFromTemplate": false,
+          "isRequired": false,
+          "generateComponents": [
+            "LabResultsPanel",
+            "LabTrendChart",
+            "AbnormalLabAlert"
+          ],
+          "generateHooks": [
+            "useLabResults"
+          ]
+        },
+        {
+          "apiId": "observation-vitals",
+          "resourceType": "Observation",
+          "displayName": "Vital Signs",
+          "isFromTemplate": false,
+          "isRequired": false,
+          "generateComponents": [
+            "VitalSignsChart",
+            "VitalSignsCard",
+            "BloodPressureDisplay"
+          ],
+          "generateHooks": [
+            "useVitalSigns"
+          ]
+        },
+        {
+          "apiId": "related-person",
+          "resourceType": "RelatedPerson",
+          "displayName": "Related People",
+          "isFromTemplate": false,
+          "isRequired": false,
+          "generateComponents": [
+            "RelatedPersonList",
+            "EmergencyContactCard"
+          ],
+          "generateHooks": [
+            "useRelatedPersons"
+          ]
+        }
+      ],
+      "enabledFeatures": []
+    },
+    "status": "complete",
+    "createdAt": "2026-01-05T01:55:51.871Z",
+    "updatedAt": "2026-01-05T01:56:12.224Z"
+  },
+  {
+    "projectId": "qb-1767578043179-qb0cci",
+    "templateId": "immunization-record",
+    "templateConfig": {
+      "templateId": "immunization-record",
+      "appName": "Immunization Record",
+      "epicApis": [
+        {
+          "apiId": "immunization",
+          "resourceType": "Immunization",
+          "displayName": "Immunizations",
+          "isFromTemplate": true,
+          "isRequired": false,
+          "generateComponents": [
+            "ImmunizationRecord",
+            "VaccineCard",
+            "ImmunizationTimeline"
+          ],
+          "generateHooks": [
+            "useImmunizations"
+          ]
+        },
+        {
+          "apiId": "patient",
+          "resourceType": "Patient",
+          "displayName": "Patient Demographics",
+          "isFromTemplate": true,
+          "isRequired": true,
+          "generateComponents": [
+            "PatientBanner",
+            "PatientCard",
+            "PatientSearch",
+            "PatientDemographics"
+          ],
+          "generateHooks": [
+            "usePatient",
+            "usePatientSearch"
+          ]
+        }
+      ],
+      "enabledFeatures": [
+        "vaccine-history",
+        "timeline",
+        "due-dates"
+      ]
+    },
+    "status": "complete",
+    "createdAt": "2026-01-05T01:54:03.179Z",
+    "updatedAt": "2026-01-05T01:54:22.281Z"
+  },
+  {
+    "projectId": "qb-1767577988482-pii0rx",
+    "templateId": "care-plan-display",
+    "templateConfig": {
+      "templateId": "care-plan-display",
+      "appName": "Care Plan Display",
+      "epicApis": [
+        {
+          "apiId": "care-team",
+          "resourceType": "CareTeam",
+          "displayName": "Care Team",
+          "isFromTemplate": true,
+          "isRequired": false,
+          "generateComponents": [
+            "CareTeamList",
+            "CareTeamCard"
+          ],
+          "generateHooks": [
+            "useCareTeam"
+          ]
+        },
+        {
+          "apiId": "patient",
+          "resourceType": "Patient",
+          "displayName": "Patient Demographics",
+          "isFromTemplate": true,
+          "isRequired": true,
+          "generateComponents": [
+            "PatientBanner",
+            "PatientCard",
+            "PatientSearch",
+            "PatientDemographics"
+          ],
+          "generateHooks": [
+            "usePatient",
+            "usePatientSearch"
+          ]
+        },
+        {
+          "apiId": "goal",
+          "resourceType": "Goal",
+          "displayName": "Goals",
+          "isFromTemplate": true,
+          "isRequired": false,
+          "generateComponents": [
+            "GoalsList",
+            "GoalProgressCard"
+          ],
+          "generateHooks": [
+            "useGoals"
+          ]
+        },
+        {
+          "apiId": "care-plan",
+          "resourceType": "CarePlan",
+          "displayName": "Care Plans",
+          "isFromTemplate": true,
+          "isRequired": false,
+          "generateComponents": [
+            "CarePlanViewer",
+            "CarePlanCard",
+            "ActivityChecklist"
+          ],
+          "generateHooks": [
+            "useCarePlan"
+          ]
+        }
+      ],
+      "enabledFeatures": [
+        "care-plans",
+        "goals",
+        "care-team",
+        "activities"
+      ]
+    },
+    "status": "complete",
+    "createdAt": "2026-01-05T01:53:08.482Z",
+    "updatedAt": "2026-01-05T01:53:30.324Z"
+  },
+  {
+    "projectId": "qb-1767577847323-has1c1",
+    "templateId": "care-plan-display",
+    "templateConfig": {
+      "templateId": "care-plan-display",
+      "appName": "Care Plan Display",
+      "epicApis": [
+        {
+          "apiId": "care-team",
+          "resourceType": "CareTeam",
+          "displayName": "Care Team",
+          "isFromTemplate": true,
+          "isRequired": false,
+          "generateComponents": [
+            "CareTeamList",
+            "CareTeamCard"
+          ],
+          "generateHooks": [
+            "useCareTeam"
+          ]
+        },
+        {
+          "apiId": "patient",
+          "resourceType": "Patient",
+          "displayName": "Patient Demographics",
+          "isFromTemplate": true,
+          "isRequired": true,
+          "generateComponents": [
+            "PatientBanner",
+            "PatientCard",
+            "PatientSearch",
+            "PatientDemographics"
+          ],
+          "generateHooks": [
+            "usePatient",
+            "usePatientSearch"
+          ]
+        },
+        {
+          "apiId": "goal",
+          "resourceType": "Goal",
+          "displayName": "Goals",
+          "isFromTemplate": true,
+          "isRequired": false,
+          "generateComponents": [
+            "GoalsList",
+            "GoalProgressCard"
+          ],
+          "generateHooks": [
+            "useGoals"
+          ]
+        },
+        {
+          "apiId": "care-plan",
+          "resourceType": "CarePlan",
+          "displayName": "Care Plans",
+          "isFromTemplate": true,
+          "isRequired": false,
+          "generateComponents": [
+            "CarePlanViewer",
+            "CarePlanCard",
+            "ActivityChecklist"
+          ],
+          "generateHooks": [
+            "useCarePlan"
+          ]
+        }
+      ],
+      "enabledFeatures": [
+        "care-plans",
+        "goals",
+        "care-team",
+        "activities"
+      ]
+    },
+    "status": "complete",
+    "createdAt": "2026-01-05T01:50:47.323Z",
+    "updatedAt": "2026-01-05T01:51:07.566Z"
+  },
+  {
+    "projectId": "qb-1767577696412-dtwddz",
+    "templateId": "care-plan-display",
+    "templateConfig": {
+      "templateId": "care-plan-display",
+      "appName": "Care Plan Display",
+      "epicApis": [
+        {
+          "apiId": "care-team",
+          "resourceType": "CareTeam",
+          "displayName": "Care Team",
+          "isFromTemplate": true,
+          "isRequired": false,
+          "generateComponents": [
+            "CareTeamList",
+            "CareTeamCard"
+          ],
+          "generateHooks": [
+            "useCareTeam"
+          ]
+        },
+        {
+          "apiId": "patient",
+          "resourceType": "Patient",
+          "displayName": "Patient Demographics",
+          "isFromTemplate": true,
+          "isRequired": true,
+          "generateComponents": [
+            "PatientBanner",
+            "PatientCard",
+            "PatientSearch",
+            "PatientDemographics"
+          ],
+          "generateHooks": [
+            "usePatient",
+            "usePatientSearch"
+          ]
+        },
+        {
+          "apiId": "goal",
+          "resourceType": "Goal",
+          "displayName": "Goals",
+          "isFromTemplate": true,
+          "isRequired": false,
+          "generateComponents": [
+            "GoalsList",
+            "GoalProgressCard"
+          ],
+          "generateHooks": [
+            "useGoals"
+          ]
+        },
+        {
+          "apiId": "care-plan",
+          "resourceType": "CarePlan",
+          "displayName": "Care Plans",
+          "isFromTemplate": true,
+          "isRequired": false,
+          "generateComponents": [
+            "CarePlanViewer",
+            "CarePlanCard",
+            "ActivityChecklist"
+          ],
+          "generateHooks": [
+            "useCarePlan"
+          ]
+        }
+      ],
+      "enabledFeatures": [
+        "care-plans",
+        "goals",
+        "care-team",
+        "activities"
+      ]
+    },
+    "status": "complete",
+    "createdAt": "2026-01-05T01:48:16.412Z",
+    "updatedAt": "2026-01-05T01:48:33.973Z"
+  },
+  {
+    "projectId": "qb-1767577565719-kw5kmk",
+    "templateId": "care-plan-display",
+    "templateConfig": {
+      "templateId": "care-plan-display",
+      "appName": "Care Plan Display",
+      "epicApis": [
+        {
+          "apiId": "care-team",
+          "resourceType": "CareTeam",
+          "displayName": "Care Team",
+          "isFromTemplate": true,
+          "isRequired": false,
+          "generateComponents": [
+            "CareTeamList",
+            "CareTeamCard"
+          ],
+          "generateHooks": [
+            "useCareTeam"
+          ]
+        },
+        {
+          "apiId": "patient",
+          "resourceType": "Patient",
+          "displayName": "Patient Demographics",
+          "isFromTemplate": true,
+          "isRequired": true,
+          "generateComponents": [
+            "PatientBanner",
+            "PatientCard",
+            "PatientSearch",
+            "PatientDemographics"
+          ],
+          "generateHooks": [
+            "usePatient",
+            "usePatientSearch"
+          ]
+        },
+        {
+          "apiId": "goal",
+          "resourceType": "Goal",
+          "displayName": "Goals",
+          "isFromTemplate": true,
+          "isRequired": false,
+          "generateComponents": [
+            "GoalsList",
+            "GoalProgressCard"
+          ],
+          "generateHooks": [
+            "useGoals"
+          ]
+        },
+        {
+          "apiId": "care-plan",
+          "resourceType": "CarePlan",
+          "displayName": "Care Plans",
+          "isFromTemplate": true,
+          "isRequired": false,
+          "generateComponents": [
+            "CarePlanViewer",
+            "CarePlanCard",
+            "ActivityChecklist"
+          ],
+          "generateHooks": [
+            "useCarePlan"
+          ]
+        }
+      ],
+      "enabledFeatures": [
+        "care-plans",
+        "goals",
+        "care-team",
+        "activities"
+      ]
+    },
+    "status": "complete",
+    "createdAt": "2026-01-05T01:46:05.719Z",
+    "updatedAt": "2026-01-05T01:46:22.948Z"
+  },
+  {
+    "projectId": "qb-1767577428029-24xegt",
+    "templateId": "care-plan-display",
+    "templateConfig": {
+      "templateId": "care-plan-display",
+      "appName": "Care Plan Display",
+      "epicApis": [
+        {
+          "apiId": "care-team",
+          "resourceType": "CareTeam",
+          "displayName": "Care Team",
+          "isFromTemplate": true,
+          "isRequired": false,
+          "generateComponents": [
+            "CareTeamList",
+            "CareTeamCard"
+          ],
+          "generateHooks": [
+            "useCareTeam"
+          ]
+        },
+        {
+          "apiId": "patient",
+          "resourceType": "Patient",
+          "displayName": "Patient Demographics",
+          "isFromTemplate": true,
+          "isRequired": true,
+          "generateComponents": [
+            "PatientBanner",
+            "PatientCard",
+            "PatientSearch",
+            "PatientDemographics"
+          ],
+          "generateHooks": [
+            "usePatient",
+            "usePatientSearch"
+          ]
+        },
+        {
+          "apiId": "goal",
+          "resourceType": "Goal",
+          "displayName": "Goals",
+          "isFromTemplate": true,
+          "isRequired": false,
+          "generateComponents": [
+            "GoalsList",
+            "GoalProgressCard"
+          ],
+          "generateHooks": [
+            "useGoals"
+          ]
+        },
+        {
+          "apiId": "care-plan",
+          "resourceType": "CarePlan",
+          "displayName": "Care Plans",
+          "isFromTemplate": true,
+          "isRequired": false,
+          "generateComponents": [
+            "CarePlanViewer",
+            "CarePlanCard",
+            "ActivityChecklist"
+          ],
+          "generateHooks": [
+            "useCarePlan"
+          ]
+        }
+      ],
+      "enabledFeatures": [
+        "care-plans",
+        "goals",
+        "care-team",
+        "activities"
+      ]
+    },
+    "status": "complete",
+    "createdAt": "2026-01-05T01:43:48.029Z",
+    "updatedAt": "2026-01-05T01:44:03.385Z"
+  },
+  {
+    "projectId": "qb-1767577335529-cgc01v",
+    "templateId": "lab-results-viewer",
+    "templateConfig": {
+      "templateId": "lab-results-viewer",
+      "appName": "Lab Results Viewer",
+      "epicApis": [
+        {
+          "apiId": "diagnostic-report",
+          "resourceType": "DiagnosticReport",
+          "displayName": "Diagnostic Reports",
+          "isFromTemplate": true,
+          "isRequired": false,
+          "generateComponents": [
+            "DiagnosticReportViewer",
+            "ReportSummaryCard"
+          ],
+          "generateHooks": [
+            "useDiagnosticReports"
+          ]
+        },
+        {
+          "apiId": "patient",
+          "resourceType": "Patient",
+          "displayName": "Patient Demographics",
+          "isFromTemplate": true,
+          "isRequired": true,
+          "generateComponents": [
+            "PatientBanner",
+            "PatientCard",
+            "PatientSearch",
+            "PatientDemographics"
+          ],
+          "generateHooks": [
+            "usePatient",
+            "usePatientSearch"
+          ]
+        },
+        {
+          "apiId": "observation-labs",
+          "resourceType": "Observation",
+          "displayName": "Lab Results",
+          "isFromTemplate": true,
+          "isRequired": false,
+          "generateComponents": [
+            "LabResultsPanel",
+            "LabTrendChart",
+            "AbnormalLabAlert"
+          ],
+          "generateHooks": [
+            "useLabResults"
+          ]
+        }
+      ],
+      "enabledFeatures": [
+        "lab-panels",
+        "trend-charts",
+        "abnormal-flags",
+        "reference-ranges"
+      ]
+    },
+    "status": "complete",
+    "createdAt": "2026-01-05T01:42:15.529Z",
+    "updatedAt": "2026-01-05T01:42:34.202Z"
+  },
+  {
+    "projectId": "qb-1767577081330-33310y",
+    "templateId": "lab-results-viewer",
+    "templateConfig": {
+      "templateId": "lab-results-viewer",
+      "appName": "Lab Results Viewer",
+      "epicApis": [
+        {
+          "apiId": "diagnostic-report",
+          "resourceType": "DiagnosticReport",
+          "displayName": "Diagnostic Reports",
+          "isFromTemplate": true,
+          "isRequired": false,
+          "generateComponents": [
+            "DiagnosticReportViewer",
+            "ReportSummaryCard"
+          ],
+          "generateHooks": [
+            "useDiagnosticReports"
+          ]
+        },
+        {
+          "apiId": "patient",
+          "resourceType": "Patient",
+          "displayName": "Patient Demographics",
+          "isFromTemplate": true,
+          "isRequired": true,
+          "generateComponents": [
+            "PatientBanner",
+            "PatientCard",
+            "PatientSearch",
+            "PatientDemographics"
+          ],
+          "generateHooks": [
+            "usePatient",
+            "usePatientSearch"
+          ]
+        },
+        {
+          "apiId": "observation-labs",
+          "resourceType": "Observation",
+          "displayName": "Lab Results",
+          "isFromTemplate": true,
+          "isRequired": false,
+          "generateComponents": [
+            "LabResultsPanel",
+            "LabTrendChart",
+            "AbnormalLabAlert"
+          ],
+          "generateHooks": [
+            "useLabResults"
+          ]
+        }
+      ],
+      "enabledFeatures": [
+        "lab-panels",
+        "trend-charts",
+        "abnormal-flags",
+        "reference-ranges"
+      ]
+    },
+    "status": "complete",
+    "createdAt": "2026-01-05T01:38:01.330Z",
+    "updatedAt": "2026-01-05T01:38:18.251Z"
+  },
+  {
+    "projectId": "qb-1767576721037-qeevfi",
+    "templateId": "appointment-viewer",
+    "templateConfig": {
+      "templateId": "appointment-viewer",
+      "appName": "Appointment Viewer",
+      "epicApis": [
+        {
+          "apiId": "location",
+          "resourceType": "Location",
+          "displayName": "Locations",
+          "isFromTemplate": false,
+          "isRequired": false,
+          "generateComponents": [
+            "LocationCard",
+            "LocationFinder"
+          ],
+          "generateHooks": [
+            "useLocation"
+          ]
+        },
+        {
+          "apiId": "practitioner",
+          "resourceType": "Practitioner",
+          "displayName": "Practitioners",
+          "isFromTemplate": false,
+          "isRequired": false,
+          "generateComponents": [
+            "PractitionerCard",
+            "ProviderDirectory"
+          ],
+          "generateHooks": [
+            "usePractitioner"
+          ]
+        },
+        {
+          "apiId": "appointment",
+          "resourceType": "Appointment",
+          "displayName": "Appointments",
+          "isFromTemplate": true,
+          "isRequired": false,
+          "generateComponents": [
+            "AppointmentList",
+            "AppointmentCard",
+            "AppointmentCalendar"
+          ],
+          "generateHooks": [
+            "useAppointments"
+          ]
+        },
+        {
+          "apiId": "patient",
+          "resourceType": "Patient",
+          "displayName": "Patient Demographics",
+          "isFromTemplate": true,
+          "isRequired": true,
+          "generateComponents": [
+            "PatientBanner",
+            "PatientCard",
+            "PatientSearch",
+            "PatientDemographics"
+          ],
+          "generateHooks": [
+            "usePatient",
+            "usePatientSearch"
+          ]
+        }
+      ],
+      "enabledFeatures": [
+        "upcoming",
+        "calendar-view",
+        "provider-info",
+        "past-visits"
+      ]
+    },
+    "status": "building",
+    "createdAt": "2026-01-05T01:32:01.037Z",
+    "updatedAt": "2026-01-05T01:32:43.645Z"
+  },
+  {
+    "projectId": "qb-1767576370153-81d0qy",
+    "templateId": "patient-dashboard",
+    "templateConfig": {
+      "templateId": "patient-dashboard",
+      "appName": "Patient Dashboard",
+      "epicApis": [
+        {
+          "apiId": "allergy-intolerance",
+          "resourceType": "AllergyIntolerance",
+          "displayName": "Allergies",
+          "isFromTemplate": true,
+          "isRequired": false,
+          "generateComponents": [
+            "AllergyList",
+            "AllergyBadge",
+            "AllergySeverityIcon"
+          ],
+          "generateHooks": [
+            "useAllergies"
+          ]
+        },
+        {
+          "apiId": "patient",
+          "resourceType": "Patient",
+          "displayName": "Patient Demographics",
+          "isFromTemplate": true,
+          "isRequired": true,
+          "generateComponents": [
+            "PatientBanner",
+            "PatientCard",
+            "PatientSearch",
+            "PatientDemographics"
+          ],
+          "generateHooks": [
+            "usePatient",
+            "usePatientSearch"
+          ]
+        },
+        {
+          "apiId": "medication-request",
+          "resourceType": "MedicationRequest",
+          "displayName": "Medications",
+          "isFromTemplate": true,
+          "isRequired": false,
+          "generateComponents": [
+            "MedicationList",
+            "MedicationCard",
+            "HighRiskMedicationAlert",
+            "DrugInteractionWarning"
+          ],
+          "generateHooks": [
+            "useMedications"
+          ]
+        },
+        {
+          "apiId": "observation-vitals",
+          "resourceType": "Observation",
+          "displayName": "Vital Signs",
+          "isFromTemplate": true,
+          "isRequired": false,
+          "generateComponents": [
+            "VitalSignsChart",
+            "VitalSignsCard",
+            "BloodPressureDisplay"
+          ],
+          "generateHooks": [
+            "useVitalSigns"
+          ]
+        }
+      ],
+      "enabledFeatures": [
+        "demographics",
+        "vitals",
+        "medications",
+        "allergies"
+      ]
+    },
+    "status": "complete",
+    "createdAt": "2026-01-05T01:26:10.153Z",
+    "updatedAt": "2026-01-05T01:26:29.144Z"
+  },
+  {
+    "projectId": "qb-1767576205991-1ctujx",
+    "templateId": "patient-dashboard",
+    "templateConfig": {
+      "templateId": "patient-dashboard",
+      "appName": "Patient Dashboard",
+      "epicApis": [
+        {
+          "apiId": "allergy-intolerance",
+          "resourceType": "AllergyIntolerance",
+          "displayName": "Allergies",
+          "isFromTemplate": true,
+          "isRequired": false,
+          "generateComponents": [
+            "AllergyList",
+            "AllergyBadge",
+            "AllergySeverityIcon"
+          ],
+          "generateHooks": [
+            "useAllergies"
+          ]
+        },
+        {
+          "apiId": "patient",
+          "resourceType": "Patient",
+          "displayName": "Patient Demographics",
+          "isFromTemplate": true,
+          "isRequired": true,
+          "generateComponents": [
+            "PatientBanner",
+            "PatientCard",
+            "PatientSearch",
+            "PatientDemographics"
+          ],
+          "generateHooks": [
+            "usePatient",
+            "usePatientSearch"
+          ]
+        },
+        {
+          "apiId": "medication-request",
+          "resourceType": "MedicationRequest",
+          "displayName": "Medications",
+          "isFromTemplate": true,
+          "isRequired": false,
+          "generateComponents": [
+            "MedicationList",
+            "MedicationCard",
+            "HighRiskMedicationAlert",
+            "DrugInteractionWarning"
+          ],
+          "generateHooks": [
+            "useMedications"
+          ]
+        },
+        {
+          "apiId": "observation-vitals",
+          "resourceType": "Observation",
+          "displayName": "Vital Signs",
+          "isFromTemplate": true,
+          "isRequired": false,
+          "generateComponents": [
+            "VitalSignsChart",
+            "VitalSignsCard",
+            "BloodPressureDisplay"
+          ],
+          "generateHooks": [
+            "useVitalSigns"
+          ]
+        }
+      ],
+      "enabledFeatures": [
+        "demographics",
+        "vitals",
+        "medications",
+        "allergies"
+      ]
+    },
+    "status": "complete",
+    "createdAt": "2026-01-05T01:23:25.991Z",
+    "updatedAt": "2026-01-05T01:23:41.850Z"
+  },
+  {
+    "projectId": "qb-1767575996296-xjgf8j",
+    "templateId": "patient-dashboard",
+    "templateConfig": {
+      "templateId": "patient-dashboard",
+      "appName": "Patient Dashboard",
+      "epicApis": [
+        {
+          "apiId": "allergy-intolerance",
+          "resourceType": "AllergyIntolerance",
+          "displayName": "Allergies",
+          "isFromTemplate": true,
+          "isRequired": false,
+          "generateComponents": [
+            "AllergyList",
+            "AllergyBadge",
+            "AllergySeverityIcon"
+          ],
+          "generateHooks": [
+            "useAllergies"
+          ]
+        },
+        {
+          "apiId": "patient",
+          "resourceType": "Patient",
+          "displayName": "Patient Demographics",
+          "isFromTemplate": true,
+          "isRequired": true,
+          "generateComponents": [
+            "PatientBanner",
+            "PatientCard",
+            "PatientSearch",
+            "PatientDemographics"
+          ],
+          "generateHooks": [
+            "usePatient",
+            "usePatientSearch"
+          ]
+        },
+        {
+          "apiId": "medication-request",
+          "resourceType": "MedicationRequest",
+          "displayName": "Medications",
+          "isFromTemplate": true,
+          "isRequired": false,
+          "generateComponents": [
+            "MedicationList",
+            "MedicationCard",
+            "HighRiskMedicationAlert",
+            "DrugInteractionWarning"
+          ],
+          "generateHooks": [
+            "useMedications"
+          ]
+        },
+        {
+          "apiId": "observation-vitals",
+          "resourceType": "Observation",
+          "displayName": "Vital Signs",
+          "isFromTemplate": true,
+          "isRequired": false,
+          "generateComponents": [
+            "VitalSignsChart",
+            "VitalSignsCard",
+            "BloodPressureDisplay"
+          ],
+          "generateHooks": [
+            "useVitalSigns"
+          ]
+        }
+      ],
+      "enabledFeatures": [
+        "demographics",
+        "vitals",
+        "medications",
+        "allergies"
+      ]
+    },
+    "status": "complete",
+    "createdAt": "2026-01-05T01:19:56.296Z",
+    "updatedAt": "2026-01-05T01:20:13.328Z"
+  },
+  {
+    "projectId": "qb-1767575656141-vjs6ri",
+    "templateId": "patient-dashboard",
+    "templateConfig": {
+      "templateId": "patient-dashboard",
+      "appName": "Patient Dashboard",
+      "epicApis": [
+        {
+          "apiId": "condition",
+          "resourceType": "Condition",
+          "displayName": "Conditions",
+          "isFromTemplate": false,
+          "isRequired": false,
+          "generateComponents": [
+            "ConditionsList",
+            "ProblemList",
+            "ConditionBadge"
+          ],
+          "generateHooks": [
+            "useConditions"
+          ]
+        },
+        {
+          "apiId": "patient",
+          "resourceType": "Patient",
+          "displayName": "Patient Demographics",
+          "isFromTemplate": true,
+          "isRequired": true,
+          "generateComponents": [
+            "PatientBanner",
+            "PatientCard",
+            "PatientSearch",
+            "PatientDemographics"
+          ],
+          "generateHooks": [
+            "usePatient",
+            "usePatientSearch"
+          ]
+        },
+        {
+          "apiId": "allergy-intolerance",
+          "resourceType": "AllergyIntolerance",
+          "displayName": "Allergies",
+          "isFromTemplate": true,
+          "isRequired": false,
+          "generateComponents": [
+            "AllergyList",
+            "AllergyBadge",
+            "AllergySeverityIcon"
+          ],
+          "generateHooks": [
+            "useAllergies"
+          ]
+        },
+        {
+          "apiId": "medication-request",
+          "resourceType": "MedicationRequest",
+          "displayName": "Medications",
+          "isFromTemplate": true,
+          "isRequired": false,
+          "generateComponents": [
+            "MedicationList",
+            "MedicationCard",
+            "HighRiskMedicationAlert",
+            "DrugInteractionWarning"
+          ],
+          "generateHooks": [
+            "useMedications"
+          ]
+        },
+        {
+          "apiId": "observation-vitals",
+          "resourceType": "Observation",
+          "displayName": "Vital Signs",
+          "isFromTemplate": true,
+          "isRequired": false,
+          "generateComponents": [
+            "VitalSignsChart",
+            "VitalSignsCard",
+            "BloodPressureDisplay"
+          ],
+          "generateHooks": [
+            "useVitalSigns"
+          ]
+        }
+      ],
+      "enabledFeatures": [
+        "demographics",
+        "vitals",
+        "medications",
+        "allergies",
+        "conditions"
+      ]
+    },
+    "status": "complete",
+    "createdAt": "2026-01-05T01:14:16.141Z",
+    "updatedAt": "2026-01-05T01:14:36.835Z"
+  },
+  {
+    "projectId": "qb-1767573881733-96p3n5",
+    "templateId": "clinical-summary",
+    "templateConfig": {
+      "templateId": "clinical-summary",
+      "appName": "Clinical Summary",
+      "epicApis": [
+        {
+          "apiId": "condition",
+          "resourceType": "Condition",
+          "displayName": "Conditions",
+          "isFromTemplate": true,
+          "isRequired": false,
+          "generateComponents": [
+            "ConditionsList",
+            "ProblemList",
+            "ConditionBadge"
+          ],
+          "generateHooks": [
+            "useConditions"
+          ]
+        },
+        {
+          "apiId": "patient",
+          "resourceType": "Patient",
+          "displayName": "Patient Demographics",
+          "isFromTemplate": true,
+          "isRequired": true,
+          "generateComponents": [
+            "PatientBanner",
+            "PatientCard",
+            "PatientSearch",
+            "PatientDemographics"
+          ],
+          "generateHooks": [
+            "usePatient",
+            "usePatientSearch"
+          ]
+        },
+        {
+          "apiId": "observation-labs",
+          "resourceType": "Observation",
+          "displayName": "Lab Results",
+          "isFromTemplate": true,
+          "isRequired": false,
+          "generateComponents": [
+            "LabResultsPanel",
+            "LabTrendChart",
+            "AbnormalLabAlert"
+          ],
+          "generateHooks": [
+            "useLabResults"
+          ]
+        },
+        {
+          "apiId": "observation-vitals",
+          "resourceType": "Observation",
+          "displayName": "Vital Signs",
+          "isFromTemplate": true,
+          "isRequired": false,
+          "generateComponents": [
+            "VitalSignsChart",
+            "VitalSignsCard",
+            "BloodPressureDisplay"
+          ],
+          "generateHooks": [
+            "useVitalSigns"
+          ]
+        }
+      ],
+      "enabledFeatures": [
+        "vitals",
+        "labs",
+        "conditions"
+      ]
+    },
+    "status": "complete",
+    "createdAt": "2026-01-05T00:44:41.733Z",
+    "updatedAt": "2026-01-05T00:45:00.269Z"
+  }
+]

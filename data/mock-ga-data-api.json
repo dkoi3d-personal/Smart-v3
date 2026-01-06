@@ -1,0 +1,53 @@
+{
+  "uuid": "1efbb93b-4645-4c6c-92be-103d167af15c",
+  "lastMigration": 29,
+  "name": "Google Analytics Data API",
+  "endpointPrefix": "",
+  "latency": 0,
+  "port": 3000,
+  "hostname": "",
+  "routes": [
+    {
+      "uuid": "c1a35583-e477-48b2-aa38-033313b3bec1",
+      "documentation": "Returns metadata for dimensions and metrics available in reporting methods.",
+      "method": "get",
+      "endpoint": "v1beta/:name"
+    },
+    {
+      "uuid": "abc94a47-d93c-45b1-bc80-4efaa69ee262",
+      "documentation": "Returns multiple pivot reports in a batch. All reports must be for the same GA4 Property.",
+      "method": "post",
+      "endpoint": "v1beta/:property:batchRunPivotReports"
+    },
+    {
+      "uuid": "ee715bfd-6ec9-457e-bfde-70ee23f90dc2",
+      "documentation": "Returns multiple reports in a batch. All reports must be for the same GA4 Property.",
+      "method": "post",
+      "endpoint": "v1beta/:property:batchRunReports"
+    },
+    {
+      "uuid": "61d2ea81-2955-42e1-8c70-f24f3d29d61d",
+      "documentation": "This compatibility method lists dimensions and metrics that can be added to a report request and maintain compatibility.",
+      "method": "post",
+      "endpoint": "v1beta/:property:checkCompatibility"
+    },
+    {
+      "uuid": "402595f0-1b7f-4da9-a298-4b708c3b89e7",
+      "documentation": "Returns a customized pivot report of your Google Analytics event data.",
+      "method": "post",
+      "endpoint": "v1beta/:property:runPivotReport"
+    },
+    {
+      "uuid": "06984eb1-82ee-45a9-9ea5-1dfbc7ea5db9",
+      "documentation": "Returns a customized report of realtime event data for your property.",
+      "method": "post",
+      "endpoint": "v1beta/:property:runRealtimeReport"
+    },
+    {
+      "uuid": "8d850554-9208-48c8-9404-bf9ec5658018",
+      "documentation": "Returns a customized report of your Google Analytics event data.",
+      "method": "post",
+      "endpoint": "v1beta/:property:runReport"
+    }
+  ]
+}

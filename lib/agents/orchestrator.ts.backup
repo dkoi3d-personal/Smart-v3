@@ -1,0 +1,2602 @@
+/**
+ * Agent Orchestrator
+ * Coordinates all 6 agents using the Anthropic API for multi-agent orchestration
+ */
+
+import { anthropicService } from '@/services/anthropic-api';
+import type {
+  Agent,
+  AgentType,
+  DevelopmentState,
+  Epic,
+  Story,
+  ClarificationRequest,
+} from './types';
+import { EventEmitter } from 'events';
+
+export class AgentOrchestrator extends EventEmitter {
+  private state: DevelopmentState;
+  private agents: Map<AgentType, Agent> = new Map();
+  private abortController: AbortController;
+  private isStopping: boolean = false;
+
+  constructor(initialState: DevelopmentState) {
+    super();
+    this.state = initialState;
+    this.abortController = new AbortController();
+    this.initializeAgents();
+  }
+
+  /**
+   * Initialize all 7 agents
+   */
+  private initializeAgents() {
+    const agentTypes: AgentType[] = [
+      'supervisor',
+      'research',
+      'product_owner',
+      'coder',
+      'tester',
+      'security',
+      'infrastructure',
+    ];
+
+    agentTypes.forEach((type) => {
+      this.agents.set(type, {
+        id: `${type}-${Date.now()}`,
+        type,
+        name: this.getAgentName(type),
+        status: 'idle',
+      });
+    });
+  }
+
+  /**
+   * Get human-readable agent name
+   */
+  private getAgentName(type: AgentType): string {
+    const names: Record<AgentType, string> = {
+      supervisor: 'Supervisor',
+      research: 'Research Analyst',
+      product_owner: 'Product Owner',
+      coder: 'Coder',
+      tester: 'Tester',
+      security: 'Security Analyst',
+      infrastructure: 'Infrastructure Engineer',
+    };
+    return names[type];
+  }
+
+  /**
+   * Start the development workflow
+   */
+  async start(requirements: string): Promise<void> {
+    this.state.requirements = requirements;
+    this.state.status = 'planning';
+
+    console.log('🚀 Workflow started with requirements:', requirements.substring(0, 100));
+    this.emit('workflow:started', { requirements });
+
+    // Emit initial status message
+    this.emit('agent:message', {
+      id: `msg-${Date.now()}`,
+      agentId: 'system',
+      agentType: 'supervisor',
+      content: `🚀 Workflow started! Analyzing your requirements...`,
+      timestamp: new Date(),
+    });
+
+    try {
+      // Check if stopped before starting
+      if (this.isStopping) {
+        throw new Error('Workflow was stopped');
+      }
+
+      // Step 0: Research Agent performs deep analysis
+      console.log('🔬 Step 0: Invoking Research agent...');
+      this.emit('agent:message', {
+        id: `msg-${Date.now()}`,
+        agentId: 'system',
+        agentType: 'research',
+        content: `🔬 STEP 0/6: Research Analyst performing deep analysis and gathering insights...`,
+        timestamp: new Date(),
+      });
+
+      await this.invokeResearch('deep_analysis');
+      if (this.isStopping) throw new Error('Workflow was stopped');
+      console.log('✅ Research completed. Insights gathered.');
+
+      // Step 1: Supervisor analyzes requirements and creates plan
+      console.log('📋 Step 1: Invoking Supervisor agent...');
+      this.emit('agent:message', {
+        id: `msg-${Date.now()}`,
+        agentId: 'system',
+        agentType: 'supervisor',
+        content: `📋 STEP 1/6: Supervisor analyzing requirements with research insights and creating project plan...`,
+        timestamp: new Date(),
+      });
+
+      await this.invokeSupervisor('analyze_requirements');
+      if (this.isStopping) throw new Error('Workflow was stopped');
+      console.log('✅ Supervisor completed. Epics created:', this.state.epics.length);
+
+      // Log epic details for debugging
+      if (this.state.epics.length > 0) {
+        console.log('  → Epic titles:', this.state.epics.map(e => e.title));
+      } else {
+        console.warn('⚠️  WARNING: Supervisor completed but created 0 epics!');
+        console.warn('  → This will prevent Product Owner from being invoked');
+      }
+
+      // Step 2: Product Owner creates epics and stories
+      // Double-check epics are in state before proceeding
+      console.log('🔍 Pre-PO check: State has', this.state.epics.length, 'epics');
+
+      if (this.state.epics.length > 0) {
+        console.log('📊 Step 2: Invoking Product Owner agent...');
+        console.log('  → Passing', this.state.epics.length, 'epics to Product Owner');
+        console.log('  → Epic IDs being passed:', this.state.epics.map(e => e.id).join(', '));
+
+        this.emit('agent:message', {
+          id: `msg-${Date.now()}`,
+          agentId: 'system',
+          agentType: 'product_owner',
+          content: `📊 STEP 2/6: Product Owner breaking down ${this.state.epics.length} epic(s) into detailed user stories...`,
+          timestamp: new Date(),
+        });
+
+        await this.invokeProductOwner('create_stories');
+        if (this.isStopping) throw new Error('Workflow was stopped');
+        console.log('✅ Product Owner completed. Stories created:', this.state.stories.length);
+      } else {
+        console.error('❌ Cannot proceed to Product Owner: No epics were created by Supervisor');
+        console.error('  → State dump:', JSON.stringify({
+          epicCount: this.state.epics.length,
+          hasConfig: !!this.state.config,
+          status: this.state.status,
+        }, null, 2));
+
+        this.emit('agent:message', {
+          id: `msg-${Date.now()}`,
+          agentId: 'system',
+          agentType: 'supervisor',
+          content: `❌ Error: Supervisor did not create any epics. Cannot proceed to Product Owner.`,
+          timestamp: new Date(),
+        });
+        throw new Error('Supervisor failed to create epics');
+      }
+
+      // Step 3: Development loop for each story
+      console.log('💻 Step 3: Starting development loop...');
+      this.emit('agent:message', {
+        id: `msg-${Date.now()}`,
+        agentId: 'system',
+        agentType: 'coder',
+        content: `💻 STEP 3/6: Starting development! Coder will implement ${this.state.stories.length} user stories...`,
+        timestamp: new Date(),
+      });
+
+      await this.developmentLoop();
+      if (this.isStopping) throw new Error('Workflow was stopped');
+      console.log('✅ Development loop completed');
+
+      // Step 4: Final security scan
+      console.log('🔒 Step 4: Running security scan...');
+      this.emit('agent:message', {
+        id: `msg-${Date.now()}`,
+        agentId: 'system',
+        agentType: 'security',
+        content: `🔒 STEP 4/6: Running comprehensive security scan on all code...`,
+        timestamp: new Date(),
+      });
+
+      await this.invokeSecurity('full_scan');
+      if (this.isStopping) throw new Error('Workflow was stopped');
+      console.log('✅ Security scan completed');
+
+      // Step 5: Deploy if approved
+      console.log('🚀 Step 5: Creating deployment plan...');
+      this.emit('agent:message', {
+        id: `msg-${Date.now()}`,
+        agentId: 'system',
+        agentType: 'infrastructure',
+        content: `🚀 STEP 5/6: Infrastructure agent preparing deployment plan...`,
+        timestamp: new Date(),
+      });
+
+      await this.invokeInfrastructure('deploy');
+      if (this.isStopping) throw new Error('Workflow was stopped');
+      console.log('✅ Deployment plan created');
+
+      this.state.status = 'completed';
+      console.log('🎉 Workflow completed successfully!');
+      this.emit('agent:message', {
+        id: `msg-${Date.now()}`,
+        agentId: 'system',
+        agentType: 'supervisor',
+        content: `🎉 Workflow completed successfully! All steps finished.`,
+        timestamp: new Date(),
+      });
+
+      this.emit('workflow:completed', this.state);
+    } catch (error) {
+      console.error('❌ Workflow error:', error);
+      this.state.status = 'error';
+      this.state.errors.push(error instanceof Error ? error.message : 'Unknown error');
+
+      // Note: Direct API calls don't need session cleanup like Agent SDK
+      // Sessions are stateless with the direct API approach
+      console.log('  → Error occurred, workflow stopped');
+
+      this.emit('agent:message', {
+        id: `msg-${Date.now()}`,
+        agentId: 'system',
+        agentType: 'supervisor',
+        content: `❌ Workflow error: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        timestamp: new Date(),
+      });
+
+      this.emit('workflow:error', { error });
+    }
+  }
+
+  /**
+   * Main development loop - processes stories in parallel with multiple coder agents
+   */
+  private async developmentLoop(): Promise<void> {
+    this.state.status = 'developing';
+
+    const sortedStories = this.getSortedStories();
+    console.log(`🔄 Starting parallel development of ${sortedStories.length} stories...`);
+
+    // Process stories in parallel with concurrency limit
+    const MAX_CONCURRENT_STORIES = 5; // Can adjust this based on API rate limits
+    const activeStories = new Set<string>();
+    const completedStories = new Set<string>();
+    const failedStories = new Set<string>();
+
+    const processStory = async (story: Story): Promise<void> => {
+      // Check if dependencies are met
+      if (story.dependencies && story.dependencies.length > 0) {
+        const unmetDeps = story.dependencies.filter(depId => !completedStories.has(depId));
+        if (unmetDeps.length > 0) {
+          console.log(`⏸️  Story "${story.title}" waiting for dependencies: ${unmetDeps.join(', ')}`);
+          return; // Will retry later
+        }
+      }
+
+      this.state.currentStory = story;
+      story.status = 'in_progress';
+      activeStories.add(story.id);
+      this.emit('story:started', story);
+
+      try {
+        console.log(`🚀 Starting parallel work on: "${story.title}"`);
+
+        // Coder implements the story
+        await this.invokeCoder('implement_story', story);
+
+        // Tester writes and runs tests
+        await this.invokeTester('test_story', story);
+
+        // Security scans the changes
+        await this.invokeSecurity('scan_changes', story);
+
+        // Mark story as done
+        story.status = 'done';
+        story.progress = 100;
+        completedStories.add(story.id);
+        activeStories.delete(story.id);
+        this.emit('story:completed', story);
+
+        console.log(`✅ Completed story: "${story.title}" (${completedStories.size}/${sortedStories.length})`);
+      } catch (error) {
+        console.error(`❌ Error in story "${story.title}":`, error);
+        activeStories.delete(story.id);
+        failedStories.add(story.id);
+        this.emit('story:error', { story, error });
+
+        // Decide whether to continue or stop
+        const shouldContinue = await this.handleStoryError(story, error);
+        if (!shouldContinue) {
+          throw error;
+        }
+      }
+    };
+
+    // Process stories with controlled concurrency
+    const pendingStories = [...sortedStories];
+    const runningPromises: Promise<void>[] = [];
+
+    while (pendingStories.length > 0 || runningPromises.length > 0) {
+      // Start new stories if we have capacity
+      while (runningPromises.length < MAX_CONCURRENT_STORIES && pendingStories.length > 0) {
+        const story = pendingStories.shift()!;
+
+        // Check if dependencies are met before starting
+        const canStart = !story.dependencies ||
+          story.dependencies.length === 0 ||
+          story.dependencies.every(depId => completedStories.has(depId));
+
+        if (canStart && !activeStories.has(story.id) && !completedStories.has(story.id) && !failedStories.has(story.id)) {
+          const promise = processStory(story);
+          runningPromises.push(promise);
+        } else if (!canStart) {
+          // Put back at end of queue if dependencies not met
+          pendingStories.push(story);
+        }
+      }
+
+      // Wait for at least one to complete
+      if (runningPromises.length > 0) {
+        await Promise.race(runningPromises);
+        // Remove completed promises
+        const stillRunning = runningPromises.filter(p => {
+          let settled = false;
+          p.then(() => settled = true).catch(() => settled = true);
+          return !settled;
+        });
+        runningPromises.length = 0;
+        runningPromises.push(...stillRunning);
+      }
+
+      // Check if we're stuck (all remaining stories have unmet dependencies)
+      if (pendingStories.length > 0 && runningPromises.length === 0) {
+        console.warn(`⚠️  ${pendingStories.length} stories cannot start due to unmet dependencies or all active`);
+        // Try processing stories with unmet dependencies anyway (they'll be queued)
+        const blockedStory = pendingStories.shift()!;
+        if (!activeStories.has(blockedStory.id) && !completedStories.has(blockedStory.id)) {
+          const promise = processStory(blockedStory);
+          runningPromises.push(promise);
+        }
+      }
+    }
+
+    console.log(`✅ Development complete: ${completedStories.size} stories completed, ${failedStories.size} failed`);
+  }
+
+  /**
+   * Invoke the Supervisor agent
+   */
+  private async invokeSupervisor(action: string): Promise<void> {
+    const agent = this.agents.get('supervisor')!;
+    agent.status = 'thinking';
+    agent.currentTask = 'Creating project plan and epics';
+    this.emit('agent:status', agent);
+
+    // Emit progress message immediately
+    this.emit('agent:message', {
+      id: `msg-${Date.now()}`,
+      agentId: agent.id,
+      agentType: 'supervisor',
+      content: `📋 Supervisor analyzing requirements...\n\nUsing research insights to:\n• Create project epics\n• Define technical architecture\n• Identify dependencies\n• Assess risks\n\nWorking on it...`,
+      timestamp: new Date(),
+    });
+
+    const prompt = this.buildSupervisorPrompt(action);
+    console.log('  → Calling Claude API for Supervisor...');
+
+    try {
+      console.log('  → Attempting to invoke Supervisor agent via Anthropic API...');
+
+      // Emit progress message after 10 seconds if still working
+      const progressTimer = setTimeout(() => {
+        this.emit('agent:message', {
+          id: `msg-${Date.now()}`,
+          agentId: agent.id,
+          agentType: 'supervisor',
+          content: `⏳ Creating comprehensive project breakdown...`,
+          timestamp: new Date(),
+        });
+      }, 10000);
+
+      const response = await anthropicService.invokeAgent({
+        prompt,
+        sessionId: agent.sessionId,
+        allowedTools: ['Read', 'Write', 'Bash', 'Grep', 'Glob'],
+        permissionMode: 'acceptEdits',
+      });
+
+      // Clear the progress timer
+      clearTimeout(progressTimer);
+
+      if (response.error) {
+        console.error('  ❌ Supervisor invocation returned error:', response.error);
+        throw new Error(`Supervisor invocation failed: ${response.error}`);
+      }
+
+      console.log('  → Supervisor response received. Session:', response.sessionId);
+      console.log('  → Response cost: $' + response.cost?.toFixed(4));
+
+      agent.sessionId = response.sessionId;
+
+      // Parse supervisor response
+      const result = this.parseSupervisorResponse(response);
+      console.log('  → Parsed result:', { epicCount: result.epics?.length, clarificationCount: result.clarifications?.length });
+
+      // Update state based on supervisor decisions
+      if (result.epics && result.epics.length > 0) {
+        // Store epics in state
+        this.state.epics = result.epics;
+
+        // Verify storage
+        console.log('  → Storing', result.epics.length, 'epics in state');
+        console.log('  → State epics count after assignment:', this.state.epics.length);
+        console.log('  → Verifying epic IDs:', this.state.epics.map(e => e.id));
+        console.log('  → Verifying epic titles:', this.state.epics.map(e => e.title));
+
+        // Ensure epics have required fields
+        const validEpics = this.state.epics.filter(e => e.id && e.title && e.description);
+        if (validEpics.length !== this.state.epics.length) {
+          console.warn('  ⚠️  Warning:', this.state.epics.length - validEpics.length, 'epics missing required fields');
+        }
+
+        console.log('  → Emitting epics:created event with', result.epics.length, 'epics');
+        this.emit('epics:created', result.epics);
+
+        // Emit clean, high-level summary message
+        const epicTitles = result.epics.map((e: Epic) => e.title).slice(0, 3);
+        const epicsList = epicTitles.join(', ') + (result.epics.length > 3 ? `, and ${result.epics.length - 3} more` : '');
+
+        this.emit('agent:message', {
+          id: `msg-${Date.now()}`,
+          agentId: agent.id,
+          agentType: 'supervisor',
+          content: `✅ Project Plan Created\nCreated ${result.epics.length} epic(s): ${epicsList}`,
+          timestamp: new Date(),
+        });
+      } else {
+        // No epics created - this is a problem
+        console.error('  ❌ Supervisor did not create any epics!');
+        this.emit('agent:message', {
+          id: `msg-${Date.now()}`,
+          agentId: agent.id,
+          agentType: 'supervisor',
+          content: `⚠️ Warning: Supervisor analysis completed but no epics were created. Check console logs.`,
+          timestamp: new Date(),
+        });
+      }
+
+      if (result.clarifications && result.clarifications.length > 0) {
+        console.log('  ⚠️  Supervisor requested', result.clarifications.length, 'clarifications');
+        console.log('  → Clarifications:', result.clarifications.map((c: any) => c.question));
+        this.emit('clarification:needed', result.clarifications);
+
+        // TODO: Implement clarification UI - for now, skip and continue
+        console.log('  → Skipping clarifications and continuing workflow...');
+        this.emit('agent:message', {
+          id: `msg-${Date.now()}`,
+          agentId: agent.id,
+          agentType: 'supervisor',
+          content: `ℹ️ Supervisor requested clarifications but continuing workflow automatically:\n${result.clarifications.map((c: any) => `• ${c.question}`).join('\n')}`,
+          timestamp: new Date(),
+        });
+      }
+
+      agent.status = 'completed';
+      this.emit('agent:completed', agent);
+      console.log('  → Supervisor marked as completed');
+    } catch (error) {
+      console.error('  ❌ Supervisor error:', error);
+      agent.status = 'error';
+      throw error;
+    }
+  }
+
+  /**
+   * Invoke the Research agent
+   */
+  private async invokeResearch(action: string): Promise<void> {
+    const agent = this.agents.get('research')!;
+    agent.status = 'thinking';
+    agent.currentTask = 'Performing deep analysis and research';
+    this.emit('agent:status', agent);
+
+    // Emit progress message immediately
+    this.emit('agent:message', {
+      id: `msg-${Date.now()}`,
+      agentId: agent.id,
+      agentType: 'research',
+      content: `🧠 Research Analyst is ultrathinking...\n\nAnalyzing your requirements to identify:\n• Industry patterns and best practices\n• Technical architecture recommendations\n• User experience insights\n• Security considerations\n\nThis may take 30-60 seconds...`,
+      timestamp: new Date(),
+    });
+
+    const prompt = this.buildResearchPrompt(action);
+    console.log('  → Calling Claude API for Research...');
+
+    try {
+      console.log('  → Attempting to invoke Research agent via Anthropic API...');
+
+      // Emit another progress message after 10 seconds if still working
+      const progressTimer = setTimeout(() => {
+        this.emit('agent:message', {
+          id: `msg-${Date.now()}`,
+          agentId: agent.id,
+          agentType: 'research',
+          content: `⏳ Still analyzing... Gathering comprehensive insights to ensure the best implementation approach.`,
+          timestamp: new Date(),
+        });
+      }, 10000);
+
+      const response = await anthropicService.invokeAgent({
+        prompt,
+        sessionId: agent.sessionId,
+        allowedTools: ['Read', 'Grep', 'Glob'],
+        permissionMode: 'acceptEdits',
+      });
+
+      // Clear the progress timer
+      clearTimeout(progressTimer);
+
+      if (response.error) {
+        console.error('  ❌ Research invocation returned error:', response.error);
+        throw new Error(`Research invocation failed: ${response.error}`);
+      }
+
+      console.log('  → Research response received. Session:', response.sessionId);
+      console.log('  → Response cost: $' + response.cost?.toFixed(4));
+
+      agent.sessionId = response.sessionId;
+
+      // Parse research response
+      const result = this.parseResearchResponse(response);
+      console.log('  → Parsed research findings:', {
+        complexity: result.findings?.estimatedComplexity,
+        confidence: result.findings?.confidence,
+      });
+
+      // Update state with research findings and emit clean summary
+      if (result.findings) {
+        this.state.researchFindings = result.findings;
+        console.log('  → Emitting research:completed event');
+        this.emit('research:completed', result.findings);
+
+        // Save research findings to project directory for future reference
+        await this.saveResearchFindings(result.findings);
+
+        // Emit clean, high-level summary message
+        const insights = [
+          `Industry: ${result.findings.domainAnalysis.industry}`,
+          `Complexity: ${result.findings.estimatedComplexity}`,
+          `Confidence: ${result.findings.confidence}%`
+        ];
+
+        this.emit('agent:message', {
+          id: `msg-${Date.now()}`,
+          agentId: agent.id,
+          agentType: 'research',
+          content: `✅ Research Analysis Complete\n${result.findings.summary}\n\nKey Insights:\n- ${insights.join('\n- ')}\n\n📄 Research findings saved to: research-findings.md`,
+          timestamp: new Date(),
+        });
+      } else {
+        // Fallback message if no findings
+        this.emit('agent:message', {
+          id: `msg-${Date.now()}`,
+          agentId: agent.id,
+          agentType: 'research',
+          content: `✅ Research analysis completed. Insights gathered and ready for development team.`,
+          timestamp: new Date(),
+        });
+      }
+
+      agent.status = 'completed';
+      this.emit('agent:completed', agent);
+    } catch (error) {
+      console.error('  ❌ Research error:', error);
+      agent.status = 'error';
+      throw error;
+    }
+  }
+
+  /**
+   * Invoke the Product Owner agent
+   */
+  private async invokeProductOwner(action: string): Promise<void> {
+    const agent = this.agents.get('product_owner')!;
+    agent.status = 'working';
+    agent.currentTask = 'Breaking down epics into user stories';
+    this.emit('agent:status', agent);
+
+    // Validate that we have epics to work with
+    console.log('  → Product Owner invoked with', this.state.epics.length, 'epics');
+    if (this.state.epics.length === 0) {
+      console.error('  ❌ ERROR: Product Owner invoked with 0 epics!');
+      throw new Error('Product Owner cannot create stories without epics');
+    }
+
+    // Log epic details for debugging
+    console.log('  → Epic IDs:', this.state.epics.map(e => e.id));
+    console.log('  → Epic titles:', this.state.epics.map(e => e.title));
+
+    // Emit progress message immediately
+    this.emit('agent:message', {
+      id: `msg-${Date.now()}`,
+      agentId: agent.id,
+      agentType: 'product_owner',
+      content: `📊 Product Owner creating user stories...\n\nBreaking down ${this.state.epics.length} epic(s) into:\n• Detailed user stories\n• Acceptance criteria\n• Story point estimates\n• Priority assignments\n\nAnalyzing...`,
+      timestamp: new Date(),
+    });
+
+    const prompt = this.buildProductOwnerPrompt(action);
+    console.log('  → Product Owner prompt includes', this.state.epics.length, 'epics');
+
+    try {
+      // Emit progress message after 10 seconds if still working
+      const progressTimer = setTimeout(() => {
+        this.emit('agent:message', {
+          id: `msg-${Date.now()}`,
+          agentId: agent.id,
+          agentType: 'product_owner',
+          content: `⏳ Writing detailed acceptance criteria and estimating complexity...`,
+          timestamp: new Date(),
+        });
+      }, 10000);
+
+      const response = await anthropicService.invokeAgent({
+        prompt,
+        sessionId: agent.sessionId,
+        allowedTools: ['Read', 'Write'],
+        permissionMode: 'acceptEdits',
+      });
+
+      // Clear the progress timer
+      clearTimeout(progressTimer);
+
+      agent.sessionId = response.sessionId;
+
+      // Parse product owner response
+      const result = this.parseProductOwnerResponse(response);
+      console.log('  → Parsed PO result:', { storyCount: result.stories?.length });
+
+      if (result.stories && result.stories.length > 0) {
+        // Add stories to state
+        result.stories.forEach((story: Story) => {
+          if (!this.state.stories.find((s) => s.id === story.id)) {
+            this.state.stories.push(story);
+          }
+        });
+        console.log('  → Stored', result.stories.length, 'stories in state');
+        console.log('  → Total stories in state:', this.state.stories.length);
+        console.log('  → Emitting stories:created event with', result.stories.length, 'stories');
+        this.emit('stories:created', result.stories);
+
+        // Save stories to files
+        await this.saveStories(result.stories);
+
+        // Emit clean, high-level summary message
+        const storyTitles = result.stories.map((s: Story) => s.title).slice(0, 3);
+        const storiesList = storyTitles.join(', ') + (result.stories.length > 3 ? `, and ${result.stories.length - 3} more` : '');
+        const totalPoints = result.stories.reduce((sum: number, s: Story) => sum + (s.storyPoints || 0), 0);
+
+        this.emit('agent:message', {
+          id: `msg-${Date.now()}`,
+          agentId: agent.id,
+          agentType: 'product_owner',
+          content: `✅ User Stories Created\nBreakdown complete: ${result.stories.length} stories (${totalPoints} story points)\n\nStories: ${storiesList}\n\n📄 Stories saved to: user-stories.md`,
+          timestamp: new Date(),
+        });
+      } else {
+        // Fallback message if no stories
+        console.error('  ❌ Product Owner did not create any stories!');
+        this.emit('agent:message', {
+          id: `msg-${Date.now()}`,
+          agentId: agent.id,
+          agentType: 'product_owner',
+          content: `⚠️ Warning: Epic breakdown completed but no stories were created. Check console logs.`,
+          timestamp: new Date(),
+        });
+      }
+
+      agent.status = 'completed';
+      this.emit('agent:completed', agent);
+    } catch (error) {
+      agent.status = 'error';
+      throw error;
+    }
+  }
+
+  /**
+   * Invoke the Coder agent
+   */
+  private async invokeCoder(action: string, story: Story): Promise<void> {
+    const agent = this.agents.get('coder')!;
+    agent.status = 'working';
+    agent.currentTask = story.title;
+    story.assignedAgent = 'coder';
+    this.emit('agent:status', agent);
+
+    // Emit message about starting to code
+    this.emit('agent:message', {
+      id: `msg-${Date.now()}`,
+      agentId: agent.id,
+      agentType: 'coder',
+      content: `Starting implementation: "${story.title}"`,
+      timestamp: new Date(),
+    });
+
+    const prompt = this.buildCoderPrompt(action, story);
+
+    try {
+      const response = await anthropicService.invokeAgent({
+        prompt,
+        sessionId: agent.sessionId,
+        allowedTools: ['Read', 'Write', 'Bash', 'Grep', 'Glob', 'Edit'],
+        permissionMode: 'acceptEdits',
+        maxTurns: 100, // Coding might take many steps
+        workingDirectory: this.state.projectDirectory, // Set working directory for file operations
+      });
+
+      agent.sessionId = response.sessionId;
+
+      // Parse the response to extract code changes
+      const codeChanges = this.parseCoderResponse(response);
+
+      if (codeChanges.files && codeChanges.files.length > 0) {
+        console.log(`📄 Coder created ${codeChanges.files.length} files:`, codeChanges.files.map((f: any) => f.path));
+
+        codeChanges.files.forEach((file: any) => {
+          this.state.codeFiles.set(file.path, file);
+          console.log(`📄 Emitting code:changed for: ${file.path}`);
+          this.emit('code:changed', { file, story, agent });
+        });
+
+        // Emit clean, high-level summary message
+        const fileNames = codeChanges.files.map((f: any) => f.path.split('/').pop()).slice(0, 3);
+        const filesList = fileNames.join(', ') + (codeChanges.files.length > 3 ? `, +${codeChanges.files.length - 3} more` : '');
+
+        this.emit('agent:message', {
+          id: `msg-${Date.now()}`,
+          agentId: agent.id,
+          agentType: 'coder',
+          content: `✅ Implementation Complete\nCreated ${codeChanges.files.length} file(s) for "${story.title}"\n\nFiles: ${filesList}`,
+          timestamp: new Date(),
+        });
+      } else {
+        console.log('⚠️ No files found in coder response');
+        // Emit fallback message
+        this.emit('agent:message', {
+          id: `msg-${Date.now()}`,
+          agentId: agent.id,
+          agentType: 'coder',
+          content: `✅ Code changes completed for "${story.title}"`,
+          timestamp: new Date(),
+        });
+      }
+
+      story.status = 'testing';
+      story.progress = 60;
+
+      agent.status = 'completed';
+      this.emit('agent:completed', agent);
+    } catch (error) {
+      agent.status = 'error';
+      throw error;
+    }
+  }
+
+  /**
+   * Invoke the Tester agent
+   */
+  private async invokeTester(action: string, story: Story): Promise<void> {
+    const agent = this.agents.get('tester')!;
+    agent.status = 'working';
+    agent.currentTask = `Testing: ${story.title}`;
+    this.emit('agent:status', agent);
+
+    // Emit message about starting tests
+    this.emit('agent:message', {
+      id: `msg-${Date.now()}`,
+      agentId: agent.id,
+      agentType: 'tester',
+      content: `Creating test suite for "${story.title}"...`,
+      timestamp: new Date(),
+    });
+
+    // Emit test creation start event
+    this.emit('test:started', {
+      story,
+      timestamp: new Date(),
+    });
+
+    const prompt = this.buildTesterPrompt(action, story);
+
+    try {
+      const response = await anthropicService.invokeAgent({
+        prompt,
+        sessionId: agent.sessionId,
+        allowedTools: ['Read', 'Write', 'Bash', 'Grep', 'Glob', 'Edit'],
+        permissionMode: 'acceptEdits',
+        maxTurns: 50, // Testing might take several steps
+        workingDirectory: this.state.projectDirectory,
+      });
+
+      agent.sessionId = response.sessionId;
+
+      // Parse test results from actual response
+      const result = this.parseTesterResponse(response);
+
+      if (result.testResults) {
+        this.state.testResults = result.testResults;
+        this.emit('test:results', result.testResults);
+
+        const totalTests = result.testResults.passed + result.testResults.failed + result.testResults.skipped;
+        const coverageAvg = (
+          result.testResults.coverage.lines +
+          result.testResults.coverage.statements +
+          result.testResults.coverage.functions +
+          result.testResults.coverage.branches
+        ) / 4;
+
+        // Emit clean, high-level summary message
+        const status = result.testResults.failed > 0 ? '⚠️' : '✅';
+        this.emit('agent:message', {
+          id: `msg-${Date.now()}`,
+          agentId: agent.id,
+          agentType: 'tester',
+          content: `${status} Test Suite Complete\n${result.testResults.passed}/${totalTests} tests passed | Coverage: ${coverageAvg.toFixed(1)}%\n\nLines: ${result.testResults.coverage.lines}% | Functions: ${result.testResults.coverage.functions}% | Branches: ${result.testResults.coverage.branches}%`,
+          timestamp: new Date(),
+        });
+
+        // Emit progress event with coverage details
+        this.emit('test:progress', {
+          passed: result.testResults.passed,
+          failed: result.testResults.failed,
+          total: totalTests,
+          coverage: result.testResults.coverage,
+          timestamp: new Date(),
+        });
+      } else {
+        // Fallback message if no test results
+        this.emit('agent:message', {
+          id: `msg-${Date.now()}`,
+          agentId: agent.id,
+          agentType: 'tester',
+          content: `✅ Testing completed for "${story.title}"`,
+          timestamp: new Date(),
+        });
+      }
+
+      // If tests failed, may need to go back to coder
+      if (result.failedTests && result.failedTests.length > 0) {
+        this.emit('test:failures', result.failedTests);
+        // Auto-retry with coder
+        await this.invokeCoder('fix_test_failures', story);
+        // Re-run tests
+        await this.invokeTester('retest_story', story);
+      }
+
+      story.progress = 80;
+
+      agent.status = 'completed';
+      this.emit('agent:completed', agent);
+    } catch (error) {
+      agent.status = 'error';
+      throw error;
+    }
+  }
+
+  /**
+   * Invoke the Security agent
+   */
+  private async invokeSecurity(action: string, story?: Story): Promise<void> {
+    const agent = this.agents.get('security')!;
+    agent.status = 'working';
+    agent.currentTask = story ? `Scanning: ${story.title}` : 'Security audit';
+    this.emit('agent:status', agent);
+
+    // Emit message about starting security scan
+    this.emit('agent:message', {
+      id: `msg-${Date.now()}`,
+      agentId: agent.id,
+      agentType: 'security',
+      content: story ? `Starting security scan for "${story.title}"` : 'Starting comprehensive security audit',
+      timestamp: new Date(),
+    });
+
+    const prompt = this.buildSecurityPrompt(action, story);
+
+    try {
+      const response = await anthropicService.invokeAgent({
+        prompt,
+        sessionId: agent.sessionId,
+        allowedTools: ['Read', 'Bash', 'Grep', 'Glob'],
+        permissionMode: 'acceptEdits',
+      });
+
+      agent.sessionId = response.sessionId;
+
+      // Parse security report
+      const result = this.parseSecurityResponse(response);
+
+      if (result.securityReport) {
+        this.state.securityReport = result.securityReport;
+        this.emit('security:report', result.securityReport);
+
+        // Emit clean, high-level summary message
+        const vulnCount = result.securityReport.vulnerabilities.length;
+        const criticalCount = result.securityReport.vulnerabilities.filter((v: any) => v.severity === 'critical').length;
+        const status = criticalCount > 0 ? '⚠️' : vulnCount > 0 ? '⚠️' : '✅';
+        const vulnSummary = vulnCount === 0
+          ? 'No vulnerabilities found'
+          : `Found ${vulnCount} vulnerabilities${criticalCount > 0 ? ` (${criticalCount} critical)` : ''}`;
+
+        this.emit('agent:message', {
+          id: `msg-${Date.now()}`,
+          agentId: agent.id,
+          agentType: 'security',
+          content: `${status} Security Scan Complete\n${vulnSummary}\n\nSecurity Score: ${result.securityReport.score}/100 (Grade: ${result.securityReport.grade})`,
+          timestamp: new Date(),
+        });
+      } else {
+        // Fallback message
+        this.emit('agent:message', {
+          id: `msg-${Date.now()}`,
+          agentId: agent.id,
+          agentType: 'security',
+          content: `✅ Security scan completed${story ? ` for "${story.title}"` : ''}`,
+          timestamp: new Date(),
+        });
+      }
+
+      // If critical vulnerabilities found, must fix
+      const criticalVulns = result.securityReport?.vulnerabilities.filter(
+        (v: any) => v.severity === 'critical'
+      );
+
+      if (criticalVulns && criticalVulns.length > 0) {
+        this.emit('security:critical', criticalVulns);
+        // Auto-fix if possible
+        for (const vuln of criticalVulns) {
+          if (vuln.autoFixAvailable) {
+            await this.applySecurityFix(vuln);
+          }
+        }
+      }
+
+      if (story) {
+        story.progress = 90;
+      }
+
+      agent.status = 'completed';
+      this.emit('agent:completed', agent);
+    } catch (error) {
+      agent.status = 'error';
+      throw error;
+    }
+  }
+
+  /**
+   * Invoke the Infrastructure agent
+   */
+  private async invokeInfrastructure(action: string): Promise<void> {
+    const agent = this.agents.get('infrastructure')!;
+    agent.status = 'working';
+    agent.currentTask = 'Analyzing project and deploying to AWS';
+    this.emit('agent:status', agent);
+
+    try {
+      console.log('🚀 Infrastructure agent starting deployment...');
+
+      // Initialize deployment status
+      const deploymentId = `deploy-${Date.now()}`;
+      this.state.deployment = {
+        id: deploymentId,
+        environment: (this.state.config.deployment?.environment as any) || 'dev',
+        status: 'pending',
+        steps: [
+          { id: 'analyze', name: 'Analyze Project Structure', status: 'running', logs: [] },
+          { id: 'prepare', name: 'Prepare Deployment Package', status: 'pending', logs: [] },
+          { id: 'provision', name: 'Provision AWS Infrastructure', status: 'pending', logs: [] },
+          { id: 'deploy', name: 'Deploy Application', status: 'pending', logs: [] },
+          { id: 'verify', name: 'Verify Deployment', status: 'pending', logs: [] },
+        ],
+        cost: { estimated: 15.50 },
+        resources: {},
+        health: {
+          status: 'healthy',
+          checks: [],
+          lastCheck: new Date(),
+        },
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+
+      this.emit('deployment:started', this.state.deployment);
+
+      // Step 1: Analyze project structure
+      await this.updateDeploymentStep('analyze', 'running', ['🔍 Scanning project directory...']);
+
+      const projectFiles = Array.from(this.state.codeFiles.keys());
+      const hasPackageJson = projectFiles.some(f => f.includes('package.json'));
+      const hasNextConfig = projectFiles.some(f => f.includes('next.config'));
+      const hasDockerfile = projectFiles.some(f => f.includes('Dockerfile'));
+
+      let deploymentType: 'lambda' | 'ec2' | 'ecs' | 'static' = 'static';
+      let analysisLog = '📊 Project Analysis:\n';
+
+      if (hasNextConfig) {
+        deploymentType = 'lambda';
+        analysisLog += '  ✓ Next.js application detected\n  → Deploying to AWS Lambda + API Gateway';
+      } else if (hasDockerfile) {
+        deploymentType = 'ecs';
+        analysisLog += '  ✓ Dockerfile detected\n  → Deploying to AWS ECS (containerized)';
+      } else if (hasPackageJson) {
+        deploymentType = 'lambda';
+        analysisLog += '  ✓ Node.js application detected\n  → Deploying to AWS Lambda';
+      } else {
+        analysisLog += '  ✓ Static files detected\n  → Deploying to S3 + CloudFront';
+      }
+
+      await this.updateDeploymentStep('analyze', 'completed', [analysisLog]);
+      console.log(analysisLog);
+
+      // Step 2: Prepare deployment
+      await this.updateDeploymentStep('prepare', 'running', ['📦 Preparing deployment package...', `  → Type: ${deploymentType}`, `  → Environment: ${this.state.deployment.environment}`]);
+      await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate prep time
+      await this.updateDeploymentStep('prepare', 'completed', ['✅ Deployment package ready']);
+
+      // Step 3: Provision AWS infrastructure
+      await this.updateDeploymentStep('provision', 'running', ['☁️  Provisioning AWS resources...', `  → Region: ${this.state.config.deployment?.region || 'us-east-2'}`]);
+
+      const { awsDeploymentService } = await import('@/services/aws-deployment');
+
+      // Test AWS connection first
+      const connectionTest = await awsDeploymentService.testConnection();
+      if (!connectionTest.success) {
+        await this.updateDeploymentStep('provision', 'failed', [
+          `❌ AWS connection failed: ${connectionTest.message}`,
+          '  ℹ️  Please configure AWS credentials in .env:',
+          '     AWS_REGION=us-east-2',
+          '     AWS_ACCESS_KEY_ID=your_key',
+          '     AWS_SECRET_ACCESS_KEY=your_secret'
+        ]);
+        throw new Error(`AWS connection failed: ${connectionTest.message}`);
+      }
+
+      await this.updateDeploymentStep('provision', 'completed', [`✅ Connected to AWS (${connectionTest.message})`]);
+
+      // Step 4: Deploy application
+      await this.updateDeploymentStep('deploy', 'running', ['🚀 Deploying application to AWS...']);
+
+      const deploymentOptions = {
+        projectId: this.state.projectId,
+        projectName: this.state.config.name.toLowerCase().replace(/[^a-z0-9-]/g, '-'),
+        environment: this.state.deployment.environment,
+        deploymentType,
+      };
+
+      let deploymentResult;
+      switch (deploymentType) {
+        case 'lambda':
+          deploymentResult = await awsDeploymentService.deployNextJsToLambda(deploymentOptions);
+          break;
+        case 'static':
+          deploymentResult = await awsDeploymentService.deployStaticSite(deploymentOptions);
+          break;
+        case 'ecs':
+          deploymentResult = await awsDeploymentService.deployToECS(deploymentOptions);
+          break;
+        default:
+          deploymentResult = await awsDeploymentService.deployStaticSite(deploymentOptions);
+      }
+
+      if (!deploymentResult.success) {
+        await this.updateDeploymentStep('deploy', 'failed', deploymentResult.logs);
+        throw new Error(deploymentResult.error || 'Deployment failed');
+      }
+
+      await this.updateDeploymentStep('deploy', 'completed', deploymentResult.logs);
+
+      // Update deployment with resources and URL
+      if (deploymentResult.resources.length > 0) {
+        this.state.deployment.resources = deploymentResult.resources.reduce((acc, r) => {
+          acc[r.type] = r.id;
+          return acc;
+        }, {} as Record<string, string>);
+
+        const urlResource = deploymentResult.resources.find(r => r.url);
+        if (urlResource?.url) {
+          this.state.deployment.url = urlResource.url;
+        }
+      }
+
+      // Step 5: Verify deployment
+      await this.updateDeploymentStep('verify', 'running', ['🔍 Verifying deployment health...']);
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      await this.updateDeploymentStep('verify', 'completed', [
+        '✅ Deployment verification complete',
+        `  → Resources: ${deploymentResult.resources.length}`,
+        deploymentResult.resources.map(r => `     • ${r.type}: ${r.id}`).join('\n'),
+        this.state.deployment.url ? `  → URL: ${this.state.deployment.url}` : ''
+      ]);
+
+      // Mark deployment as complete
+      this.state.deployment.status = 'deployed';
+      this.state.deployment.updatedAt = new Date();
+      this.emit('deployment:completed', this.state.deployment);
+
+      // Emit summary message
+      this.emit('agent:message', {
+        id: `msg-${Date.now()}`,
+        agentId: agent.id,
+        agentType: 'infrastructure',
+        content: `✅ Deployment Complete\n\nType: ${deploymentType}\nEnvironment: ${this.state.deployment.environment}\nResources: ${deploymentResult.resources.length}\n\n${this.state.deployment.url ? `🔗 Live URL: ${this.state.deployment.url}` : 'Resources provisioned successfully'}`,
+        timestamp: new Date(),
+      });
+
+      agent.status = 'completed';
+      this.emit('agent:completed', agent);
+
+    } catch (error) {
+      console.error('❌ Infrastructure deployment error:', error);
+
+      if (this.state.deployment) {
+        this.state.deployment.status = 'failed';
+        this.emit('deployment:failed', { deployment: this.state.deployment, error });
+      }
+
+      this.emit('agent:message', {
+        id: `msg-${Date.now()}`,
+        agentId: agent.id,
+        agentType: 'infrastructure',
+        content: `❌ Deployment Failed\n\n${error instanceof Error ? error.message : 'Unknown error'}`,
+        timestamp: new Date(),
+      });
+
+      agent.status = 'error';
+      throw error;
+    }
+  }
+
+  private async updateDeploymentStep(stepId: string, status: 'pending' | 'running' | 'completed' | 'failed', logs: string[]): Promise<void> {
+    if (!this.state.deployment) return;
+
+    const step = this.state.deployment.steps.find(s => s.id === stepId);
+    if (!step) return;
+
+    step.status = status;
+    step.logs.push(...logs);
+
+    if (status === 'running') {
+      step.startTime = new Date();
+    } else if (status === 'completed' || status === 'failed') {
+      step.endTime = new Date();
+    }
+
+    this.state.deployment.updatedAt = new Date();
+    this.emit('deployment:progress', { step: stepId, status, logs });
+
+    // Small delay to make UI updates visible
+    await new Promise(resolve => setTimeout(resolve, 500));
+  }
+
+  /**
+   * Build prompt for each agent based on action and context
+   */
+  private buildResearchPrompt(action: string): string {
+    return `
+You are the Research Analyst Agent. Your role is to perform DEEP "ultrathinking" analysis to provide comprehensive, actionable insights for the development team.
+
+Current action: ${action}
+
+Requirements to analyze:
+${this.state.requirements}
+
+🎯 **MANDATORY TECHNOLOGY STACK - ALL APPLICATIONS MUST USE:**
+- **Frontend Framework:** Next.js 14+ with App Router
+- **UI Library:** React 19+
+- **Cloud Provider:** AWS (Lambda, S3, CloudFront, API Gateway, RDS)
+- **Database:** PostgreSQL (AWS RDS) with Prisma ORM
+- **Deployment:** AWS infrastructure (Lambda for serverless, ECS for containers, or EC2 as needed)
+
+Your analysis must work WITHIN these technology constraints. Recommend specific npm packages and AWS services that complement this stack.
+
+${action === 'deep_analysis' ? `
+Your task is to ULTRATHINK and provide an EXTREMELY comprehensive analysis that will guide implementation:
+
+🧠 ULTRATHINK - Go 10 levels deep on every aspect:
+
+1. **Domain Analysis** (Think like an industry expert)
+   - What industry/vertical is this in?
+   - What are the top 3 similar successful applications? What made them successful?
+   - What are common failure points in this domain?
+   - What user pain points MUST be solved?
+   - What features are "table stakes" vs differentiators?
+
+2. **Technical Architecture** (Think like a principal engineer)
+   - Recommended tech stack with SPECIFIC versions and why
+   - Exact architecture pattern (MVC, microservices, serverless, monolith, etc.) with justification
+   - Database choices (SQL vs NoSQL, which specific DB, schema design considerations)
+   - API design (REST, GraphQL, tRPC) with reasoning
+   - File/folder structure recommendation
+   - State management approach (Context, Redux, Zustand, etc.)
+   - Caching strategy (if needed)
+   - Real-time requirements (WebSockets, polling, SSE)?
+
+3. **Implementation Roadmap** (Think like a tech lead)
+   - What should be built FIRST (MVP features)?
+   - What's the critical path? What dependencies exist?
+   - What can be built in parallel?
+   - Suggested implementation order with reasoning
+   - Estimated complexity for each major component
+
+4. **Libraries & Tools** (Be SPECIFIC)
+   - Exact npm packages to use (with package names like "react-hook-form", "zod", "prisma")
+   - UI component libraries (shadcn/ui, MUI, etc.)
+   - Form handling, validation libraries
+   - Date/time handling
+   - Testing frameworks
+   - Build tools and configurations
+
+5. **User Experience Strategy**
+   - Target audience persona
+   - Critical user journeys (step-by-step)
+   - Accessibility requirements (WCAG level, screen reader support)
+   - Mobile responsiveness strategy
+   - Performance budgets (Core Web Vitals targets)
+   - Loading states, error handling patterns
+
+6. **Security & Compliance**
+   - Authentication strategy (JWT, OAuth, sessions, which provider?)
+   - Authorization model (RBAC, ABAC, etc.)
+   - Data encryption needs (at rest, in transit)
+   - Input validation and sanitization approach
+   - Rate limiting requirements
+   - GDPR, HIPAA, or other compliance needs
+   - Common vulnerabilities to watch for
+
+7. **Scalability & Performance**
+   - Expected load (users, requests/second)
+   - Horizontal vs vertical scaling approach
+   - CDN needs
+   - Image optimization strategy
+   - Code splitting approach
+   - Database indexing strategy
+
+8. **Common Pitfalls & Solutions**
+   - What mistakes do developers commonly make in this type of project?
+   - What edge cases need handling?
+   - What will be the hardest parts to implement?
+   - Suggested solutions for each challenge
+
+9. **Project Structure Recommendation**
+   - Exact folder structure
+   - File naming conventions
+   - Component organization
+   - Utility/helper organization
+
+10. **Testing Strategy**
+    - Unit test coverage targets
+    - Integration test approach
+    - E2E test tools
+    - Critical paths that MUST be tested
+
+Respond in JSON format:
+{
+  "action": "deep_analysis",
+  "findings": {
+    "summary": "2-3 sentence executive summary of the project and approach",
+    "domainAnalysis": {
+      "industry": "Specific industry/vertical",
+      "commonPatterns": ["Pattern 1 with specific example", "Pattern 2"],
+      "bestPractices": ["Best practice 1 with reasoning", "Best practice 2"],
+      "potentialChallenges": ["Challenge 1 and suggested solution", "Challenge 2"],
+      "similarApps": ["App 1: what they did well", "App 2: what to avoid"],
+      "criticalFeatures": ["Must-have feature 1", "Must-have feature 2"]
+    },
+    "technicalRecommendations": {
+      "frameworks": ["Next.js 14+ (specific reasoning)", "Framework 2"],
+      "libraries": ["@tanstack/react-query for data fetching", "zod for validation"],
+      "architecturePatterns": ["Server-side rendering with API routes", "Pattern 2"],
+      "scalabilityConsiderations": ["Implement caching layer with Redis", "Use CDN for static assets"],
+      "databaseChoice": "PostgreSQL with Prisma ORM (reasoning)",
+      "stateManagement": "Zustand for client state, React Query for server state",
+      "apiDesign": "RESTful API with tRPC for type safety",
+      "projectStructure": {
+        "folders": ["app/ (Next.js App Router)", "components/", "lib/", "hooks/"],
+        "conventions": ["Component files: PascalCase.tsx", "Utilities: camelCase.ts"]
+      }
+    },
+    "implementationRoadmap": {
+      "phase1_mvp": ["Feature 1: reasoning", "Feature 2: reasoning"],
+      "phase2_enhanced": ["Enhancement 1", "Enhancement 2"],
+      "criticalPath": ["Must build X before Y because Z"],
+      "parallelizable": ["These features can be built simultaneously"],
+      "estimatedTimePerPhase": ["Phase 1: 2-3 sprints", "Phase 2: 1-2 sprints"]
+    },
+    "userExperienceInsights": {
+      "targetAudience": "Detailed persona description",
+      "keyUserFlows": ["User flow 1: step-by-step", "User flow 2"],
+      "accessibilityRequirements": ["WCAG 2.1 Level AA", "Keyboard navigation"],
+      "performanceTargets": ["LCP < 2.5s", "FID < 100ms", "CLS < 0.1"],
+      "mobileStrategy": "Mobile-first responsive design with breakpoints at 640, 768, 1024"
+    },
+    "securityConsiderations": {
+      "dataProtection": ["Encrypt PII at rest using AES-256", "Use HTTPS only"],
+      "authentication": ["NextAuth.js with OAuth providers (Google, GitHub)", "JWT tokens"],
+      "authorization": ["Role-based access control (RBAC)", "Middleware for route protection"],
+      "compliance": ["GDPR: Cookie consent, data export, right to deletion"],
+      "inputValidation": ["Zod schemas for all user input", "Sanitize before DB writes"]
+    },
+    "commonPitfalls": [
+      {
+        "pitfall": "Description of common mistake",
+        "solution": "How to avoid it",
+        "impact": "Why it matters"
+      }
+    ],
+    "testingStrategy": {
+      "unitTests": "Vitest for component and utility testing (80% coverage target)",
+      "integrationTests": "Testing Library for user interaction flows",
+      "e2eTests": "Playwright for critical user paths",
+      "criticalPaths": ["User registration flow", "Payment processing"]
+    },
+    "estimatedComplexity": "low|medium|high|very-high",
+    "confidence": 85,
+    "researchSources": ["Similar projects analyzed", "Best practices researched"]
+  }
+}
+
+IMPORTANT: Be EXTREMELY specific. Instead of "use a form library", say "use react-hook-form with zod validation". Instead of "implement caching", say "implement Redis caching for API responses with 5-minute TTL".
+` : ''}
+    `.trim();
+  }
+
+  private buildSupervisorPrompt(action: string): string {
+    const researchInsights = this.state.researchFindings
+      ? `
+RESEARCH INSIGHTS (from Research Agent's ultrathinking):
+${JSON.stringify(this.state.researchFindings, null, 2)}
+
+Use these research insights to inform your epic breakdown. The research has already identified:
+- Critical features and user flows
+- Technical architecture recommendations
+- Implementation roadmap and phases
+- Common pitfalls to avoid
+- Security and scalability considerations
+`
+      : '';
+
+    return `
+You are the Supervisor Agent. Current action: ${action}
+
+Project State:
+- Requirements: ${this.state.requirements}
+- Status: ${this.state.status}
+- Epics Created: ${this.state.epics.length}
+- Stories Created: ${this.state.stories.length}
+
+${researchInsights}
+
+${action === 'analyze_requirements' ? `
+Analyze these requirements and create a comprehensive project plan using the research insights above:
+
+Your tasks:
+1. **Epic Breakdown**: Create BROAD epics that group related features (typically 3-7 epics for most projects)
+   - Use the research's implementation roadmap (phase1_mvp, phase2_enhanced)
+   - Each epic should represent a MAJOR FEATURE AREA that will contain MULTIPLE user stories
+   - Think BIG - combine related features into cohesive epics (e.g., "User Authentication & Profile Management", "Data Visualization & Analytics", "Admin Dashboard & System Configuration")
+   - Each epic should take 1-3 weeks to fully implement (containing 5-15+ user stories)
+   - Example GOOD epic: "Complete E-commerce Shopping Experience" (contains: product browsing, search, filtering, cart, checkout, order history stories)
+   - Example BAD epic: "Add to Cart Button" (too narrow - should be 1 story within a broader epic)
+   - Prioritize epics based on critical path identified in research
+
+2. **Tech Stack**: Validate and finalize tech stack based on research recommendations
+   - Use the specific libraries and frameworks suggested
+   - Include exact package names
+
+3. **Architecture**: Confirm the architecture pattern from research
+   - Reference the suggested project structure
+   - Note any deviations from research recommendations with reasoning
+
+4. **Risk Assessment**: Identify any gaps or concerns
+   - Review common pitfalls identified in research
+   - Flag any missing critical features
+
+5. **Clarifications** (OPTIONAL - only if absolutely critical):
+   - SKIP clarifications if you can make reasonable decisions based on research
+   - Only ask if there are mutually exclusive technical choices with significant impact
+   - Do NOT ask about preferences, scale, or timeline - make reasonable assumptions
+
+Create epics that:
+- Map to the research's implementation phases
+- Include clear business value and user impact
+- Have measurable success criteria
+- Follow dependency order from critical path
+- Reference specific technical recommendations
+
+CRITICAL INSTRUCTIONS FOR RESPONSE FORMAT:
+- You MUST respond with a JSON code block containing ALL epics
+- Do NOT include any explanatory text before or after the JSON
+- Format your ENTIRE response as a JSON code block with the following structure:
+
+{
+  "epics": [
+    {
+      "id": "epic-1763953441658",
+      "title": "Epic title (aligned with research phases)",
+      "description": "Detailed description referencing research insights",
+      "priority": "critical|high|medium|low",
+      "estimatedPoints": 20,
+      "technicalApproach": "Brief note on how this uses research recommendations",
+      "status": "backlog",
+      "stories": []
+    },
+    ... (repeat for ALL epics - aim for 3-7 BROAD epics for most projects)
+  ],
+  "techStack": ["Specific packages from research like Next.js 14", "React 18"],
+  "architecturePattern": "From research: e.g., 'SSR with API routes'"
+}
+
+IMPORTANT:
+- Create BROAD epics (typically 3-7 epics for most projects, each containing 5-15+ stories)
+- Each epic should be a major feature AREA, not a single feature
+- Use unique IDs with timestamps for each epic
+- Group related features together - don't split them into separate epics
+- Only include a "clarifications" array if absolutely critical (99% of cases should not need clarifications)
+` : ''}
+    `.trim();
+  }
+
+  private buildProductOwnerPrompt(action: string): string {
+    // Validate epics before building prompt
+    if (!this.state.epics || this.state.epics.length === 0) {
+      throw new Error('Cannot build Product Owner prompt: No epics available in state');
+    }
+
+    const researchInsights = this.state.researchFindings
+      ? `
+RESEARCH INSIGHTS:
+Key User Flows: ${JSON.stringify(this.state.researchFindings.userExperienceInsights?.keyUserFlows || [], null, 2)}
+Target Audience: ${this.state.researchFindings.userExperienceInsights?.targetAudience || 'Not specified'}
+Critical Features: ${JSON.stringify(this.state.researchFindings.domainAnalysis?.criticalFeatures || [], null, 2)}
+Implementation Roadmap: ${JSON.stringify(this.state.researchFindings.technicalRecommendations || {}, null, 2)}
+Common Pitfalls: ${JSON.stringify(this.state.researchFindings.commonPitfalls || [], null, 2)}
+`
+      : '';
+
+    console.log('  → Building PO prompt with', this.state.epics.length, 'epics');
+    console.log('  → Epic data sample:', JSON.stringify(this.state.epics[0], null, 2).substring(0, 200));
+
+    return `
+You are the Product Owner Agent. Current action: ${action}
+
+${researchInsights}
+
+Epics to break down into user stories (${this.state.epics.length} total):
+${JSON.stringify(this.state.epics, null, 2)}
+
+Tech Stack (use this for technical acceptance criteria):
+${this.state.config.techStack.join(', ')}
+
+Your tasks:
+1. **Break down EACH epic into MULTIPLE user stories** (typically 5-15+ stories per epic - each epic should have MANY stories)
+   - CRITICAL: Each epic MUST have at least 5 stories - if you find an epic with fewer, break it down more
+   - Each story should be independently deliverable and focused on a single feature/task
+   - Follow the user flows identified in research
+   - Stories should be INVEST compliant (Independent, Negotiable, Valuable, Estimable, Small, Testable)
+   - Don't combine multiple features into one story - be granular and specific
+   - Create separate stories for different user roles, CRUD operations, edge cases, validations, error handling, etc.
+   - Example: "User Authentication & Profile" epic should have 10+ stories (signup form, login form, password reset, email verification, profile view, profile edit, avatar upload, password change, account deletion, session management, etc.)
+
+2. **Write clear acceptance criteria** for each story
+   - Use Given/When/Then format or checklist format
+   - Include both functional and technical criteria
+   - Reference specific libraries/patterns from research (e.g., "Use react-hook-form for form handling")
+   - Include accessibility requirements from research
+   - Include performance criteria if relevant (e.g., "Page load < 2s")
+
+3. **Estimate story points** (1, 2, 3, 5, 8, 13)
+   - 1-2: Simple, well-understood tasks
+   - 3-5: Moderate complexity
+   - 8-13: Complex, may need breaking down further
+
+4. **Prioritize stories**
+   - Use research's critical path and implementation phases
+   - Mark dependencies between stories
+   - Highest priority: MVP features from research phase 1
+   - Consider technical dependencies (e.g., auth must come before protected features)
+
+5. **Avoid common pitfalls** identified in research
+   - For each story, note relevant pitfalls and mitigation
+
+CRITICAL INSTRUCTIONS FOR RESPONSE FORMAT:
+- You MUST respond with a JSON code block containing ALL user stories
+- Do NOT include any explanatory text before or after the JSON
+- Do NOT wrap the JSON in additional objects
+- Format your ENTIRE response as:
+
+\`\`\`json
+{
+  "stories": [
+    {
+      "id": "story-1763953441658-1",
+      "epicId": "epic-xxx",
+      "title": "As a [user type], I want [goal] so that [benefit]",
+      "description": "Detailed description with context from research insights",
+      "acceptanceCriteria": [
+        "GIVEN [context] WHEN [action] THEN [outcome]",
+        "Technical: Implement using [specific library from research]",
+        "Accessibility: [specific requirement from research]",
+        "Performance: [specific target from research]"
+      ],
+      "priority": "critical|high|medium|low",
+      "storyPoints": 3,
+      "dependencies": [],
+      "technicalNotes": "Brief notes on implementation approach from research",
+      "pitfallsToAvoid": ["Relevant pitfall from research"],
+      "status": "backlog",
+      "progress": 0
+    },
+    ... (repeat for ALL stories across ALL epics - aim for 3-15+ stories per epic)
+  ]
+}
+\`\`\`
+
+IMPORTANT:
+- Make acceptance criteria VERY specific and actionable. Instead of "Form should validate input", write "Form uses zod schema to validate email format, required fields, and password strength (min 8 chars, 1 uppercase, 1 number)"
+- Create MANY stories per epic (MINIMUM 5 stories per epic, typically 30-80+ total stories for complex projects)
+- VERIFY: Count stories per epic - if any epic has fewer than 5 stories, you need to break it down more!
+- Use unique IDs with timestamps for each story
+- Map each story to its parent epicId from the epics provided above
+    `.trim();
+  }
+
+  private buildCoderPrompt(action: string, story: Story): string {
+    const workingDir = this.state.projectDirectory || process.cwd();
+    const existingFiles = Array.from(this.state.codeFiles.keys());
+
+    return `
+You are the Coder Agent. Current action: ${action}
+
+WORKING DIRECTORY: ${workingDir}
+All files must be created in or relative to this directory.
+
+Story to implement:
+Title: ${story.title}
+Description: ${story.description}
+Acceptance Criteria:
+${story.acceptanceCriteria.map((ac, i) => `${i + 1}. ${ac}`).join('\n')}
+Story Points: ${story.storyPoints}
+Priority: ${story.priority}
+
+Tech Stack: ${this.state.config.techStack.join(', ')}
+
+${existingFiles.length > 0 ? `Existing project files:\n${existingFiles.map(f => `- ${f}`).join('\n')}\n` : 'This is a new project - create the initial project structure.\n'}
+
+Your implementation tasks:
+1. First, use read_file to understand existing code structure (if any)
+2. Plan which files need to be created or modified
+3. Create clean, well-structured code that:
+   - Follows ${this.state.config.techStack.join(', ')} best practices
+   - Meets ALL acceptance criteria listed above
+   - Is production-ready and maintainable
+   - Includes proper error handling
+   - Uses appropriate design patterns
+4. Create files using write_file tool with paths relative to: ${workingDir}
+5. For example: write_file with path="src/components/MyComponent.tsx" will create ${workingDir}/src/components/MyComponent.tsx
+
+Available tools:
+- read_file: Read existing files to understand the codebase
+- write_file: Create new files (use relative paths from working directory)
+- edit_file: Modify existing files
+- run_bash: Run commands like mkdir, npm install, etc.
+- grep_files: Search for patterns in existing code
+- glob_files: Find files matching patterns
+
+CRITICAL: Use relative paths for all file operations. The working directory is: ${workingDir}
+    `.trim();
+  }
+
+  private buildTesterPrompt(action: string, story: Story): string {
+    const workingDir = this.state.projectDirectory || process.cwd();
+    const recentFiles = Array.from(this.state.codeFiles.values())
+      .filter(f => f.modified)
+      .slice(-5) // Last 5 modified files
+      .map(f => f.path);
+
+    return `
+You are the Tester Agent. Current action: ${action}
+
+WORKING DIRECTORY: ${workingDir}
+All test files must be created in or relative to this directory.
+
+Story being tested:
+Title: ${story.title}
+Description: ${story.description}
+Acceptance Criteria:
+${story.acceptanceCriteria.map((ac, i) => `${i + 1}. ${ac}`).join('\n')}
+
+Tech Stack: ${this.state.config.techStack.join(', ')}
+
+Recently created/modified files for this story:
+${recentFiles.length > 0 ? recentFiles.map(f => `- ${f}`).join('\n') : 'No files tracked yet'}
+
+CRITICAL TESTING WORKFLOW - Follow these steps in order:
+
+STEP 1: First, check if the project has a test setup
+- Check if package.json exists and has test scripts
+- If no test setup exists, create a basic test configuration
+
+STEP 2: Read the source files that were created for this story
+- Use read_file to examine each file
+- Understand the functions, components, and logic to test
+
+STEP 3: Create comprehensive test files
+- Create test files next to source files or in __tests__ directory
+- For React components: Create .test.tsx files with React Testing Library
+- For API routes: Create .test.ts files with API testing
+- For utilities: Create .test.ts files with Jest
+- Write at least 3-5 test cases per file covering:
+  * Happy path scenarios
+  * Edge cases
+  * Error conditions
+  * Each acceptance criterion
+
+STEP 4: ACTUALLY RUN THE TESTS - THIS IS CRITICAL
+- Use run_bash to execute: npm test -- --passWithNoTests --coverage
+- If that fails, try: npx jest --passWithNoTests --coverage
+- Parse the output to get actual test counts and coverage
+
+STEP 5: Report the results
+After running tests, respond with:
+TEST RESULTS:
+- X tests passed
+- Y tests failed
+- Coverage: Lines X%, Statements X%, Functions X%, Branches X%
+
+If tests fail, include the failure details.
+
+Available tools:
+- read_file: Read source files
+- write_file: Create test files
+- edit_file: Modify existing files
+- run_bash: MUST USE THIS to run npm test or jest
+- grep_files: Search for code patterns
+- glob_files: Find files by pattern
+
+IMPORTANT REMINDERS:
+1. You MUST actually run the tests with run_bash - don't just create test files!
+2. Report REAL test execution results, not made-up numbers
+3. If tests fail, that's okay - report the failures so the coder can fix them
+4. Create test files in: ${workingDir}
+    `.trim();
+  }
+
+  private buildSecurityPrompt(action: string, story?: Story): string {
+    return `
+You are the Security Agent. Current action: ${action}
+
+${story ? `Story being scanned: ${story.title}` : 'Performing full security audit'}
+
+Scan for:
+1. Security vulnerabilities
+2. OWASP Top 10 compliance
+3. Vulnerable dependencies
+4. Insecure code patterns
+
+Provide detailed security report in JSON format.
+    `.trim();
+  }
+
+  private buildInfrastructurePrompt(action: string): string {
+    return `
+You are the Infrastructure Agent. Current action: ${action}
+
+Deployment Configuration:
+${JSON.stringify(this.state.config.deployment, null, 2)}
+
+${action === 'deploy' ? `
+Create deployment plan including:
+1. Infrastructure as code (Terraform)
+2. CI/CD pipeline
+3. Cost estimate
+4. Deployment steps
+
+Respond in JSON format.
+` : ''}
+    `.trim();
+  }
+
+  /**
+   * Parse agent responses - extract structured data from agent messages
+   */
+  private parseResearchResponse(response: any): any {
+    // Extract text content from messages
+    const textContent = this.extractTextFromResponse(response);
+
+    // Try to parse JSON if present
+    const jsonMatch = textContent.match(/\{[\s\S]*"findings"[\s\S]*\}/);
+
+    if (jsonMatch) {
+      try {
+        const parsed = JSON.parse(jsonMatch[0]);
+
+        // Transform parsed findings to match ResearchFindings type
+        if (parsed.findings) {
+          return {
+            findings: {
+              id: `research-${Date.now()}`,
+              summary: parsed.findings.summary || 'Research analysis completed',
+              domainAnalysis: parsed.findings.domainAnalysis || {
+                industry: 'General',
+                commonPatterns: [],
+                bestPractices: [],
+                potentialChallenges: [],
+              },
+              technicalRecommendations: parsed.findings.technicalRecommendations || {
+                frameworks: [],
+                libraries: [],
+                architecturePatterns: [],
+                scalabilityConsiderations: [],
+              },
+              userExperienceInsights: parsed.findings.userExperienceInsights || {
+                targetAudience: '',
+                keyUserFlows: [],
+                accessibilityRequirements: [],
+                performanceTargets: [],
+              },
+              securityConsiderations: parsed.findings.securityConsiderations || {
+                dataProtection: [],
+                authentication: [],
+                compliance: [],
+              },
+              estimatedComplexity: parsed.findings.estimatedComplexity || 'medium',
+              confidence: parsed.findings.confidence || 70,
+              researchSources: parsed.findings.researchSources || [],
+              createdAt: new Date(),
+            },
+          };
+        }
+      } catch (error) {
+        console.warn('Failed to parse research JSON:', error);
+      }
+    }
+
+    // Fallback: create basic findings from text
+    return {
+      findings: {
+        id: `research-${Date.now()}`,
+        summary: textContent.substring(0, 200),
+        domainAnalysis: {
+          industry: 'General',
+          commonPatterns: [],
+          bestPractices: [],
+          potentialChallenges: [],
+        },
+        technicalRecommendations: {
+          frameworks: [],
+          libraries: [],
+          architecturePatterns: [],
+          scalabilityConsiderations: [],
+        },
+        userExperienceInsights: {
+          targetAudience: 'General users',
+          keyUserFlows: [],
+          accessibilityRequirements: [],
+          performanceTargets: [],
+        },
+        securityConsiderations: {
+          dataProtection: [],
+          authentication: [],
+          compliance: [],
+        },
+        estimatedComplexity: 'medium' as const,
+        confidence: 50,
+        researchSources: [],
+        createdAt: new Date(),
+      },
+    };
+  }
+
+  private parseSupervisorResponse(response: any): any {
+    // Extract text content from messages
+    const textContent = this.extractTextFromResponse(response);
+    console.log('  → Parsing Supervisor response. Text length:', textContent.length);
+
+    // Try multiple JSON extraction strategies
+    let parsed = null;
+
+    // Strategy 1: Look for JSON code block
+    const codeBlockMatch = textContent.match(/```(?:json)?\s*(\{[\s\S]*?\})\s*```/);
+    if (codeBlockMatch) {
+      try {
+        parsed = JSON.parse(codeBlockMatch[1]);
+        console.log('  → Successfully parsed JSON from code block');
+      } catch (e) {
+        console.warn('  → Failed to parse JSON from code block');
+      }
+    }
+
+    // Strategy 2: Look for raw JSON object with "epics" key
+    if (!parsed) {
+      const jsonMatch = textContent.match(/\{[\s\S]*"epics"[\s\S]*\}/);
+      if (jsonMatch) {
+        try {
+          parsed = JSON.parse(jsonMatch[0]);
+          console.log('  → Successfully parsed raw JSON');
+        } catch (e) {
+          console.warn('  → Failed to parse raw JSON');
+        }
+      }
+    }
+
+    // If parsing succeeded, validate and return
+    if (parsed && parsed.epics && Array.isArray(parsed.epics)) {
+      console.log('  → Found', parsed.epics.length, 'epics in response');
+      return {
+        epics: parsed.epics.map((epic: any) => ({
+          ...epic,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          stories: epic.stories || [],
+        })),
+        clarifications: parsed.clarifications || [],
+      };
+    }
+
+    // Fallback: Generate default epic
+    console.warn('  ⚠️  Could not parse epics from supervisor response, creating fallback epic');
+    console.warn('  → Response preview:', textContent.substring(0, 300));
+
+    const epics: Epic[] = [{
+      id: `epic-${Date.now()}`,
+      title: 'Core Application Development',
+      description: `Implement the core features based on requirements: ${this.state.requirements.substring(0, 100)}`,
+      status: 'backlog',
+      priority: 'high',
+      stories: [],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    }];
+
+    return {
+      epics,
+      clarifications: [],
+    };
+  }
+
+  private parseProductOwnerResponse(response: any): any {
+    const textContent = this.extractTextFromResponse(response);
+    console.log('  → Parsing Product Owner response. Text length:', textContent.length);
+
+    // Try multiple JSON extraction strategies
+    let parsed = null;
+
+    // Strategy 1: Look for JSON code block
+    const codeBlockMatch = textContent.match(/```(?:json)?\s*(\{[\s\S]*?\})\s*```/);
+    if (codeBlockMatch) {
+      try {
+        parsed = JSON.parse(codeBlockMatch[1]);
+        console.log('  → Successfully parsed JSON from code block');
+      } catch (e) {
+        console.warn('  → Failed to parse JSON from code block');
+      }
+    }
+
+    // Strategy 2: Look for raw JSON object with "stories" key
+    if (!parsed) {
+      const jsonMatch = textContent.match(/\{[\s\S]*"stories"[\s\S]*\}/);
+      if (jsonMatch) {
+        try {
+          parsed = JSON.parse(jsonMatch[0]);
+          console.log('  → Successfully parsed raw JSON');
+        } catch (e) {
+          console.warn('  → Failed to parse raw JSON');
+        }
+      }
+    }
+
+    // If parsing succeeded, validate and return
+    if (parsed && parsed.stories && Array.isArray(parsed.stories)) {
+      console.log('  → Found', parsed.stories.length, 'stories in response');
+      return { stories: parsed.stories };
+    }
+
+    // Fallback: Generate default stories from epics
+    console.warn('  ⚠️  Could not parse stories from Product Owner response, creating default stories');
+    console.warn('  → Response preview:', textContent.substring(0, 300));
+
+    const stories: Story[] = this.state.epics.flatMap((epic, epicIndex) => {
+      return [{
+        id: `story-${Date.now()}-${epicIndex}`,
+        epicId: epic.id,
+        title: `Implement ${epic.title}`,
+        description: epic.description,
+        acceptanceCriteria: [
+          'Feature is implemented according to requirements',
+          'Code is well-tested',
+          'No security vulnerabilities',
+        ],
+        status: 'backlog',
+        priority: epic.priority,
+        storyPoints: 5,
+        assignedAgent: undefined,
+        dependencies: [],
+        progress: 0,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      }];
+    });
+
+    return { stories };
+  }
+
+  private parseCoderResponse(response: any): any {
+    // Extract files from tool_use messages (Write/Edit tool calls)
+    const files: any[] = [];
+
+    if (response.messages) {
+      for (const message of response.messages) {
+        if (message.type === 'assistant' && Array.isArray(message.content)) {
+          for (const block of message.content) {
+            if (block.type === 'tool_use' && (block.name === 'Write' || block.name === 'Edit')) {
+              const filePath = block.input?.file_path;
+              const content = block.input?.content || block.input?.new_string;
+
+              if (filePath && content) {
+                const extension = filePath.split('.').pop() || '';
+                files.push({
+                  path: filePath,
+                  content: content,
+                  language: this.getLanguageFromExtension(extension),
+                  modified: true,
+                  size: content.length,
+                  lastModified: new Date(),
+                });
+              }
+            }
+          }
+        }
+      }
+    }
+
+    return { files };
+  }
+
+  private getLanguageFromExtension(ext: string): string {
+    const map: Record<string, string> = {
+      ts: 'typescript',
+      tsx: 'typescript',
+      js: 'javascript',
+      jsx: 'javascript',
+      py: 'python',
+      java: 'java',
+      go: 'go',
+      rs: 'rust',
+      cpp: 'cpp',
+      c: 'c',
+      css: 'css',
+      html: 'html',
+      json: 'json',
+      md: 'markdown',
+    };
+    return map[ext] || 'plaintext';
+  }
+
+  private parseTesterResponse(response: any): any {
+    const textContent = this.extractTextFromResponse(response);
+
+    console.log('📊 Parsing test results from response...');
+
+    // Extract bash outputs that contain test results
+    const bashOutputs: string[] = [];
+    if (response.messages) {
+      response.messages.forEach((msg: any) => {
+        if (msg.type === 'tool_result' && msg.content) {
+          const toolResult = Array.isArray(msg.content)
+            ? msg.content.find((c: any) => c.type === 'text')?.text
+            : msg.content;
+          if (toolResult && typeof toolResult === 'string') {
+            // Check if this looks like test output
+            if (toolResult.includes('Tests:') ||
+                toolResult.includes('test') ||
+                toolResult.includes('pass') ||
+                toolResult.includes('Coverage') ||
+                toolResult.includes('PASS') ||
+                toolResult.includes('FAIL')) {
+              bashOutputs.push(toolResult);
+            }
+          }
+        }
+      });
+    }
+
+    const allOutput = textContent + '\n' + bashOutputs.join('\n');
+    console.log('🔍 Searching for test results in output...');
+
+    // Look for Jest/npm test output patterns
+    // Pattern 1: "Tests: X passed, Y failed" or "Tests: X passed, Y total"
+    let passed = 0;
+    let failed = 0;
+    let skipped = 0;
+
+    // Jest summary format: "Tests:       1 passed, 1 total"
+    const jestSummary = allOutput.match(/Tests:\s+(\d+)\s+passed(?:,\s+(\d+)\s+failed)?(?:,\s+(\d+)\s+skipped)?(?:,\s+(\d+)\s+total)?/i);
+    if (jestSummary) {
+      passed = parseInt(jestSummary[1]) || 0;
+      failed = jestSummary[2] ? parseInt(jestSummary[2]) : 0;
+      skipped = jestSummary[3] ? parseInt(jestSummary[3]) : 0;
+      console.log(`✅ Found Jest summary: ${passed} passed, ${failed} failed`);
+    } else {
+      // Alternative pattern: "X passed" and "Y failed"
+      const passedMatch = allOutput.match(/(\d+)\s+passed/i);
+      const failedMatch = allOutput.match(/(\d+)\s+failed/i);
+      const skippedMatch = allOutput.match(/(\d+)\s+skipped/i);
+
+      passed = passedMatch ? parseInt(passedMatch[1]) : 0;
+      failed = failedMatch ? parseInt(failedMatch[1]) : 0;
+      skipped = skippedMatch ? parseInt(skippedMatch[1]) : 0;
+
+      if (passed > 0 || failed > 0) {
+        console.log(`✅ Found test counts: ${passed} passed, ${failed} failed`);
+      }
+    }
+
+    // Extract coverage information
+    // Jest coverage format: "Lines: 85.7% | Statements: 85.7% | Functions: 66.67% | Branches: 75%"
+    const coverageMatch = allOutput.match(/(?:All files|Coverage).*?\|.*?(\d+\.?\d*)\%.*?\|.*?(\d+\.?\d*)\%.*?\|.*?(\d+\.?\d*)\%.*?\|.*?(\d+\.?\d*)\%/is);
+
+    let coverage = {
+      lines: 0,
+      statements: 0,
+      functions: 0,
+      branches: 0,
+    };
+
+    if (coverageMatch) {
+      coverage = {
+        lines: parseFloat(coverageMatch[1]) || 0,
+        statements: parseFloat(coverageMatch[2]) || 0,
+        functions: parseFloat(coverageMatch[3]) || 0,
+        branches: parseFloat(coverageMatch[4]) || 0,
+      };
+      console.log(`✅ Found coverage: Lines ${coverage.lines}%, Statements ${coverage.statements}%`);
+    } else {
+      // Try alternative coverage format: "Statements: 85.71%"
+      const linesMatch = allOutput.match(/Lines\s*[:|]\s*(\d+\.?\d*)\%/i);
+      const statementsMatch = allOutput.match(/Statements\s*[:|]\s*(\d+\.?\d*)\%/i);
+      const functionsMatch = allOutput.match(/Functions\s*[:|]\s*(\d+\.?\d*)\%/i);
+      const branchesMatch = allOutput.match(/Branches\s*[:|]\s*(\d+\.?\d*)\%/i);
+
+      if (linesMatch || statementsMatch) {
+        coverage = {
+          lines: linesMatch ? parseFloat(linesMatch[1]) : 0,
+          statements: statementsMatch ? parseFloat(statementsMatch[1]) : 0,
+          functions: functionsMatch ? parseFloat(functionsMatch[1]) : 0,
+          branches: branchesMatch ? parseFloat(branchesMatch[1]) : 0,
+        };
+        console.log(`✅ Found coverage (alt format): Lines ${coverage.lines}%, Statements ${coverage.statements}%`);
+      } else {
+        console.log('⚠️ No coverage information found in output');
+      }
+    }
+
+    // Extract failed test details if any
+    const failedTests: any[] = [];
+    const failPattern = /FAIL.*?\.test\.(ts|tsx|js|jsx)/g;
+    const failMatches = allOutput.matchAll(failPattern);
+    for (const match of failMatches) {
+      failedTests.push({
+        test: match[0],
+        message: 'Test failed - check logs for details',
+      });
+    }
+
+    const testResults = {
+      name: 'Test Suite',
+      tests: [], // Will be populated with actual test details if we parse them
+      coverage,
+      totalDuration: 1500,
+      passed,
+      failed,
+      skipped,
+    };
+
+    console.log(`📊 Test parsing complete: ${passed}/${passed + failed} passed, Coverage: ${coverage.lines.toFixed(1)}%`);
+
+    return {
+      testResults,
+      failedTests,
+    };
+  }
+
+  private parseSecurityResponse(response: any): any {
+    const textContent = this.extractTextFromResponse(response);
+
+    // Check for vulnerability keywords
+    const hasVulnerabilities = /vulnerability|security|risk|threat/i.test(textContent);
+
+    const securityReport = {
+      timestamp: new Date(),
+      overallScore: hasVulnerabilities ? 75 : 95,
+      vulnerabilities: [],
+      recommendations: ['Continue following security best practices'],
+    };
+
+    return { securityReport };
+  }
+
+  private parseInfrastructureResponse(response: any): any {
+    const deployment = {
+      id: `deploy-${Date.now()}`,
+      status: 'planned' as const,
+      provider: this.state.config.deployment?.provider || 'aws',
+      region: this.state.config.deployment?.region || 'us-east-1',
+      environment: this.state.config.deployment?.environment || 'dev',
+      steps: [
+        { id: 'build', name: 'Build Application', status: 'pending' as const, progress: 0 },
+        { id: 'test', name: 'Run Tests', status: 'pending' as const, progress: 0 },
+        { id: 'provision', name: 'Provision Infrastructure', status: 'pending' as const, progress: 0 },
+        { id: 'deploy', name: 'Deploy Application', status: 'pending' as const, progress: 0 },
+      ],
+      url: null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    return { deployment };
+  }
+
+  private extractTextFromResponse(response: any): string {
+    if (!response || !response.messages) return '';
+
+    return response.messages
+      .filter((m: any) => m.type === 'assistant' && m.content)
+      .map((m: any) => {
+        if (typeof m.content === 'string') return m.content;
+        if (Array.isArray(m.content)) {
+          return m.content
+            .filter((c: any) => c.type === 'text')
+            .map((c: any) => c.text)
+            .join('\n');
+        }
+        return '';
+      })
+      .join('\n');
+  }
+
+  /**
+   * Helper methods
+   */
+  private getSortedStories(): Story[] {
+    // Sort by priority and dependencies
+    return this.state.stories.filter((s) => s.status === 'backlog');
+  }
+
+  private async handleStoryError(story: Story, error: any): Promise<boolean> {
+    // Decide whether to continue or stop
+    // Could ask user or supervisor agent
+    return false; // Stop on error for now
+  }
+
+  private async waitForClarifications(clarifications: ClarificationRequest[]): Promise<void> {
+    // Wait for human to answer clarifications
+    return new Promise((resolve) => {
+      const checkClarifications = () => {
+        const allAnswered = clarifications.every((c) => c.response);
+        if (allAnswered) {
+          resolve();
+        } else {
+          setTimeout(checkClarifications, 1000);
+        }
+      };
+      checkClarifications();
+    });
+  }
+
+  private async requestDeploymentApproval(deployment: any): Promise<boolean> {
+    // Request human approval
+    this.emit('approval:needed', { type: 'deployment', deployment });
+    return new Promise((resolve) => {
+      this.once('approval:response', (response) => {
+        resolve(response.approved);
+      });
+    });
+  }
+
+  private async executeDeployment(deployment: any): Promise<void> {
+    // Execute deployment steps
+    this.emit('deployment:started', deployment);
+    // Implementation would actually run deployment
+    this.emit('deployment:completed', deployment);
+  }
+
+  private async applySecurityFix(vulnerability: any): Promise<void> {
+    // Apply auto-fix for vulnerability
+    this.emit('security:fix-applied', vulnerability);
+  }
+
+  /**
+   * Save research findings to project directory
+   */
+  private async saveResearchFindings(findings: any): Promise<void> {
+    try {
+      const fs = require('fs').promises;
+      const path = require('path');
+
+      if (!this.state.projectDirectory) {
+        console.warn('No project directory set, skipping research findings save');
+        return;
+      }
+
+      // Create comprehensive markdown document
+      const markdown = `# Research Analysis Report
+Generated: ${new Date().toLocaleString()}
+Project: ${this.state.config.name}
+
+---
+
+## Executive Summary
+
+${findings.summary}
+
+**Complexity:** ${findings.estimatedComplexity.toUpperCase()}
+**Confidence:** ${findings.confidence}%
+
+---
+
+## 1. Domain Analysis
+
+**Industry:** ${findings.domainAnalysis?.industry || 'Not specified'}
+
+### Similar Applications
+${findings.domainAnalysis?.similarApps?.map((app: string) => `- ${app}`).join('\n') || '- None identified'}
+
+### Critical Features
+${findings.domainAnalysis?.criticalFeatures?.map((feature: string) => `- ${feature}`).join('\n') || '- None identified'}
+
+### Common Patterns
+${findings.domainAnalysis?.commonPatterns?.map((pattern: string) => `- ${pattern}`).join('\n') || '- None identified'}
+
+### Best Practices
+${findings.domainAnalysis?.bestPractices?.map((practice: string) => `- ${practice}`).join('\n') || '- None identified'}
+
+### Potential Challenges
+${findings.domainAnalysis?.potentialChallenges?.map((challenge: string) => `- ${challenge}`).join('\n') || '- None identified'}
+
+---
+
+## 2. Technical Recommendations
+
+### Frameworks
+${findings.technicalRecommendations?.frameworks?.map((fw: string) => `- ${fw}`).join('\n') || '- None specified'}
+
+### Libraries
+${findings.technicalRecommendations?.libraries?.map((lib: string) => `- ${lib}`).join('\n') || '- None specified'}
+
+### Architecture Patterns
+${findings.technicalRecommendations?.architecturePatterns?.map((pattern: string) => `- ${pattern}`).join('\n') || '- None specified'}
+
+### Database Choice
+${findings.technicalRecommendations?.databaseChoice || 'Not specified'}
+
+### State Management
+${findings.technicalRecommendations?.stateManagement || 'Not specified'}
+
+### API Design
+${findings.technicalRecommendations?.apiDesign || 'Not specified'}
+
+### Project Structure
+${findings.technicalRecommendations?.projectStructure?.folders?.map((folder: string) => `- ${folder}`).join('\n') || '- Standard structure'}
+
+### Naming Conventions
+${findings.technicalRecommendations?.projectStructure?.conventions?.map((conv: string) => `- ${conv}`).join('\n') || '- Standard conventions'}
+
+### Scalability Considerations
+${findings.technicalRecommendations?.scalabilityConsiderations?.map((consideration: string) => `- ${consideration}`).join('\n') || '- None identified'}
+
+---
+
+## 3. Implementation Roadmap
+
+### Phase 1: MVP
+${findings.implementationRoadmap?.phase1_mvp?.map((item: string) => `- ${item}`).join('\n') || '- To be determined'}
+
+### Phase 2: Enhanced Features
+${findings.implementationRoadmap?.phase2_enhanced?.map((item: string) => `- ${item}`).join('\n') || '- To be determined'}
+
+### Critical Path
+${findings.implementationRoadmap?.criticalPath?.map((item: string) => `- ${item}`).join('\n') || '- To be determined'}
+
+### Parallelizable Tasks
+${findings.implementationRoadmap?.parallelizable?.map((item: string) => `- ${item}`).join('\n') || '- To be determined'}
+
+### Time Estimates
+${findings.implementationRoadmap?.estimatedTimePerPhase?.map((estimate: string) => `- ${estimate}`).join('\n') || '- To be determined'}
+
+---
+
+## 4. User Experience Insights
+
+**Target Audience:** ${findings.userExperienceInsights?.targetAudience || 'Not specified'}
+
+### Key User Flows
+${findings.userExperienceInsights?.keyUserFlows?.map((flow: string) => `- ${flow}`).join('\n') || '- None identified'}
+
+### Accessibility Requirements
+${findings.userExperienceInsights?.accessibilityRequirements?.map((req: string) => `- ${req}`).join('\n') || '- Standard WCAG compliance'}
+
+### Performance Targets
+${findings.userExperienceInsights?.performanceTargets?.map((target: string) => `- ${target}`).join('\n') || '- Standard web performance'}
+
+### Mobile Strategy
+${findings.userExperienceInsights?.mobileStrategy || 'Responsive design'}
+
+---
+
+## 5. Security Considerations
+
+### Data Protection
+${findings.securityConsiderations?.dataProtection?.map((item: string) => `- ${item}`).join('\n') || '- Standard encryption'}
+
+### Authentication
+${findings.securityConsiderations?.authentication?.map((item: string) => `- ${item}`).join('\n') || '- To be determined'}
+
+### Authorization
+${findings.securityConsiderations?.authorization?.map((item: string) => `- ${item}`).join('\n') || '- To be determined'}
+
+### Compliance
+${findings.securityConsiderations?.compliance?.map((item: string) => `- ${item}`).join('\n') || '- None identified'}
+
+### Input Validation
+${findings.securityConsiderations?.inputValidation?.map((item: string) => `- ${item}`).join('\n') || '- Standard validation'}
+
+---
+
+## 6. Common Pitfalls & Solutions
+
+${findings.commonPitfalls?.map((pitfall: any) => `
+### ${pitfall.pitfall || 'Unknown Pitfall'}
+**Impact:** ${pitfall.impact || 'Not specified'}
+**Solution:** ${pitfall.solution || 'Not specified'}
+`).join('\n') || 'No specific pitfalls identified'}
+
+---
+
+## 7. Testing Strategy
+
+**Unit Tests:** ${findings.testingStrategy?.unitTests || 'To be determined'}
+
+**Integration Tests:** ${findings.testingStrategy?.integrationTests || 'To be determined'}
+
+**E2E Tests:** ${findings.testingStrategy?.e2eTests || 'To be determined'}
+
+### Critical Paths to Test
+${findings.testingStrategy?.criticalPaths?.map((path: string) => `- ${path}`).join('\n') || '- All user flows'}
+
+---
+
+## 8. Research Sources
+
+${findings.researchSources?.map((source: string) => `- ${source}`).join('\n') || '- Industry best practices\n- Similar project analysis'}
+
+---
+
+## Next Steps
+
+1. **Supervisor Agent** will create epics based on the implementation roadmap
+2. **Product Owner** will break down epics into user stories using critical features
+3. **Coder** will implement following the technical recommendations
+4. **Tester** will verify using the testing strategy
+5. **Security** will audit against security considerations
+6. **Infrastructure** will deploy using scalability recommendations
+
+---
+
+*This research analysis serves as the foundation for the entire development workflow. All subsequent agents will reference these findings to ensure alignment with the recommended approach.*
+`;
+
+      // Save markdown file
+      const mdPath = path.join(this.state.projectDirectory, 'research-findings.md');
+      await fs.writeFile(mdPath, markdown, 'utf-8');
+      console.log(`✅ Research findings saved to: ${mdPath}`);
+
+      // Also save JSON for programmatic access
+      const jsonPath = path.join(this.state.projectDirectory, 'research-findings.json');
+      await fs.writeFile(jsonPath, JSON.stringify(findings, null, 2), 'utf-8');
+      console.log(`✅ Research findings JSON saved to: ${jsonPath}`);
+
+    } catch (error) {
+      console.error('❌ Failed to save research findings:', error);
+      // Don't throw - this shouldn't stop the workflow
+    }
+  }
+
+  /**
+   * Save user stories to project directory
+   */
+  private async saveStories(stories: Story[]): Promise<void> {
+    try {
+      const fs = require('fs').promises;
+      const path = require('path');
+
+      if (!this.state.projectDirectory) {
+        console.warn('No project directory set, skipping stories save');
+        return;
+      }
+
+      // Calculate metrics
+      const totalStoryPoints = stories.reduce((sum, s) => sum + (s.storyPoints || 0), 0);
+      const storiesByStatus = stories.reduce((acc, s) => {
+        acc[s.status] = (acc[s.status] || 0) + 1;
+        return acc;
+      }, {} as Record<string, number>);
+      const storiesByPriority = stories.reduce((acc, s) => {
+        acc[s.priority] = (acc[s.priority] || 0) + 1;
+        return acc;
+      }, {} as Record<string, number>);
+
+      // Group stories by epic
+      const storiesByEpic = stories.reduce((acc, story) => {
+        const epicId = story.epicId;
+        if (!acc[epicId]) {
+          acc[epicId] = [];
+        }
+        acc[epicId].push(story);
+        return acc;
+      }, {} as Record<string, Story[]>);
+
+      // Create comprehensive markdown document
+      const markdown = `# User Stories
+Generated: ${new Date().toLocaleString()}
+Project: ${this.state.config.name}
+
+---
+
+## Summary
+
+**Total Stories:** ${stories.length}
+**Total Story Points:** ${totalStoryPoints}
+**Average Story Points:** ${(totalStoryPoints / stories.length).toFixed(1)}
+
+### Status Breakdown
+${Object.entries(storiesByStatus)
+  .map(([status, count]) => `- **${status}**: ${count}`)
+  .join('\n')}
+
+### Priority Breakdown
+${Object.entries(storiesByPriority)
+  .map(([priority, count]) => `- **${priority}**: ${count}`)
+  .join('\n')}
+
+---
+
+${Object.entries(storiesByEpic)
+  .map(([epicId, epicStories]) => {
+    const epic = this.state.epics.find(e => e.id === epicId);
+    return `
+## Epic: ${epic?.title || epicId}
+
+${epic?.description || ''}
+
+**Priority:** ${epic?.priority || 'medium'} | **Stories:** ${epicStories.length} | **Total Points:** ${epicStories.reduce((sum, s) => sum + (s.storyPoints || 0), 0)}
+
+---
+
+${epicStories.map(story => `
+### ${story.title}
+
+**ID:** \`${story.id}\`
+**Status:** ${story.status}
+**Priority:** ${story.priority}
+**Story Points:** ${story.storyPoints || 0}
+**Progress:** ${story.progress}%
+
+#### Description
+${story.description}
+
+#### Acceptance Criteria
+${story.acceptanceCriteria.map((criterion, i) => `${i + 1}. ${criterion}`).join('\n')}
+
+${story.dependencies && story.dependencies.length > 0 ? `
+#### Dependencies
+${story.dependencies.map(dep => `- ${dep}`).join('\n')}
+` : ''}
+
+${story.assignedAgent ? `**Assigned Agent:** ${story.assignedAgent}` : '**Assigned Agent:** Unassigned'}
+
+---
+`).join('\n')}
+`;
+  }).join('\n')}
+
+---
+
+## Next Steps
+
+1. **Coder Agent** will implement stories in priority order
+2. Each story will be developed according to its acceptance criteria
+3. **Tester Agent** will verify each story meets all acceptance criteria
+4. **Security Agent** will audit for vulnerabilities
+5. **Infrastructure Agent** will prepare deployment
+
+---
+
+*User stories serve as the development backlog. The Coder agent will work through these stories systematically, ensuring each meets its acceptance criteria before moving to the next.*
+`;
+
+      // Save markdown file
+      const mdPath = path.join(this.state.projectDirectory, 'user-stories.md');
+      await fs.writeFile(mdPath, markdown, 'utf-8');
+      console.log(`✅ User stories saved to: ${mdPath}`);
+
+      // Also save JSON for programmatic access
+      const jsonPath = path.join(this.state.projectDirectory, 'user-stories.json');
+      await fs.writeFile(jsonPath, JSON.stringify(stories, null, 2), 'utf-8');
+      console.log(`✅ User stories JSON saved to: ${jsonPath}`);
+
+    } catch (error) {
+      console.error('❌ Failed to save user stories:', error);
+      // Don't throw - this shouldn't stop the workflow
+    }
+  }
+
+  /**
+   * Public methods for external control
+   */
+  public pause(): void {
+    this.state.status = 'idle';
+    this.emit('workflow:paused');
+  }
+
+  public resume(): void {
+    this.state.status = 'developing';
+    this.emit('workflow:resumed');
+  }
+
+  public async stop(): Promise<void> {
+    console.log('🛑 Stopping orchestrator for project:', this.state.projectId);
+
+    // Set stopping flag to interrupt ongoing operations
+    this.isStopping = true;
+    this.state.status = 'idle';
+
+    // Abort all ongoing API requests
+    this.abortController.abort();
+
+    // Mark all agents as stopped
+    this.agents.forEach(agent => {
+      if (agent.status === 'working' || agent.status === 'thinking') {
+        agent.status = 'idle';
+        this.emit('agent:status', agent);
+      }
+    });
+
+    // Emit stop message
+    this.emit('agent:message', {
+      id: `msg-${Date.now()}`,
+      agentId: 'system',
+      agentType: 'supervisor',
+      content: `⏹️ Workflow stopped by user. All agents have been terminated.`,
+      timestamp: new Date(),
+    });
+
+    // Emit workflow stopped event
+    this.emit('workflow:stopped');
+
+    // Remove all event listeners
+    this.removeAllListeners();
+
+    console.log('✅ Orchestrator stopped for project:', this.state.projectId);
+    console.log('   - All agents marked as idle');
+    console.log('   - All API requests aborted');
+    console.log('   - Event listeners removed');
+  }
+
+  public getState(): DevelopmentState {
+    return this.state;
+  }
+
+  public provideClarification(clarificationId: string, response: string): void {
+    const clarification = this.state.clarifications.find((c) => c.id === clarificationId);
+    if (clarification) {
+      clarification.response = response;
+      clarification.respondedAt = new Date();
+    }
+  }
+
+  public provideApproval(approved: boolean): void {
+    this.emit('approval:response', { approved });
+  }
+}

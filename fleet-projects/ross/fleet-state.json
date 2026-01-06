@@ -1,0 +1,1085 @@
+{
+  "version": "1.0",
+  "projectId": "ross",
+  "timestamp": "2025-12-16T03:28:38.932Z",
+  "fleetState": {
+    "architecture": {
+      "id": "093c3c03-60b3-4df6-9b90-c5d742213bb8",
+      "projectName": "ross",
+      "generatedAt": "2025-12-16T03:28:38.916Z",
+      "overview": "This CRM application follows a modern Next.js 14 architecture using the App Router pattern with server components as the default rendering strategy. The system is designed around a clear separation between the data layer (Prisma ORM with PostgreSQL), the API layer (Next.js Route Handlers), and the presentation layer (React Server and Client Components). Authentication is handled via NextAuth.js with JWT sessions, providing a stateless auth mechanism suitable for the lightweight nature of this CRM.\n\nThe architecture prioritizes simplicity and maintainability for small sales teams. The deals pipeline uses an optimistic UI pattern with React Query for smooth drag-and-drop interactions. Database queries are optimized with Prisma's relation loading to efficiently fetch contacts with their linked companies, deals, and tasks. The role-based access control (Admin/User) is implemented at the middleware level for route protection and within API handlers for fine-grained permission checks.\n\nKey design decisions include: using Prisma for type-safe database access with automatic TypeScript generation, shadcn/ui for consistent and accessible UI components, and a feature-based folder organization that keeps related code colocated. The kanban board for deals uses @dnd-kit for accessible drag-and-drop functionality. All forms use react-hook-form with zod validation for consistent error handling and type safety.",
+      "techStack": [
+        {
+          "category": "frontend",
+          "name": "Next.js",
+          "version": "14",
+          "purpose": "React framework with App Router for server-first rendering"
+        },
+        {
+          "category": "frontend",
+          "name": "TypeScript",
+          "version": "5",
+          "purpose": "Type safety across frontend and backend"
+        },
+        {
+          "category": "frontend",
+          "name": "Tailwind CSS",
+          "version": "3",
+          "purpose": "Utility-first styling"
+        },
+        {
+          "category": "frontend",
+          "name": "shadcn/ui",
+          "purpose": "Accessible, customizable UI component library"
+        },
+        {
+          "category": "frontend",
+          "name": "@dnd-kit/core",
+          "purpose": "Drag-and-drop for kanban pipeline"
+        },
+        {
+          "category": "frontend",
+          "name": "react-hook-form",
+          "purpose": "Form state management with validation"
+        },
+        {
+          "category": "frontend",
+          "name": "zod",
+          "purpose": "Schema validation for forms and API"
+        },
+        {
+          "category": "frontend",
+          "name": "@tanstack/react-query",
+          "version": "5",
+          "purpose": "Server state management and caching"
+        },
+        {
+          "category": "database",
+          "name": "PostgreSQL",
+          "version": "15",
+          "purpose": "Primary relational database"
+        },
+        {
+          "category": "database",
+          "name": "Prisma",
+          "version": "5",
+          "purpose": "Type-safe ORM with migrations"
+        },
+        {
+          "category": "auth",
+          "name": "NextAuth.js",
+          "version": "4",
+          "purpose": "Authentication with credentials provider"
+        },
+        {
+          "category": "auth",
+          "name": "bcrypt",
+          "purpose": "Password hashing"
+        },
+        {
+          "category": "testing",
+          "name": "Vitest",
+          "purpose": "Unit and integration testing"
+        },
+        {
+          "category": "testing",
+          "name": "Playwright",
+          "purpose": "End-to-end testing"
+        }
+      ],
+      "folderStructure": "app/\n  (auth)/\n    login/\n      page.tsx\n    register/\n      page.tsx\n    layout.tsx\n  (dashboard)/\n    page.tsx                    # Dashboard home\n    contacts/\n      page.tsx                  # Contacts list\n      [id]/\n        page.tsx                # Contact detail\n      new/\n        page.tsx                # New contact\n    companies/\n      page.tsx\n      [id]/\n        page.tsx\n    deals/\n      page.tsx                  # Kanban pipeline\n    tasks/\n      page.tsx\n    settings/\n      page.tsx\n    layout.tsx\n  api/\n    auth/\n      [...nextauth]/\n        route.ts\n    contacts/\n      route.ts                  # GET list, POST create\n      [id]/\n        route.ts                # GET, PUT, DELETE\n    companies/\n      route.ts\n      [id]/\n        route.ts\n    deals/\n      route.ts\n      [id]/\n        route.ts\n    tasks/\n      route.ts\n      [id]/\n        route.ts\n    dashboard/\n      stats/\n        route.ts\n  layout.tsx\n  globals.css\ncomponents/\n  ui/                           # shadcn/ui components\n    button.tsx\n    card.tsx\n    dialog.tsx\n    input.tsx\n    select.tsx\n    table.tsx\n    badge.tsx\n    toast.tsx\n  features/\n    contacts/\n      contact-form.tsx\n      contact-card.tsx\n      contacts-table.tsx\n      contact-filters.tsx\n    companies/\n      company-form.tsx\n      company-card.tsx\n    deals/\n      pipeline-board.tsx\n      deal-card.tsx\n      deal-form.tsx\n      stage-column.tsx\n    tasks/\n      task-form.tsx\n      task-list.tsx\n      task-item.tsx\n    dashboard/\n      stats-cards.tsx\n      deals-by-stage-chart.tsx\n      upcoming-tasks.tsx\n  layout/\n    sidebar.tsx\n    header.tsx\n    nav-links.tsx\nlib/\n  prisma.ts                     # Prisma client singleton\n  auth.ts                       # NextAuth configuration\n  utils.ts                      # cn() and helpers\n  validations/\n    contact.ts\n    company.ts\n    deal.ts\n    task.ts\nservices/\n  contacts.ts                   # Contact data operations\n  companies.ts\n  deals.ts\n  tasks.ts\n  dashboard.ts\ntypes/\n  index.ts                      # Shared types\n  api.ts                        # API response types\nprisma/\n  schema.prisma\n  seed.ts\n  migrations/",
+      "conventions": {
+        "naming": {
+          "components": "PascalCase (e.g., ContactForm, DealCard)",
+          "hooks": "camelCase with use prefix (e.g., useContacts, usePipeline)",
+          "utilities": "camelCase (e.g., formatCurrency, formatDate)",
+          "types": "PascalCase (e.g., Contact, Deal, PipelineStage)",
+          "files": "kebab-case for pages and utilities, PascalCase for components",
+          "apiRoutes": "kebab-case matching resource names",
+          "database": "snake_case for columns, PascalCase for Prisma models"
+        },
+        "fileOrganization": "Feature-based organization within app/ for pages, shared reusable components in components/features/, primitive UI in components/ui/. Services contain data access logic, lib contains configuration and utilities.",
+        "patterns": [
+          "Server Components by default, Client Components only when needed (interactivity, hooks)",
+          "Service layer pattern for database operations",
+          "Colocation of related code (form + validation schema together)",
+          "Compound components for complex UI (Pipeline > Stage > Card)",
+          "Custom hooks for reusable client-side logic"
+        ],
+        "errorHandling": "API routes return consistent { data, error } shape. Client uses React Query error boundaries. Toast notifications via sonner for user feedback. Form errors displayed inline via react-hook-form.",
+        "stateManagement": "NextAuth session for auth state via useSession(). React Query for all server state (contacts, deals, etc.) with optimistic updates for drag-drop. Local component state for UI-only concerns (modals, filters). No global state library needed.",
+        "styling": "Tailwind CSS utility classes. shadcn/ui as component foundation. cn() utility for conditional classes. Consistent spacing scale (4, 8, 16, 24, 32). Color palette via CSS variables for theming."
+      },
+      "diagrams": [
+        {
+          "id": "system-overview",
+          "name": "System Overview",
+          "type": "system",
+          "format": "mermaid",
+          "content": "graph TD\n    subgraph Client[\"Browser Client\"]\n        UI[React Components]\n        State[Client State]\n    end\n    \n    subgraph NextApp[\"Next.js 14 App Router\"]\n        Pages[App Pages]\n        Middleware[Auth Middleware]\n        ServerComp[Server Components]\n    end\n    \n    subgraph API[\"API Layer\"]\n        AuthAPI[/api/auth/*]\n        ContactsAPI[/api/contacts/*]\n        CompaniesAPI[/api/companies/*]\n        DealsAPI[/api/deals/*]\n        TasksAPI[/api/tasks/*]\n        DashboardAPI[/api/dashboard/*]\n    end\n    \n    subgraph Services[\"Service Layer\"]\n        NextAuth[NextAuth.js]\n        Prisma[Prisma ORM]\n    end\n    \n    subgraph Database[\"Data Layer\"]\n        PostgreSQL[(PostgreSQL)]\n    end\n    \n    UI --> Pages\n    Pages --> Middleware\n    Middleware --> ServerComp\n    ServerComp --> API\n    API --> Services\n    NextAuth --> PostgreSQL\n    Prisma --> PostgreSQL",
+          "description": "High-level system architecture showing client, Next.js app, API routes, services, and database"
+        },
+        {
+          "id": "component-hierarchy",
+          "name": "Component Hierarchy",
+          "type": "component",
+          "format": "mermaid",
+          "content": "graph TD\n    subgraph Layout[\"App Layout\"]\n        RootLayout[RootLayout]\n        AuthProvider[AuthProvider]\n        Navigation[Navigation]\n    end\n    \n    subgraph Pages[\"Page Components\"]\n        Dashboard[DashboardPage]\n        Contacts[ContactsPage]\n        Companies[CompaniesPage]\n        Deals[DealsPage]\n        Tasks[TasksPage]\n        Login[LoginPage]\n        Register[RegisterPage]\n    end\n    \n    subgraph ContactComponents[\"Contact Components\"]\n        ContactList[ContactList]\n        ContactCard[ContactCard]\n        ContactForm[ContactForm]\n        ContactDetail[ContactDetail]\n        TagFilter[TagFilter]\n        SearchBar[SearchBar]\n    end\n    \n    subgraph DealComponents[\"Deal Components\"]\n        KanbanBoard[KanbanBoard]\n        KanbanColumn[KanbanColumn]\n        DealCard[DealCard]\n        DealForm[DealForm]\n    end\n    \n    subgraph SharedComponents[\"Shared Components\"]\n        Modal[Modal]\n        Button[Button]\n        Input[Input]\n        Table[Table]\n        Card[Card]\n    end\n    \n    RootLayout --> AuthProvider\n    AuthProvider --> Navigation\n    Navigation --> Pages\n    Contacts --> ContactComponents\n    Deals --> DealComponents\n    ContactComponents --> SharedComponents\n    DealComponents --> SharedComponents",
+          "description": "React component hierarchy showing layout, pages, and feature-specific components"
+        },
+        {
+          "id": "data-flow",
+          "name": "Data Flow - Deal Pipeline",
+          "type": "sequence",
+          "format": "mermaid",
+          "content": "sequenceDiagram\n    participant U as User\n    participant KB as KanbanBoard\n    participant API as /api/deals\n    participant PS as Prisma Service\n    participant DB as PostgreSQL\n    \n    U->>KB: Drag deal to new stage\n    KB->>KB: Optimistic UI update\n    KB->>API: PATCH /api/deals/[id]\n    API->>API: Validate session\n    API->>PS: dealService.updateStage()\n    PS->>DB: UPDATE deals SET stage\n    DB-->>PS: Updated deal\n    PS-->>API: Deal object\n    API-->>KB: 200 OK + deal data\n    KB-->>U: Confirm position\n    \n    Note over U,DB: Error handling\n    API--xKB: 400/500 Error\n    KB->>KB: Rollback UI\n    KB-->>U: Show error toast",
+          "description": "Data flow for deal pipeline drag-and-drop interaction"
+        },
+        {
+          "id": "er-diagram",
+          "name": "Entity Relationships",
+          "type": "er",
+          "format": "mermaid",
+          "content": "erDiagram\n    USER ||--o{ DEAL : creates\n    USER ||--o{ TASK : assigns\n    USER ||--o{ CONTACT : manages\n    USER }|--|| ROLE : has\n    \n    COMPANY ||--o{ CONTACT : employs\n    COMPANY ||--o{ DEAL : has\n    \n    CONTACT ||--o{ DEAL : linked_to\n    CONTACT ||--o{ TASK : has\n    CONTACT }o--o{ TAG : tagged_with\n    \n    DEAL ||--o{ TASK : has\n    \n    USER {\n        string id PK\n        string email UK\n        string password\n        string name\n        string roleId FK\n        datetime createdAt\n    }\n    \n    ROLE {\n        string id PK\n        string name\n        json permissions\n    }\n    \n    CONTACT {\n        string id PK\n        string name\n        string email\n        string phone\n        string notes\n        string companyId FK\n        string userId FK\n        datetime createdAt\n    }\n    \n    COMPANY {\n        string id PK\n        string name\n        string industry\n        string website\n        string notes\n        datetime createdAt\n    }\n    \n    DEAL {\n        string id PK\n        string name\n        decimal value\n        string stage\n        date expectedCloseDate\n        string contactId FK\n        string companyId FK\n        string userId FK\n        datetime createdAt\n    }\n    \n    TASK {\n        string id PK\n        string title\n        string description\n        date dueDate\n        string status\n        string contactId FK\n        string dealId FK\n        string userId FK\n        datetime createdAt\n    }\n    \n    TAG {\n        string id PK\n        string name UK\n        string color\n    }",
+          "description": "Database entity relationships showing all models and their connections"
+        },
+        {
+          "id": "auth-flow",
+          "name": "Authentication Flow",
+          "type": "sequence",
+          "format": "mermaid",
+          "content": "sequenceDiagram\n    participant U as User\n    participant LP as LoginPage\n    participant NA as NextAuth\n    participant MW as Middleware\n    participant DB as PostgreSQL\n    \n    U->>LP: Enter credentials\n    LP->>NA: signIn('credentials')\n    NA->>DB: Find user by email\n    DB-->>NA: User record\n    NA->>NA: Verify password hash\n    \n    alt Valid credentials\n        NA->>NA: Generate JWT\n        NA-->>LP: Session + JWT\n        LP->>LP: Redirect to /dashboard\n    else Invalid credentials\n        NA-->>LP: Error: Invalid credentials\n        LP-->>U: Show error message\n    end\n    \n    Note over U,DB: Protected Route Access\n    U->>MW: Request /contacts\n    MW->>MW: Check JWT token\n    alt Valid token\n        MW->>MW: Check role permissions\n        MW-->>U: Allow access\n    else Invalid/Missing token\n        MW-->>U: Redirect to /login\n    end",
+          "description": "Authentication and authorization flow using NextAuth.js"
+        },
+        {
+          "id": "pipeline-stages",
+          "name": "Deal Pipeline Stages",
+          "type": "state",
+          "format": "mermaid",
+          "content": "stateDiagram-v2\n    [*] --> Lead: New deal created\n    \n    Lead --> Qualified: Qualify lead\n    Lead --> Lost: Disqualify\n    \n    Qualified --> Proposal: Send proposal\n    Qualified --> Lost: No fit\n    \n    Proposal --> Negotiation: Proposal accepted\n    Proposal --> Lost: Proposal rejected\n    \n    Negotiation --> Won: Deal closed\n    Negotiation --> Lost: Negotiation failed\n    \n    Won --> [*]\n    Lost --> [*]\n    \n    note right of Lead: Initial contact made\n    note right of Qualified: Budget & need confirmed\n    note right of Proposal: Formal offer sent\n    note right of Negotiation: Terms being discussed\n    note right of Won: Deal completed successfully\n    note right of Lost: Deal did not close",
+          "description": "Deal pipeline state machine showing all stages and transitions"
+        }
+      ],
+      "patterns": [
+        {
+          "id": "pattern-crud-entity",
+          "name": "CRUD Entity Pattern",
+          "category": "data",
+          "description": "Standard pattern for creating a database entity with full CRUD operations using Prisma ORM",
+          "useWhen": [
+            "Creating a new database table/model",
+            "Need standard list/create/update/delete operations",
+            "Building contacts, companies, deals, or tasks"
+          ],
+          "template": "// 1. Define Prisma model in schema.prisma\nmodel Entity {\n  id        String   @id @default(cuid())\n  name      String\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n  // Add relations as needed\n}\n\n// 2. Create types in types/entity.ts\nexport type Entity = Prisma.EntityGetPayload<{}>;\nexport type CreateEntityInput = Prisma.EntityCreateInput;\nexport type UpdateEntityInput = Prisma.EntityUpdateInput;\n\n// 3. Create service in lib/entity-service.ts\nexport async function getEntities(filters?: EntityFilters) {\n  return prisma.entity.findMany({ where: filters, orderBy: { createdAt: 'desc' } });\n}\nexport async function getEntityById(id: string) {\n  return prisma.entity.findUnique({ where: { id } });\n}\nexport async function createEntity(data: CreateEntityInput) {\n  return prisma.entity.create({ data });\n}\nexport async function updateEntity(id: string, data: UpdateEntityInput) {\n  return prisma.entity.update({ where: { id }, data });\n}\nexport async function deleteEntity(id: string) {\n  return prisma.entity.delete({ where: { id } });\n}\n\n// 4. Create /app/api/[entity]/route.ts with GET (list), POST (create)\n// 5. Create /app/api/[entity]/[id]/route.ts with GET, PATCH, DELETE",
+          "affectedFiles": [
+            "prisma/schema.prisma",
+            "types/[entity].ts",
+            "lib/[entity]-service.ts",
+            "app/api/[entity]/route.ts",
+            "app/api/[entity]/[id]/route.ts"
+          ],
+          "dependencies": []
+        },
+        {
+          "id": "pattern-api-route-handler",
+          "name": "API Route Handler Pattern",
+          "category": "api",
+          "description": "Consistent API route structure with validation, error handling, and standardized responses",
+          "useWhen": [
+            "Creating any API endpoint",
+            "Need consistent error handling",
+            "Building REST endpoints for entities"
+          ],
+          "template": "// app/api/[entity]/route.ts\nimport { NextRequest, NextResponse } from 'next/server';\nimport { z } from 'zod';\nimport { getServerSession } from 'next-auth';\nimport { authOptions } from '@/lib/auth';\n\nconst createSchema = z.object({\n  name: z.string().min(1, 'Name is required'),\n  email: z.string().email().optional(),\n});\n\nexport async function GET(request: NextRequest) {\n  try {\n    const session = await getServerSession(authOptions);\n    if (!session) {\n      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });\n    }\n    \n    const { searchParams } = new URL(request.url);\n    const search = searchParams.get('search') || '';\n    \n    const data = await getEntities({ search });\n    return NextResponse.json({ success: true, data });\n  } catch (error) {\n    console.error('[API] GET /entity failed:', error);\n    return NextResponse.json({ error: 'Failed to fetch' }, { status: 500 });\n  }\n}\n\nexport async function POST(request: NextRequest) {\n  try {\n    const session = await getServerSession(authOptions);\n    if (!session) {\n      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });\n    }\n    \n    const body = await request.json();\n    const validated = createSchema.parse(body);\n    \n    const entity = await createEntity(validated);\n    return NextResponse.json({ success: true, data: entity }, { status: 201 });\n  } catch (error) {\n    if (error instanceof z.ZodError) {\n      return NextResponse.json({ error: 'Validation failed', errors: error.flatten() }, { status: 400 });\n    }\n    console.error('[API] POST /entity failed:', error);\n    return NextResponse.json({ error: 'Failed to create' }, { status: 500 });\n  }\n}",
+          "affectedFiles": [
+            "app/api/[entity]/route.ts",
+            "app/api/[entity]/[id]/route.ts"
+          ],
+          "dependencies": [
+            "pattern-zod-validation"
+          ]
+        },
+        {
+          "id": "pattern-zod-validation",
+          "name": "Zod Validation Schema Pattern",
+          "category": "data",
+          "description": "Define validation schemas with Zod for forms and API endpoints",
+          "useWhen": [
+            "Validating form input",
+            "Validating API request bodies",
+            "Defining type-safe schemas"
+          ],
+          "template": "// lib/validations/[entity].ts\nimport { z } from 'zod';\n\nexport const contactSchema = z.object({\n  name: z.string().min(1, 'Name is required'),\n  email: z.string().email('Invalid email format'),\n  phone: z.string().optional(),\n  company: z.string().optional(),\n  notes: z.string().optional(),\n  tags: z.array(z.string()).default([]),\n});\n\nexport const contactUpdateSchema = contactSchema.partial();\n\nexport type ContactFormData = z.infer<typeof contactSchema>;\nexport type ContactUpdateData = z.infer<typeof contactUpdateSchema>;\n\n// Usage in forms with react-hook-form:\n// const form = useForm<ContactFormData>({\n//   resolver: zodResolver(contactSchema),\n//   defaultValues: { name: '', email: '', tags: [] }\n// });\n\n// Usage in API routes:\n// const validated = contactSchema.parse(await request.json());",
+          "affectedFiles": [
+            "lib/validations/[entity].ts"
+          ],
+          "dependencies": []
+        },
+        {
+          "id": "pattern-form-dialog",
+          "name": "Form Dialog Pattern",
+          "category": "ui",
+          "description": "Modal dialog form with react-hook-form, Zod validation, and shadcn/ui components",
+          "useWhen": [
+            "Creating or editing entities",
+            "Need modal form overlay",
+            "Building contact/company/deal/task forms"
+          ],
+          "template": "// components/[entity]/[Entity]FormDialog.tsx\n'use client';\n\nimport { useForm } from 'react-hook-form';\nimport { zodResolver } from '@hookform/resolvers/zod';\nimport { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';\nimport { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';\nimport { Input } from '@/components/ui/input';\nimport { Button } from '@/components/ui/button';\nimport { entitySchema, type EntityFormData } from '@/lib/validations/entity';\n\ninterface Props {\n  open: boolean;\n  onOpenChange: (open: boolean) => void;\n  entity?: Entity; // For edit mode\n  onSuccess?: () => void;\n}\n\nexport function EntityFormDialog({ open, onOpenChange, entity, onSuccess }: Props) {\n  const form = useForm<EntityFormData>({\n    resolver: zodResolver(entitySchema),\n    defaultValues: entity || { name: '', email: '' },\n  });\n\n  const onSubmit = async (data: EntityFormData) => {\n    try {\n      const url = entity ? `/api/entities/${entity.id}` : '/api/entities';\n      const method = entity ? 'PATCH' : 'POST';\n      \n      const res = await fetch(url, {\n        method,\n        headers: { 'Content-Type': 'application/json' },\n        body: JSON.stringify(data),\n      });\n      \n      if (!res.ok) throw new Error('Failed to save');\n      \n      onOpenChange(false);\n      onSuccess?.();\n    } catch (error) {\n      form.setError('root', { message: 'Failed to save' });\n    }\n  };\n\n  return (\n    <Dialog open={open} onOpenChange={onOpenChange}>\n      <DialogContent>\n        <DialogHeader>\n          <DialogTitle>{entity ? 'Edit' : 'Create'} Entity</DialogTitle>\n        </DialogHeader>\n        <Form {...form}>\n          <form onSubmit={form.handleSubmit(onSubmit)} className=\"space-y-4\">\n            <FormField\n              control={form.control}\n              name=\"name\"\n              render={({ field }) => (\n                <FormItem>\n                  <FormLabel>Name</FormLabel>\n                  <FormControl>\n                    <Input {...field} />\n                  </FormControl>\n                  <FormMessage />\n                </FormItem>\n              )}\n            />\n            {form.formState.errors.root && (\n              <p className=\"text-sm text-destructive\">{form.formState.errors.root.message}</p>\n            )}\n            <DialogFooter>\n              <Button type=\"button\" variant=\"outline\" onClick={() => onOpenChange(false)}>Cancel</Button>\n              <Button type=\"submit\" disabled={form.formState.isSubmitting}>\n                {form.formState.isSubmitting ? 'Saving...' : 'Save'}\n              </Button>\n            </DialogFooter>\n          </form>\n        </Form>\n      </DialogContent>\n    </Dialog>\n  );\n}",
+          "affectedFiles": [
+            "components/[entity]/[Entity]FormDialog.tsx"
+          ],
+          "dependencies": [
+            "pattern-zod-validation"
+          ]
+        },
+        {
+          "id": "pattern-data-table",
+          "name": "Data Table Pattern",
+          "category": "ui",
+          "description": "Reusable table with columns, sorting, filtering, and row actions using @tanstack/react-table",
+          "useWhen": [
+            "Displaying list of entities",
+            "Need sortable/filterable table",
+            "Building contacts, companies, or tasks list"
+          ],
+          "template": "// components/[entity]/columns.tsx\n'use client';\n\nimport { ColumnDef } from '@tanstack/react-table';\nimport { Button } from '@/components/ui/button';\nimport { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';\nimport { MoreHorizontal, Pencil, Trash } from 'lucide-react';\n\nexport const columns: ColumnDef<Entity>[] = [\n  {\n    accessorKey: 'name',\n    header: 'Name',\n    cell: ({ row }) => <span className=\"font-medium\">{row.getValue('name')}</span>,\n  },\n  {\n    accessorKey: 'email',\n    header: 'Email',\n  },\n  {\n    accessorKey: 'createdAt',\n    header: 'Created',\n    cell: ({ row }) => new Date(row.getValue('createdAt')).toLocaleDateString(),\n  },\n  {\n    id: 'actions',\n    cell: ({ row }) => (\n      <DropdownMenu>\n        <DropdownMenuTrigger asChild>\n          <Button variant=\"ghost\" size=\"icon\"><MoreHorizontal className=\"h-4 w-4\" /></Button>\n        </DropdownMenuTrigger>\n        <DropdownMenuContent align=\"end\">\n          <DropdownMenuItem onClick={() => onEdit(row.original)}><Pencil className=\"mr-2 h-4 w-4\" />Edit</DropdownMenuItem>\n          <DropdownMenuItem onClick={() => onDelete(row.original.id)} className=\"text-destructive\"><Trash className=\"mr-2 h-4 w-4\" />Delete</DropdownMenuItem>\n        </DropdownMenuContent>\n      </DropdownMenu>\n    ),\n  },\n];\n\n// components/[entity]/[Entity]Table.tsx\nimport { DataTable } from '@/components/ui/data-table';\nimport { columns } from './columns';\n\nexport function EntityTable({ data }: { data: Entity[] }) {\n  return <DataTable columns={columns} data={data} searchKey=\"name\" />;\n}",
+          "affectedFiles": [
+            "components/[entity]/columns.tsx",
+            "components/[entity]/[Entity]Table.tsx",
+            "components/ui/data-table.tsx"
+          ],
+          "dependencies": []
+        },
+        {
+          "id": "pattern-kanban-board",
+          "name": "Kanban Board Pattern",
+          "category": "ui",
+          "description": "Drag-and-drop kanban board using @dnd-kit for pipeline management",
+          "useWhen": [
+            "Building deals pipeline",
+            "Need drag-and-drop columns",
+            "Visual status workflow"
+          ],
+          "template": "// components/deals/DealKanban.tsx\n'use client';\n\nimport { DndContext, DragEndEvent, closestCorners } from '@dnd-kit/core';\nimport { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';\nimport { useSortable } from '@dnd-kit/sortable';\nimport { CSS } from '@dnd-kit/utilities';\n\nconst STAGES = [\n  { id: 'lead', title: 'Lead', color: 'bg-gray-100' },\n  { id: 'qualified', title: 'Qualified', color: 'bg-blue-100' },\n  { id: 'proposal', title: 'Proposal', color: 'bg-yellow-100' },\n  { id: 'negotiation', title: 'Negotiation', color: 'bg-orange-100' },\n  { id: 'won', title: 'Won', color: 'bg-green-100' },\n  { id: 'lost', title: 'Lost', color: 'bg-red-100' },\n];\n\nfunction DealCard({ deal }: { deal: Deal }) {\n  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: deal.id });\n  const style = { transform: CSS.Transform.toString(transform), transition };\n  \n  return (\n    <div ref={setNodeRef} style={style} {...attributes} {...listeners}\n      className=\"p-3 bg-white rounded-lg shadow cursor-move\">\n      <h4 className=\"font-medium\">{deal.name}</h4>\n      <p className=\"text-sm text-muted-foreground\">${deal.value.toLocaleString()}</p>\n    </div>\n  );\n}\n\nexport function DealKanban({ deals, onStageChange }: Props) {\n  const handleDragEnd = (event: DragEndEvent) => {\n    const { active, over } = event;\n    if (over && active.id !== over.id) {\n      const dealId = active.id as string;\n      const newStage = over.id as string;\n      onStageChange(dealId, newStage);\n    }\n  };\n\n  return (\n    <DndContext collisionDetection={closestCorners} onDragEnd={handleDragEnd}>\n      <div className=\"grid grid-cols-6 gap-4\">\n        {STAGES.map((stage) => {\n          const stageDeals = deals.filter(d => d.stage === stage.id);\n          return (\n            <div key={stage.id} className={`p-4 rounded-lg ${stage.color}`}>\n              <h3 className=\"font-semibold mb-3\">{stage.title} ({stageDeals.length})</h3>\n              <SortableContext items={stageDeals.map(d => d.id)} strategy={verticalListSortingStrategy}>\n                <div className=\"space-y-2\">\n                  {stageDeals.map(deal => <DealCard key={deal.id} deal={deal} />)}\n                </div>\n              </SortableContext>\n            </div>\n          );\n        })}\n      </div>\n    </DndContext>\n  );\n}",
+          "affectedFiles": [
+            "components/deals/DealKanban.tsx",
+            "components/deals/DealCard.tsx"
+          ],
+          "dependencies": []
+        },
+        {
+          "id": "pattern-server-component-page",
+          "name": "Server Component Page Pattern",
+          "category": "state",
+          "description": "Async Server Component page with data fetching, loading, and error states",
+          "useWhen": [
+            "Creating list pages",
+            "Creating detail pages",
+            "Pages that need server-side data"
+          ],
+          "template": "// app/[entity]/page.tsx\nimport { Suspense } from 'react';\nimport { getEntities } from '@/lib/entity-service';\nimport { EntityTable } from '@/components/entity/EntityTable';\nimport { EntityTableSkeleton } from '@/components/entity/EntityTableSkeleton';\n\nexport default async function EntitiesPage({\n  searchParams,\n}: {\n  searchParams: { search?: string; page?: string };\n}) {\n  const search = searchParams.search || '';\n  const page = parseInt(searchParams.page || '1');\n  \n  return (\n    <div className=\"container py-6\">\n      <div className=\"flex items-center justify-between mb-6\">\n        <h1 className=\"text-2xl font-bold\">Entities</h1>\n        <CreateEntityButton />\n      </div>\n      <Suspense fallback={<EntityTableSkeleton />}>\n        <EntityList search={search} page={page} />\n      </Suspense>\n    </div>\n  );\n}\n\nasync function EntityList({ search, page }: { search: string; page: number }) {\n  const entities = await getEntities({ search, page, limit: 20 });\n  return <EntityTable data={entities} />;\n}\n\n// app/[entity]/loading.tsx\nexport default function Loading() {\n  return <EntityTableSkeleton />;\n}\n\n// app/[entity]/error.tsx\n'use client';\nexport default function Error({ error, reset }: { error: Error; reset: () => void }) {\n  return (\n    <div className=\"text-center py-10\">\n      <h2 className=\"text-xl font-semibold\">Something went wrong</h2>\n      <p className=\"text-muted-foreground\">{error.message}</p>\n      <Button onClick={reset} className=\"mt-4\">Try again</Button>\n    </div>\n  );\n}",
+          "affectedFiles": [
+            "app/[entity]/page.tsx",
+            "app/[entity]/loading.tsx",
+            "app/[entity]/error.tsx",
+            "app/[entity]/[id]/page.tsx"
+          ],
+          "dependencies": []
+        },
+        {
+          "id": "pattern-auth-protected-route",
+          "name": "Auth Protected Route Pattern",
+          "category": "security",
+          "description": "Route group with authentication middleware using NextAuth.js",
+          "useWhen": [
+            "Page requires login",
+            "API requires authentication",
+            "Role-based access control"
+          ],
+          "template": "// app/(authenticated)/layout.tsx\nimport { redirect } from 'next/navigation';\nimport { getServerSession } from 'next-auth';\nimport { authOptions } from '@/lib/auth';\n\nexport default async function AuthenticatedLayout({\n  children,\n}: {\n  children: React.ReactNode;\n}) {\n  const session = await getServerSession(authOptions);\n  \n  if (!session) {\n    redirect('/login');\n  }\n  \n  return (\n    <div className=\"min-h-screen\">\n      <Navbar user={session.user} />\n      <main className=\"container py-6\">{children}</main>\n    </div>\n  );\n}\n\n// lib/auth.ts\nimport { NextAuthOptions } from 'next-auth';\nimport CredentialsProvider from 'next-auth/providers/credentials';\nimport { prisma } from '@/lib/prisma';\nimport bcrypt from 'bcrypt';\n\nexport const authOptions: NextAuthOptions = {\n  providers: [\n    CredentialsProvider({\n      name: 'credentials',\n      credentials: {\n        email: { label: 'Email', type: 'email' },\n        password: { label: 'Password', type: 'password' },\n      },\n      async authorize(credentials) {\n        if (!credentials?.email || !credentials?.password) return null;\n        \n        const user = await prisma.user.findUnique({ where: { email: credentials.email } });\n        if (!user) return null;\n        \n        const valid = await bcrypt.compare(credentials.password, user.password);\n        if (!valid) return null;\n        \n        return { id: user.id, email: user.email, name: user.name, role: user.role };\n      },\n    }),\n  ],\n  callbacks: {\n    jwt: ({ token, user }) => {\n      if (user) { token.role = user.role; }\n      return token;\n    },\n    session: ({ session, token }) => {\n      if (session.user) { session.user.role = token.role; }\n      return session;\n    },\n  },\n  pages: { signIn: '/login' },\n};",
+          "affectedFiles": [
+            "app/(authenticated)/layout.tsx",
+            "lib/auth.ts",
+            "middleware.ts"
+          ],
+          "dependencies": []
+        },
+        {
+          "id": "pattern-react-query-mutation",
+          "name": "React Query Mutation Pattern",
+          "category": "state",
+          "description": "Client-side mutations with @tanstack/react-query for optimistic updates and cache invalidation",
+          "useWhen": [
+            "Creating/updating/deleting from client components",
+            "Need optimistic updates",
+            "Need cache invalidation"
+          ],
+          "template": "// hooks/use-entity-mutations.ts\nimport { useMutation, useQueryClient } from '@tanstack/react-query';\nimport { toast } from 'sonner';\n\nexport function useCreateEntity() {\n  const queryClient = useQueryClient();\n  \n  return useMutation({\n    mutationFn: async (data: CreateEntityInput) => {\n      const res = await fetch('/api/entities', {\n        method: 'POST',\n        headers: { 'Content-Type': 'application/json' },\n        body: JSON.stringify(data),\n      });\n      if (!res.ok) throw new Error('Failed to create');\n      return res.json();\n    },\n    onSuccess: () => {\n      queryClient.invalidateQueries({ queryKey: ['entities'] });\n      toast.success('Entity created');\n    },\n    onError: (error) => {\n      toast.error(error.message);\n    },\n  });\n}\n\nexport function useUpdateEntity() {\n  const queryClient = useQueryClient();\n  \n  return useMutation({\n    mutationFn: async ({ id, data }: { id: string; data: UpdateEntityInput }) => {\n      const res = await fetch(`/api/entities/${id}`, {\n        method: 'PATCH',\n        headers: { 'Content-Type': 'application/json' },\n        body: JSON.stringify(data),\n      });\n      if (!res.ok) throw new Error('Failed to update');\n      return res.json();\n    },\n    onSuccess: (_, { id }) => {\n      queryClient.invalidateQueries({ queryKey: ['entities'] });\n      queryClient.invalidateQueries({ queryKey: ['entity', id] });\n      toast.success('Entity updated');\n    },\n  });\n}\n\nexport function useDeleteEntity() {\n  const queryClient = useQueryClient();\n  \n  return useMutation({\n    mutationFn: async (id: string) => {\n      const res = await fetch(`/api/entities/${id}`, { method: 'DELETE' });\n      if (!res.ok) throw new Error('Failed to delete');\n    },\n    onSuccess: () => {\n      queryClient.invalidateQueries({ queryKey: ['entities'] });\n      toast.success('Entity deleted');\n    },\n  });\n}",
+          "affectedFiles": [
+            "hooks/use-[entity]-mutations.ts",
+            "hooks/use-[entity]-queries.ts"
+          ],
+          "dependencies": []
+        },
+        {
+          "id": "pattern-search-filter",
+          "name": "Search and Filter Pattern",
+          "category": "ui",
+          "description": "Reusable search input with URL-based filtering using searchParams",
+          "useWhen": [
+            "Adding search to list pages",
+            "Need URL-persistent filters",
+            "Building contact/company search"
+          ],
+          "template": "// components/common/SearchInput.tsx\n'use client';\n\nimport { useRouter, useSearchParams, usePathname } from 'next/navigation';\nimport { useDebouncedCallback } from 'use-debounce';\nimport { Input } from '@/components/ui/input';\nimport { Search } from 'lucide-react';\n\nexport function SearchInput({ placeholder = 'Search...' }: { placeholder?: string }) {\n  const router = useRouter();\n  const pathname = usePathname();\n  const searchParams = useSearchParams();\n  \n  const handleSearch = useDebouncedCallback((term: string) => {\n    const params = new URLSearchParams(searchParams);\n    if (term) {\n      params.set('search', term);\n      params.set('page', '1');\n    } else {\n      params.delete('search');\n    }\n    router.replace(`${pathname}?${params.toString()}`);\n  }, 300);\n  \n  return (\n    <div className=\"relative\">\n      <Search className=\"absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground\" />\n      <Input\n        placeholder={placeholder}\n        defaultValue={searchParams.get('search') || ''}\n        onChange={(e) => handleSearch(e.target.value)}\n        className=\"pl-9\"\n      />\n    </div>\n  );\n}\n\n// components/common/FilterSelect.tsx\nexport function FilterSelect({ param, options, placeholder }: Props) {\n  const router = useRouter();\n  const pathname = usePathname();\n  const searchParams = useSearchParams();\n  \n  const handleFilter = (value: string) => {\n    const params = new URLSearchParams(searchParams);\n    if (value && value !== 'all') {\n      params.set(param, value);\n    } else {\n      params.delete(param);\n    }\n    router.replace(`${pathname}?${params.toString()}`);\n  };\n  \n  return (\n    <Select value={searchParams.get(param) || ''} onValueChange={handleFilter}>\n      <SelectTrigger><SelectValue placeholder={placeholder} /></SelectTrigger>\n      <SelectContent>\n        <SelectItem value=\"all\">All</SelectItem>\n        {options.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}\n      </SelectContent>\n    </Select>\n  );\n}",
+          "affectedFiles": [
+            "components/common/SearchInput.tsx",
+            "components/common/FilterSelect.tsx"
+          ],
+          "dependencies": []
+        },
+        {
+          "id": "pattern-tag-input",
+          "name": "Tag Input Pattern",
+          "category": "ui",
+          "description": "Multi-select tag input for categorizing entities (contacts, deals)",
+          "useWhen": [
+            "Need tag/label selection",
+            "Categorizing contacts",
+            "Multi-value field"
+          ],
+          "template": "// components/common/TagInput.tsx\n'use client';\n\nimport { useState } from 'react';\nimport { Badge } from '@/components/ui/badge';\nimport { Input } from '@/components/ui/input';\nimport { X } from 'lucide-react';\n\ninterface Props {\n  value: string[];\n  onChange: (tags: string[]) => void;\n  suggestions?: string[];\n  placeholder?: string;\n}\n\nexport function TagInput({ value, onChange, suggestions = [], placeholder = 'Add tag...' }: Props) {\n  const [input, setInput] = useState('');\n  \n  const addTag = (tag: string) => {\n    const trimmed = tag.trim().toLowerCase();\n    if (trimmed && !value.includes(trimmed)) {\n      onChange([...value, trimmed]);\n    }\n    setInput('');\n  };\n  \n  const removeTag = (tag: string) => {\n    onChange(value.filter(t => t !== tag));\n  };\n  \n  const handleKeyDown = (e: React.KeyboardEvent) => {\n    if (e.key === 'Enter' || e.key === ',') {\n      e.preventDefault();\n      addTag(input);\n    } else if (e.key === 'Backspace' && !input && value.length > 0) {\n      removeTag(value[value.length - 1]);\n    }\n  };\n  \n  const filteredSuggestions = suggestions.filter(\n    s => s.includes(input.toLowerCase()) && !value.includes(s)\n  );\n  \n  return (\n    <div className=\"space-y-2\">\n      <div className=\"flex flex-wrap gap-1\">\n        {value.map(tag => (\n          <Badge key={tag} variant=\"secondary\" className=\"gap-1\">\n            {tag}\n            <X className=\"h-3 w-3 cursor-pointer\" onClick={() => removeTag(tag)} />\n          </Badge>\n        ))}\n      </div>\n      <Input\n        value={input}\n        onChange={(e) => setInput(e.target.value)}\n        onKeyDown={handleKeyDown}\n        placeholder={placeholder}\n      />\n      {input && filteredSuggestions.length > 0 && (\n        <div className=\"flex flex-wrap gap-1\">\n          {filteredSuggestions.slice(0, 5).map(s => (\n            <Badge key={s} variant=\"outline\" className=\"cursor-pointer\" onClick={() => addTag(s)}>\n              {s}\n            </Badge>\n          ))}\n        </div>\n      )}\n    </div>\n  );\n}",
+          "affectedFiles": [
+            "components/common/TagInput.tsx"
+          ],
+          "dependencies": []
+        },
+        {
+          "id": "pattern-detail-page",
+          "name": "Entity Detail Page Pattern",
+          "category": "ui",
+          "description": "Detail view page showing entity info with related data and actions",
+          "useWhen": [
+            "Building contact detail page",
+            "Building deal detail page",
+            "Showing entity with relations"
+          ],
+          "template": "// app/[entity]/[id]/page.tsx\nimport { notFound } from 'next/navigation';\nimport { getEntityById } from '@/lib/entity-service';\nimport { getRelatedItems } from '@/lib/related-service';\nimport { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';\nimport { Badge } from '@/components/ui/badge';\nimport { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';\n\nexport default async function EntityDetailPage({\n  params,\n}: {\n  params: { id: string };\n}) {\n  const entity = await getEntityById(params.id);\n  \n  if (!entity) {\n    notFound();\n  }\n  \n  const relatedItems = await getRelatedItems(params.id);\n  \n  return (\n    <div className=\"container py-6 space-y-6\">\n      <div className=\"flex items-center justify-between\">\n        <div>\n          <h1 className=\"text-2xl font-bold\">{entity.name}</h1>\n          <p className=\"text-muted-foreground\">{entity.email}</p>\n        </div>\n        <div className=\"flex gap-2\">\n          <EditEntityButton entity={entity} />\n          <DeleteEntityButton id={entity.id} />\n        </div>\n      </div>\n      \n      <div className=\"grid grid-cols-3 gap-6\">\n        <Card className=\"col-span-2\">\n          <CardHeader><CardTitle>Details</CardTitle></CardHeader>\n          <CardContent>\n            <dl className=\"grid grid-cols-2 gap-4\">\n              <div>\n                <dt className=\"text-sm text-muted-foreground\">Phone</dt>\n                <dd>{entity.phone || '-'}</dd>\n              </div>\n              <div>\n                <dt className=\"text-sm text-muted-foreground\">Company</dt>\n                <dd>{entity.company || '-'}</dd>\n              </div>\n              <div>\n                <dt className=\"text-sm text-muted-foreground\">Tags</dt>\n                <dd className=\"flex gap-1\">\n                  {entity.tags?.map(t => <Badge key={t} variant=\"secondary\">{t}</Badge>)}\n                </dd>\n              </div>\n            </dl>\n          </CardContent>\n        </Card>\n        \n        <Card>\n          <CardHeader><CardTitle>Activity</CardTitle></CardHeader>\n          <CardContent>\n            <ActivityList entityId={entity.id} />\n          </CardContent>\n        </Card>\n      </div>\n      \n      <Tabs defaultValue=\"deals\">\n        <TabsList>\n          <TabsTrigger value=\"deals\">Deals</TabsTrigger>\n          <TabsTrigger value=\"tasks\">Tasks</TabsTrigger>\n        </TabsList>\n        <TabsContent value=\"deals\"><RelatedDeals items={relatedItems.deals} /></TabsContent>\n        <TabsContent value=\"tasks\"><RelatedTasks items={relatedItems.tasks} /></TabsContent>\n      </Tabs>\n    </div>\n  );\n}",
+          "affectedFiles": [
+            "app/[entity]/[id]/page.tsx",
+            "app/[entity]/[id]/not-found.tsx"
+          ],
+          "dependencies": [
+            "pattern-server-component-page"
+          ]
+        },
+        {
+          "id": "pattern-dashboard-stats",
+          "name": "Dashboard Stats Pattern",
+          "category": "ui",
+          "description": "Dashboard cards showing aggregate metrics with charts",
+          "useWhen": [
+            "Building dashboard page",
+            "Showing pipeline metrics",
+            "Displaying summary statistics"
+          ],
+          "template": "// components/dashboard/StatsCards.tsx\nimport { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';\nimport { DollarSign, Users, Target, CheckCircle } from 'lucide-react';\n\ninterface Stats {\n  totalContacts: number;\n  totalDeals: number;\n  dealsWonThisMonth: number;\n  pipelineValue: number;\n  upcomingTasks: number;\n}\n\nexport function StatsCards({ stats }: { stats: Stats }) {\n  const cards = [\n    { title: 'Total Contacts', value: stats.totalContacts, icon: Users, format: 'number' },\n    { title: 'Pipeline Value', value: stats.pipelineValue, icon: DollarSign, format: 'currency' },\n    { title: 'Deals Won (Month)', value: stats.dealsWonThisMonth, icon: Target, format: 'number' },\n    { title: 'Upcoming Tasks', value: stats.upcomingTasks, icon: CheckCircle, format: 'number' },\n  ];\n  \n  return (\n    <div className=\"grid grid-cols-4 gap-4\">\n      {cards.map(card => (\n        <Card key={card.title}>\n          <CardHeader className=\"flex flex-row items-center justify-between pb-2\">\n            <CardTitle className=\"text-sm font-medium\">{card.title}</CardTitle>\n            <card.icon className=\"h-4 w-4 text-muted-foreground\" />\n          </CardHeader>\n          <CardContent>\n            <div className=\"text-2xl font-bold\">\n              {card.format === 'currency'\n                ? new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(card.value)\n                : card.value.toLocaleString()}\n            </div>\n          </CardContent>\n        </Card>\n      ))}\n    </div>\n  );\n}\n\n// lib/dashboard-service.ts\nexport async function getDashboardStats(): Promise<Stats> {\n  const [contacts, deals, tasks] = await Promise.all([\n    prisma.contact.count(),\n    prisma.deal.findMany({ select: { value: true, stage: true, wonAt: true } }),\n    prisma.task.count({ where: { status: 'pending', dueDate: { gte: new Date() } } }),\n  ]);\n  \n  const now = new Date();\n  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);\n  \n  return {\n    totalContacts: contacts,\n    totalDeals: deals.length,\n    pipelineValue: deals.filter(d => !['won', 'lost'].includes(d.stage)).reduce((sum, d) => sum + d.value, 0),\n    dealsWonThisMonth: deals.filter(d => d.stage === 'won' && d.wonAt && d.wonAt >= monthStart).length,\n    upcomingTasks: tasks,\n  };\n}",
+          "affectedFiles": [
+            "components/dashboard/StatsCards.tsx",
+            "components/dashboard/PipelineChart.tsx",
+            "lib/dashboard-service.ts"
+          ],
+          "dependencies": []
+        },
+        {
+          "id": "pattern-e2e-test",
+          "name": "E2E Test Pattern",
+          "category": "testing",
+          "description": "Playwright end-to-end test structure for user flows",
+          "useWhen": [
+            "Testing user authentication flow",
+            "Testing CRUD operations",
+            "Testing critical user journeys"
+          ],
+          "template": "// e2e/contacts.spec.ts\nimport { test, expect } from '@playwright/test';\n\ntest.describe('Contacts', () => {\n  test.beforeEach(async ({ page }) => {\n    // Login before each test\n    await page.goto('/login');\n    await page.fill('[name=\"email\"]', 'test@example.com');\n    await page.fill('[name=\"password\"]', 'password123');\n    await page.click('button[type=\"submit\"]');\n    await page.waitForURL('/dashboard');\n  });\n\n  test('should create a new contact', async ({ page }) => {\n    await page.goto('/contacts');\n    await page.click('button:has-text(\"Add Contact\")');\n    \n    await page.fill('[name=\"name\"]', 'John Doe');\n    await page.fill('[name=\"email\"]', 'john@example.com');\n    await page.fill('[name=\"phone\"]', '555-1234');\n    \n    await page.click('button:has-text(\"Save\")');\n    \n    await expect(page.locator('text=John Doe')).toBeVisible();\n    await expect(page.locator('text=Contact created')).toBeVisible();\n  });\n\n  test('should search contacts', async ({ page }) => {\n    await page.goto('/contacts');\n    await page.fill('[placeholder=\"Search...\"]', 'John');\n    \n    await expect(page.locator('table tbody tr')).toHaveCount(1);\n    await expect(page.locator('text=John Doe')).toBeVisible();\n  });\n\n  test('should edit a contact', async ({ page }) => {\n    await page.goto('/contacts');\n    await page.click('text=John Doe');\n    await page.click('button:has-text(\"Edit\")');\n    \n    await page.fill('[name=\"phone\"]', '555-5678');\n    await page.click('button:has-text(\"Save\")');\n    \n    await expect(page.locator('text=555-5678')).toBeVisible();\n  });\n\n  test('should delete a contact', async ({ page }) => {\n    await page.goto('/contacts');\n    await page.click('[data-testid=\"contact-menu\"]');\n    await page.click('text=Delete');\n    await page.click('button:has-text(\"Confirm\")');\n    \n    await expect(page.locator('text=Contact deleted')).toBeVisible();\n    await expect(page.locator('text=John Doe')).not.toBeVisible();\n  });\n});",
+          "affectedFiles": [
+            "e2e/[feature].spec.ts",
+            "playwright.config.ts"
+          ],
+          "dependencies": []
+        },
+        {
+          "id": "pattern-vitest-unit",
+          "name": "Vitest Unit Test Pattern",
+          "category": "testing",
+          "description": "Unit test structure for services and utilities using Vitest",
+          "useWhen": [
+            "Testing service functions",
+            "Testing utilities",
+            "Testing validation schemas"
+          ],
+          "template": "// __tests__/lib/contact-service.test.ts\nimport { describe, it, expect, beforeEach, vi } from 'vitest';\nimport { prisma } from '@/lib/prisma';\nimport { getContacts, createContact, updateContact, deleteContact } from '@/lib/contact-service';\n\nvi.mock('@/lib/prisma', () => ({\n  prisma: {\n    contact: {\n      findMany: vi.fn(),\n      findUnique: vi.fn(),\n      create: vi.fn(),\n      update: vi.fn(),\n      delete: vi.fn(),\n    },\n  },\n}));\n\ndescribe('contact-service', () => {\n  beforeEach(() => {\n    vi.clearAllMocks();\n  });\n\n  describe('getContacts', () => {\n    it('should return all contacts', async () => {\n      const mockContacts = [\n        { id: '1', name: 'John', email: 'john@test.com' },\n        { id: '2', name: 'Jane', email: 'jane@test.com' },\n      ];\n      vi.mocked(prisma.contact.findMany).mockResolvedValue(mockContacts);\n\n      const result = await getContacts();\n\n      expect(result).toEqual(mockContacts);\n      expect(prisma.contact.findMany).toHaveBeenCalledWith({\n        orderBy: { createdAt: 'desc' },\n      });\n    });\n\n    it('should filter by search term', async () => {\n      await getContacts({ search: 'john' });\n\n      expect(prisma.contact.findMany).toHaveBeenCalledWith(\n        expect.objectContaining({\n          where: expect.objectContaining({\n            OR: expect.arrayContaining([\n              { name: { contains: 'john', mode: 'insensitive' } },\n            ]),\n          }),\n        })\n      );\n    });\n  });\n\n  describe('createContact', () => {\n    it('should create a contact with valid data', async () => {\n      const input = { name: 'Test', email: 'test@test.com' };\n      const created = { id: '1', ...input, createdAt: new Date() };\n      vi.mocked(prisma.contact.create).mockResolvedValue(created);\n\n      const result = await createContact(input);\n\n      expect(result).toEqual(created);\n      expect(prisma.contact.create).toHaveBeenCalledWith({ data: input });\n    });\n  });\n});",
+          "affectedFiles": [
+            "__tests__/lib/[service].test.ts",
+            "vitest.config.ts"
+          ],
+          "dependencies": []
+        }
+      ],
+      "domainBlueprints": [
+        {
+          "id": "domain-infrastructure",
+          "name": "Infrastructure Domain",
+          "description": "Project initialization, configuration, and shared utilities. Sets up Next.js 14 with TypeScript, Tailwind CSS, ESLint, and establishes folder structure for the entire application.",
+          "coreEntities": [
+            "Config",
+            "Environment",
+            "SharedUtils"
+          ],
+          "patternsToApply": [],
+          "apiPattern": "No API routes - configuration files and utility modules only",
+          "uiPattern": "No UI components - establishes design tokens, Tailwind config, and global styles",
+          "dependsOn": [],
+          "priority": "foundation"
+        },
+        {
+          "id": "domain-database",
+          "name": "Database Domain",
+          "description": "Prisma ORM setup with PostgreSQL, all data models, and seed scripts. Defines the complete schema for Users, Contacts, Companies, Deals, and Tasks with their relationships.",
+          "coreEntities": [
+            "User",
+            "Contact",
+            "Company",
+            "Deal",
+            "Task",
+            "Tag"
+          ],
+          "patternsToApply": [
+            "pattern-crud-entity",
+            "pattern-zod-validation"
+          ],
+          "apiPattern": "Prisma client exports and typed query helpers. All entities use Zod schemas for validation.",
+          "uiPattern": "No UI - pure data layer with TypeScript types exported for consumers",
+          "dependsOn": [
+            "domain-infrastructure"
+          ],
+          "priority": "foundation"
+        },
+        {
+          "id": "domain-auth",
+          "name": "Authentication & Authorization Domain",
+          "description": "NextAuth.js credentials provider with JWT sessions, role-based access control (Admin/User), login/registration pages, and route protection middleware.",
+          "coreEntities": [
+            "User",
+            "Session",
+            "Role"
+          ],
+          "patternsToApply": [
+            "pattern-auth-protected-route",
+            "pattern-form-dialog",
+            "pattern-zod-validation"
+          ],
+          "apiPattern": "NextAuth.js handlers at /api/auth/*. Custom credentials provider validates against Prisma User model. JWT tokens include role claims.",
+          "uiPattern": "Public /login and /register pages with form validation. Middleware redirects unauthenticated users. Role guards wrap admin-only features.",
+          "dependsOn": [
+            "domain-database"
+          ],
+          "priority": "foundation"
+        },
+        {
+          "id": "domain-ui-shell",
+          "name": "UI Shell & Navigation Domain",
+          "description": "Application shell with sidebar navigation, header, responsive layout, and shared UI components used across all feature domains.",
+          "coreEntities": [
+            "Layout",
+            "Navigation",
+            "Breadcrumb"
+          ],
+          "patternsToApply": [
+            "pattern-server-component-page",
+            "pattern-auth-protected-route"
+          ],
+          "apiPattern": "No API routes - layout components only",
+          "uiPattern": "Authenticated layout with collapsible sidebar, top header with user menu. Breadcrumb navigation. Consistent spacing and responsive breakpoints.",
+          "dependsOn": [
+            "domain-auth"
+          ],
+          "priority": "core"
+        },
+        {
+          "id": "domain-contacts",
+          "name": "Contacts Domain",
+          "description": "Complete contact management with CRUD, search/filter, tagging, and detail views. Contacts link to companies, deals, and tasks.",
+          "coreEntities": [
+            "Contact",
+            "Tag"
+          ],
+          "patternsToApply": [
+            "pattern-crud-entity",
+            "pattern-api-route-handler",
+            "pattern-zod-validation",
+            "pattern-data-table",
+            "pattern-form-dialog",
+            "pattern-search-filter",
+            "pattern-tag-input",
+            "pattern-detail-page",
+            "pattern-react-query-mutation"
+          ],
+          "apiPattern": "REST endpoints at /api/contacts for CRUD. Supports query params for search (?q=), tag filter (?tags=), and pagination (?page=&limit=). Returns linked company data.",
+          "uiPattern": "List page with DataTable, search bar, and tag filter chips. Create/Edit modal with form validation. Detail page shows contact info, linked deals, tasks, and activity.",
+          "dependsOn": [
+            "domain-ui-shell",
+            "domain-database"
+          ],
+          "priority": "core"
+        },
+        {
+          "id": "domain-companies",
+          "name": "Companies Domain",
+          "description": "Company profiles with linked contacts. Card-based list view and detail pages showing all associated contacts.",
+          "coreEntities": [
+            "Company"
+          ],
+          "patternsToApply": [
+            "pattern-crud-entity",
+            "pattern-api-route-handler",
+            "pattern-zod-validation",
+            "pattern-form-dialog",
+            "pattern-detail-page",
+            "pattern-search-filter",
+            "pattern-react-query-mutation"
+          ],
+          "apiPattern": "REST endpoints at /api/companies for CRUD. GET returns aggregated contact count. Supports search by name and industry filter.",
+          "uiPattern": "Card grid list with company info and contact count. Detail page shows company profile and linked contacts table with ability to link/unlink.",
+          "dependsOn": [
+            "domain-contacts"
+          ],
+          "priority": "core"
+        },
+        {
+          "id": "domain-deals",
+          "name": "Deals Pipeline Domain",
+          "description": "Visual kanban board for deal pipeline management. Deals move through stages (Lead → Qualified → Proposal → Negotiation → Won/Lost) with drag-and-drop. Each deal links to a contact.",
+          "coreEntities": [
+            "Deal",
+            "PipelineStage"
+          ],
+          "patternsToApply": [
+            "pattern-crud-entity",
+            "pattern-api-route-handler",
+            "pattern-zod-validation",
+            "pattern-kanban-board",
+            "pattern-form-dialog",
+            "pattern-detail-page",
+            "pattern-react-query-mutation"
+          ],
+          "apiPattern": "REST endpoints at /api/deals for CRUD. PATCH /api/deals/:id/stage for stage updates. GET supports stage filter and date range for reporting.",
+          "uiPattern": "Kanban board with columns per stage. Deal cards show name, value, contact, expected close. Drag-drop updates stage via optimistic mutation. Quick-add form per column.",
+          "dependsOn": [
+            "domain-contacts"
+          ],
+          "priority": "feature"
+        },
+        {
+          "id": "domain-tasks",
+          "name": "Tasks Domain",
+          "description": "Task management linked to contacts or deals. Simple list view with due dates, status toggle, and filtering by status/date.",
+          "coreEntities": [
+            "Task"
+          ],
+          "patternsToApply": [
+            "pattern-crud-entity",
+            "pattern-api-route-handler",
+            "pattern-zod-validation",
+            "pattern-data-table",
+            "pattern-form-dialog",
+            "pattern-search-filter",
+            "pattern-react-query-mutation"
+          ],
+          "apiPattern": "REST endpoints at /api/tasks for CRUD. GET supports filters: ?status=pending|complete, ?dueDate=today|week|overdue, ?contactId=, ?dealId=",
+          "uiPattern": "List view with checkbox for status toggle, due date badges (overdue=red), and linked entity chips. Filter tabs for All/Pending/Complete/Overdue. Inline quick-add.",
+          "dependsOn": [
+            "domain-contacts",
+            "domain-deals"
+          ],
+          "priority": "feature"
+        },
+        {
+          "id": "domain-dashboard",
+          "name": "Dashboard & Analytics Domain",
+          "description": "Main dashboard showing pipeline metrics, won deals this month, and upcoming tasks. Server-side data aggregation for stats.",
+          "coreEntities": [
+            "DashboardStats",
+            "PipelineMetrics"
+          ],
+          "patternsToApply": [
+            "pattern-server-component-page",
+            "pattern-dashboard-stats",
+            "pattern-auth-protected-route"
+          ],
+          "apiPattern": "Primarily Server Components with direct Prisma queries. Optional /api/dashboard/stats endpoint for client refresh. Aggregates deal counts by stage, monthly totals.",
+          "uiPattern": "Stats cards row (total deals, won this month, pipeline value). Mini pipeline chart. Upcoming tasks list. Recent activity feed.",
+          "dependsOn": [
+            "domain-deals",
+            "domain-tasks"
+          ],
+          "priority": "feature"
+        },
+        {
+          "id": "domain-quality",
+          "name": "Quality & Integration Domain",
+          "description": "End-to-end testing, error handling, loading states, and production readiness. Covers all critical user flows.",
+          "coreEntities": [
+            "TestSuite",
+            "ErrorBoundary"
+          ],
+          "patternsToApply": [
+            "pattern-e2e-test",
+            "pattern-vitest-unit"
+          ],
+          "apiPattern": "Error handling middleware for API routes. Consistent error response format. Request validation at all endpoints.",
+          "uiPattern": "Error boundaries at route level. Loading skeletons for async content. Toast notifications for mutations. 404/500 error pages.",
+          "dependsOn": [
+            "domain-dashboard",
+            "domain-deals",
+            "domain-tasks",
+            "domain-contacts",
+            "domain-companies"
+          ],
+          "priority": "polish"
+        }
+      ],
+      "squadPlaybooks": [
+        {
+          "squadId": "squad-ui",
+          "squadName": "UI Squad",
+          "specialization": "Frontend components, pages, and user experience",
+          "assignedDomains": [
+            "domain-ui",
+            "domain-dashboard",
+            "domain-analytics"
+          ],
+          "corePatterns": [
+            "pattern-form-dialog",
+            "pattern-data-table",
+            "pattern-kanban-board",
+            "pattern-server-component-page",
+            "pattern-dashboard-stats",
+            "pattern-search-filter"
+          ],
+          "implementationGuide": [
+            "1. Start with the application shell - create layout.tsx with sidebar navigation, header, and main content area",
+            "2. Build reusable UI primitives using shadcn/ui: Button, Input, Card, Dialog, DropdownMenu, Badge",
+            "3. Create the DataTable component using pattern-data-table for contacts, companies, and tasks lists",
+            "4. Build the Kanban board component using pattern-kanban-board with @dnd-kit for deals pipeline",
+            "5. Implement form dialogs using pattern-form-dialog with react-hook-form and Zod validation",
+            "6. Create dashboard stat cards using pattern-dashboard-stats for metrics display",
+            "7. Use Server Components for initial page render, Client Components only for interactivity (forms, drag-drop)",
+            "8. Implement responsive design with Tailwind's mobile-first breakpoints (sm, md, lg, xl)"
+          ],
+          "ownershipScope": [
+            "app/**/page.tsx",
+            "app/**/layout.tsx",
+            "components/ui/**/*.tsx",
+            "components/contacts/**/*.tsx",
+            "components/companies/**/*.tsx",
+            "components/deals/**/*.tsx",
+            "components/tasks/**/*.tsx",
+            "components/dashboard/**/*.tsx"
+          ],
+          "qualityChecklist": [
+            "All forms have client-side validation with clear error messages",
+            "DataTables support sorting, pagination, and search",
+            "Loading states use Suspense with skeleton loaders",
+            "All interactive elements are keyboard accessible",
+            "Kanban board works with keyboard (arrow keys, Enter)",
+            "Components are responsive across mobile, tablet, desktop",
+            "Dialog focus is trapped and returns on close",
+            "Empty states are handled gracefully with helpful CTAs"
+          ],
+          "antiPatterns": [
+            "Don't fetch data in Client Components - use Server Components with async/await",
+            "Don't create one-off styled components - use Tailwind utilities and shadcn/ui",
+            "Don't hardcode colors - use CSS variables from the Tailwind theme",
+            "Don't put business logic in components - use server actions or API routes",
+            "Don't skip loading states - always show feedback during async operations"
+          ]
+        },
+        {
+          "squadId": "squad-backend",
+          "squadName": "Backend Squad",
+          "specialization": "API routes, business logic, and server-side operations",
+          "assignedDomains": [
+            "domain-contacts",
+            "domain-companies",
+            "domain-deals",
+            "domain-tasks"
+          ],
+          "corePatterns": [
+            "pattern-api-route-handler",
+            "pattern-zod-validation",
+            "pattern-crud-entity",
+            "pattern-react-query-mutation",
+            "pattern-search-filter"
+          ],
+          "implementationGuide": [
+            "1. Create API route handlers in app/api/ following REST conventions (GET, POST, PUT, DELETE)",
+            "2. Define Zod schemas for all request/response validation in lib/validations/",
+            "3. Build service layer in lib/services/ for business logic (ContactService, DealService, etc.)",
+            "4. Implement query helpers for search, filtering, and pagination in lib/queries/",
+            "5. Create server actions in lib/actions/ for form submissions that need server-side processing",
+            "6. Add proper error handling with consistent JSON error responses",
+            "7. Implement authentication checks using NextAuth.js session on protected routes",
+            "8. Use Prisma transactions for operations that modify multiple records"
+          ],
+          "ownershipScope": [
+            "app/api/contacts/**/*.ts",
+            "app/api/companies/**/*.ts",
+            "app/api/deals/**/*.ts",
+            "app/api/tasks/**/*.ts",
+            "lib/services/**/*.ts",
+            "lib/actions/**/*.ts",
+            "lib/validations/**/*.ts",
+            "lib/queries/**/*.ts"
+          ],
+          "qualityChecklist": [
+            "All endpoints validate input with Zod schemas",
+            "Errors return consistent JSON format: { error: string, code: string }",
+            "Protected routes check session before processing",
+            "Pagination is implemented for list endpoints (limit, offset, cursor)",
+            "Search supports multiple fields with OR logic",
+            "Filtering supports exact match and range queries",
+            "Soft deletes are used where data relationships exist",
+            "Audit fields (createdAt, updatedAt, createdBy) are populated"
+          ],
+          "antiPatterns": [
+            "Don't put business logic directly in API route handlers - use services",
+            "Don't expose raw Prisma errors to clients - wrap in ApiError",
+            "Don't skip input validation - always validate with Zod",
+            "Don't use any type - define proper TypeScript interfaces",
+            "Don't hardcode user IDs - get from session",
+            "Don't skip authorization - verify user can access requested resources"
+          ]
+        },
+        {
+          "squadId": "squad-data",
+          "squadName": "Data Squad",
+          "specialization": "Database schema, migrations, and data integrity",
+          "assignedDomains": [
+            "domain-database"
+          ],
+          "corePatterns": [
+            "pattern-crud-entity"
+          ],
+          "implementationGuide": [
+            "1. Design Prisma schema with proper relationships: User -> Contact -> Deal -> Task",
+            "2. Create Contact model with: name, email, phone, company (relation), notes, tags (array), timestamps",
+            "3. Create Company model with: name, industry, website, notes, contacts (relation)",
+            "4. Create Deal model with: name, value (Decimal), expectedCloseDate, stage (enum), contact (relation), assignee (User relation)",
+            "5. Create Task model with: title, dueDate, status (enum), contact (optional relation), deal (optional relation)",
+            "6. Add User model with: email, passwordHash, role (enum: ADMIN, USER)",
+            "7. Create indexes on frequently queried fields: Contact.email, Deal.stage, Task.status, Task.dueDate",
+            "8. Create seed script with realistic sample data for development and demos",
+            "9. Use Prisma migrate for all schema changes - never modify production directly"
+          ],
+          "ownershipScope": [
+            "prisma/schema.prisma",
+            "prisma/migrations/**/*",
+            "prisma/seed.ts",
+            "lib/db.ts"
+          ],
+          "qualityChecklist": [
+            "All models have proper indexes for query patterns",
+            "Foreign keys are defined with appropriate onDelete behavior",
+            "Enum types are used for fixed value sets (DealStage, TaskStatus, UserRole)",
+            "Decimal type is used for monetary values (deal value)",
+            "Timestamps (createdAt, updatedAt) are on all models",
+            "Seed data covers all entities with realistic values",
+            "Migrations are tested in development before production"
+          ],
+          "antiPatterns": [
+            "Don't modify existing migrations - create new ones",
+            "Don't use String for IDs - use cuid() or uuid()",
+            "Don't skip foreign key constraints",
+            "Don't use Float for money - use Decimal",
+            "Don't create circular dependencies between models",
+            "Don't hard-delete records with existing relationships"
+          ]
+        },
+        {
+          "squadId": "squad-security",
+          "squadName": "Security Squad",
+          "specialization": "Authentication, authorization, and security",
+          "assignedDomains": [
+            "domain-security"
+          ],
+          "corePatterns": [
+            "pattern-auth-protected-route"
+          ],
+          "implementationGuide": [
+            "1. Configure NextAuth.js with CredentialsProvider for email/password auth",
+            "2. Implement password hashing with bcrypt (cost factor 12)",
+            "3. Create login page at /login with email/password form and error handling",
+            "4. Create registration page at /register with password strength validation",
+            "5. Implement middleware.ts to protect all routes except /login, /register, /api/auth/*",
+            "6. Create role-based access control: Admin can manage users, User has standard access",
+            "7. Add session token to API requests via NextAuth session callback",
+            "8. Implement CSRF protection (built into NextAuth.js)",
+            "9. Add rate limiting on login endpoint to prevent brute force"
+          ],
+          "ownershipScope": [
+            "app/api/auth/**/*.ts",
+            "app/(auth)/login/page.tsx",
+            "app/(auth)/register/page.tsx",
+            "lib/auth.ts",
+            "middleware.ts"
+          ],
+          "qualityChecklist": [
+            "Passwords are hashed with bcrypt before storage",
+            "JWT tokens have appropriate expiration (e.g., 24 hours)",
+            "Protected routes redirect to /login when unauthenticated",
+            "Role checks are enforced on admin-only operations",
+            "Session includes user ID and role for authorization",
+            "Login failures return generic error (prevent user enumeration)",
+            "Password requirements enforced (min length, complexity)"
+          ],
+          "antiPatterns": [
+            "Never store passwords in plain text",
+            "Never expose user existence via different error messages",
+            "Don't trust client-side role checks alone - verify server-side",
+            "Don't skip HTTPS in production",
+            "Don't store sensitive data in localStorage",
+            "Don't log passwords or tokens"
+          ]
+        },
+        {
+          "squadId": "squad-qa",
+          "squadName": "QA Squad",
+          "specialization": "Testing, quality assurance, and production readiness",
+          "assignedDomains": [
+            "domain-quality"
+          ],
+          "corePatterns": [
+            "pattern-e2e-test",
+            "pattern-vitest-unit"
+          ],
+          "implementationGuide": [
+            "1. Set up Vitest for unit and integration tests with test utilities",
+            "2. Configure Playwright for E2E tests targeting Chrome, Firefox, Safari",
+            "3. Create test fixtures with factory functions for Contact, Company, Deal, Task",
+            "4. Write unit tests for all service layer functions",
+            "5. Write integration tests for all API endpoints",
+            "6. Create E2E tests for critical user flows: login, create contact, manage deals, complete tasks",
+            "7. Add accessibility tests using Playwright's accessibility testing",
+            "8. Set up CI pipeline to run tests on every PR",
+            "9. Configure test coverage reporting (aim for 80%+ on services)"
+          ],
+          "ownershipScope": [
+            "__tests__/**/*.test.ts",
+            "__tests__/**/*.test.tsx",
+            "e2e/**/*.spec.ts",
+            "lib/test-utils/**/*.ts",
+            "vitest.config.ts",
+            "playwright.config.ts"
+          ],
+          "qualityChecklist": [
+            "All service functions have unit tests",
+            "All API endpoints have integration tests",
+            "Critical user flows have E2E tests",
+            "Tests run in CI and block merge on failure",
+            "Test data is isolated and cleaned up after each test",
+            "Flaky tests are identified and fixed",
+            "Coverage is tracked and enforced"
+          ],
+          "antiPatterns": [
+            "Don't test implementation details - test behavior",
+            "Don't share state between tests - isolate completely",
+            "Don't skip edge cases - test error paths",
+            "Don't write tests that depend on execution order",
+            "Don't mock too much - use real database for integration tests",
+            "Don't ignore flaky tests - fix root cause"
+          ]
+        },
+        {
+          "squadId": "squad-fullstack",
+          "squadName": "Fullstack Squad",
+          "specialization": "End-to-end feature implementation and integration",
+          "assignedDomains": [
+            "domain-infrastructure",
+            "domain-integration"
+          ],
+          "corePatterns": [
+            "pattern-server-component-page",
+            "pattern-detail-page",
+            "pattern-tag-input"
+          ],
+          "implementationGuide": [
+            "1. Initialize Next.js 14 project with App Router, TypeScript strict mode, and Tailwind CSS",
+            "2. Set up project folder structure: app/, components/, lib/, services/, types/",
+            "3. Configure path aliases in tsconfig.json (@/ for root)",
+            "4. Install and configure shadcn/ui component library",
+            "5. Set up Prisma with PostgreSQL and create initial migration",
+            "6. Configure environment variables (.env.local for dev, Vercel for prod)",
+            "7. Build feature pages combining Server Components for data + Client Components for interactivity",
+            "8. Implement contact detail page showing linked deals and tasks",
+            "9. Wire up search and filter across contacts list with URL-based state",
+            "10. Ensure all features work together in integrated user workflows"
+          ],
+          "ownershipScope": [
+            "app/layout.tsx",
+            "app/page.tsx",
+            "next.config.js",
+            "tailwind.config.ts",
+            "tsconfig.json",
+            "package.json",
+            ".env.example",
+            "types/**/*.ts"
+          ],
+          "qualityChecklist": [
+            "Project builds without TypeScript errors",
+            "All environment variables are documented in .env.example",
+            "Shared types are centralized in types/",
+            "Feature pages integrate data and UI correctly",
+            "Navigation flows are intuitive and consistent",
+            "Error boundaries handle unexpected failures gracefully",
+            "Production build is optimized and deploys successfully"
+          ],
+          "antiPatterns": [
+            "Don't create deeply nested folder structures - keep it flat",
+            "Don't duplicate types - share via centralized definitions",
+            "Don't skip TypeScript strict mode",
+            "Don't commit .env files - use .env.example",
+            "Don't over-engineer early - start simple and iterate",
+            "Don't add dependencies without justification"
+          ]
+        }
+      ],
+      "components": [],
+      "dataModels": [],
+      "apiEndpoints": [],
+      "sharedUtilities": [
+        {
+          "name": "api-client",
+          "path": "lib/api-client.ts",
+          "purpose": "Centralized fetch wrapper with auth headers, error handling, and type safety",
+          "interface": "export async function apiClient<T>(endpoint: string, options?: RequestInit): Promise<T>"
+        },
+        {
+          "name": "format-date",
+          "path": "lib/utils/format-date.ts",
+          "purpose": "Date formatting and parsing utilities for due dates and timestamps",
+          "interface": "export function formatDate(date: Date | string, format?: 'short' | 'long' | 'relative'): string"
+        },
+        {
+          "name": "format-currency",
+          "path": "lib/utils/format-currency.ts",
+          "purpose": "Currency formatting for deal values",
+          "interface": "export function formatCurrency(amount: number, currency?: string): string"
+        },
+        {
+          "name": "cn",
+          "path": "lib/utils/cn.ts",
+          "purpose": "Tailwind class name merging utility using clsx and tailwind-merge",
+          "interface": "export function cn(...inputs: ClassValue[]): string"
+        },
+        {
+          "name": "use-debounce",
+          "path": "lib/hooks/use-debounce.ts",
+          "purpose": "Debounce hook for search inputs",
+          "interface": "export function useDebounce<T>(value: T, delay?: number): T"
+        },
+        {
+          "name": "use-toast",
+          "path": "lib/hooks/use-toast.ts",
+          "purpose": "Toast notification hook for user feedback",
+          "interface": "export function useToast(): { toast: (options: ToastOptions) => void }"
+        },
+        {
+          "name": "validation-schemas",
+          "path": "lib/validations/schemas.ts",
+          "purpose": "Zod schemas for form validation shared between client and API",
+          "interface": "export const contactSchema, companySchema, dealSchema, taskSchema: z.ZodSchema"
+        },
+        {
+          "name": "pipeline-stages",
+          "path": "lib/constants/pipeline-stages.ts",
+          "purpose": "Deal pipeline stage definitions and utilities",
+          "interface": "export const PIPELINE_STAGES: Stage[]; export function getStageColor(stage: string): string"
+        },
+        {
+          "name": "query-params",
+          "path": "lib/utils/query-params.ts",
+          "purpose": "URL search params builder for filtering and pagination",
+          "interface": "export function buildQueryString(params: Record<string, unknown>): string"
+        },
+        {
+          "name": "prisma-client",
+          "path": "lib/db/prisma.ts",
+          "purpose": "Singleton Prisma client instance for database access",
+          "interface": "export const prisma: PrismaClient"
+        },
+        {
+          "name": "auth-utils",
+          "path": "lib/auth/utils.ts",
+          "purpose": "Authentication utilities for getting session and checking roles",
+          "interface": "export async function getServerSession(): Promise<Session | null>; export function hasRole(session: Session, role: string): boolean"
+        },
+        {
+          "name": "api-response",
+          "path": "lib/api/response.ts",
+          "purpose": "Standardized API response helpers",
+          "interface": "export function successResponse<T>(data: T): NextResponse; export function errorResponse(message: string, status?: number): NextResponse"
+        }
+      ],
+      "implementationOrder": [
+        "prisma-schema-and-migrations",
+        "prisma-client-singleton",
+        "auth-utils",
+        "nextauth-configuration",
+        "api-response-helpers",
+        "validation-schemas",
+        "cn-utility",
+        "layout-shell",
+        "navigation-component",
+        "toast-provider",
+        "api-client",
+        "login-page",
+        "registration-page",
+        "route-middleware",
+        "contacts-api",
+        "contacts-list-page",
+        "contact-form-modal",
+        "contact-detail-page",
+        "companies-api",
+        "companies-pages",
+        "pipeline-stages-constants",
+        "deals-api",
+        "deals-kanban-board",
+        "deal-form-modal",
+        "tasks-api",
+        "tasks-list-page",
+        "dashboard-api",
+        "dashboard-page"
+      ],
+      "criticalPaths": [
+        "Database schema must be finalized before any API development - Contact, Company, Deal, Task relationships are foundational",
+        "Authentication flow (NextAuth + middleware) must be solid before building protected pages",
+        "Prisma client singleton prevents connection pool exhaustion in serverless environment",
+        "Validation schemas shared between client forms and API routes ensure data consistency",
+        "API response helpers establish consistent error handling patterns across all endpoints",
+        "Layout shell and navigation provide the application structure all pages depend on",
+        "Contact CRUD must work before Deals and Tasks since they reference contacts",
+        "Company management can parallel contact development but linking requires contacts first",
+        "Deal pipeline depends on contacts being linkable - kanban drag-drop is complex UI",
+        "Tasks depend on both contacts and deals for linking - implement after both exist",
+        "Dashboard aggregations require all entity APIs to be functional for accurate metrics"
+      ]
+    }
+  },
+  "epics": [],
+  "stories": [],
+  "domains": [],
+  "squads": []
+}

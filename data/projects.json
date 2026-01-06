@@ -1,0 +1,60 @@
+[
+  {
+    "projectId": "420e15d2-bd75-44bb-93f4-1480726d0de8",
+    "requirements": "Project cloned from https://SmartCycleAI@dev.azure.com/SmartCycleAI/weight-management/_git/weight-management",
+    "config": {
+      "name": "asdfasdfasdfasdfasdf",
+      "description": "Project initialized from git repository: https://SmartCycleAI@dev.azure.com/SmartCycleAI/weight-management/_git/weight-management",
+      "techStack": [],
+      "requirements": "",
+      "targetPlatform": "web",
+      "deployment": {
+        "provider": "aws",
+        "environment": "dev"
+      },
+      "git": {
+        "repoUrl": "https://SmartCycleAI@dev.azure.com/SmartCycleAI/weight-management/_git/weight-management",
+        "branch": "main",
+        "remoteName": "origin",
+        "lastPulledAt": "2026-01-06T17:51:49.633Z",
+        "lastCommitHash": "51d3f77d6de327bd1e08c4e2768e826e87ddce77"
+      }
+    },
+    "status": "completed",
+    "progress": 100,
+    "projectDirectory": "C:\\Users\\srfit\\coding\\ai-projects-real\\420e15d2-bd75-44bb-93f4-1480726d0de8",
+    "source": "github",
+    "gitUrl": "https://SmartCycleAI@dev.azure.com/SmartCycleAI/weight-management/_git/weight-management",
+    "createdAt": "2026-01-06T17:51:49.676Z",
+    "updatedAt": "2026-01-06T17:51:49.676Z"
+  },
+  {
+    "projectId": "762107db-1b15-4c5d-b7c0-56fc7219dc85",
+    "requirements": "Project cloned from https://SmartCycleAI@dev.azure.com/SmartCycleAI/project-intake/_git/project-intake",
+    "config": {
+      "name": "Project",
+      "description": "Project initialized from git repository: https://SmartCycleAI@dev.azure.com/SmartCycleAI/project-intake/_git/project-intake",
+      "techStack": [],
+      "requirements": "",
+      "targetPlatform": "web",
+      "deployment": {
+        "provider": "aws",
+        "environment": "dev"
+      },
+      "git": {
+        "repoUrl": "https://SmartCycleAI@dev.azure.com/SmartCycleAI/project-intake/_git/project-intake",
+        "branch": "master",
+        "remoteName": "origin",
+        "lastPulledAt": "2026-01-06T20:45:42.690Z",
+        "lastCommitHash": "6faedbc1986189a2c9d3b9965c48cd400304eb7a"
+      }
+    },
+    "status": "completed",
+    "progress": 100,
+    "projectDirectory": "C:\\Users\\srfit\\coding\\ai-projects-real\\762107db-1b15-4c5d-b7c0-56fc7219dc85",
+    "source": "github",
+    "gitUrl": "https://SmartCycleAI@dev.azure.com/SmartCycleAI/project-intake/_git/project-intake",
+    "createdAt": "2026-01-06T20:45:42.697Z",
+    "updatedAt": "2026-01-06T20:45:42.697Z"
+  }
+]

@@ -1,0 +1,651 @@
+{
+  "version": "1.0.0",
+  "lastUpdated": "2025-12-23T01:50:19.871Z",
+  "apis": [
+    {
+      "id": "mlx-ocr",
+      "name": "MLX OCR Service",
+      "description": "Local OCR processing using MLX DeepSeek-VL on Apple Silicon. Extracts text from images with high accuracy.",
+      "category": "ocr",
+      "baseUrl": "/api/mlx/ocr",
+      "endpoints": [
+        {
+          "path": "/",
+          "method": "POST",
+          "description": "Extract text from an image",
+          "requestBody": {
+            "image": "base64-encoded image data",
+            "mode": "general | document | handwriting"
+          },
+          "responseExample": {
+            "text": "Extracted text content",
+            "confidence": 0.95,
+            "boundingBoxes": []
+          }
+        }
+      ],
+      "authentication": {
+        "type": "none"
+      },
+      "examples": [
+        {
+          "title": "Basic OCR Request",
+          "language": "typescript",
+          "code": "const response = await fetch('/api/mlx/ocr', {\n  method: 'POST',\n  headers: { 'Content-Type': 'application/json' },\n  body: JSON.stringify({\n    image: base64ImageData,\n    mode: 'document'\n  })\n});\nconst { text } = await response.json();"
+        }
+      ],
+      "tags": [
+        "ocr",
+        "vision",
+        "local",
+        "apple-silicon"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "epic-fhir",
+      "name": "Epic FHIR APIs",
+      "description": "Healthcare data access via Epic FHIR R4 APIs. Access patient records, medications, allergies, and more.",
+      "category": "healthcare",
+      "baseUrl": "/api/epic/fhir",
+      "endpoints": [
+        {
+          "path": "/Patient",
+          "method": "GET",
+          "description": "Search or retrieve patient demographics"
+        },
+        {
+          "path": "/Patient/{id}",
+          "method": "GET",
+          "description": "Get patient by ID"
+        },
+        {
+          "path": "/Condition",
+          "method": "GET",
+          "description": "Patient conditions and diagnoses"
+        },
+        {
+          "path": "/MedicationRequest",
+          "method": "GET",
+          "description": "Medication orders and prescriptions"
+        },
+        {
+          "path": "/AllergyIntolerance",
+          "method": "GET",
+          "description": "Patient allergies"
+        },
+        {
+          "path": "/Observation",
+          "method": "GET",
+          "description": "Lab results and vitals"
+        },
+        {
+          "path": "/Encounter",
+          "method": "GET",
+          "description": "Patient visits and encounters"
+        },
+        {
+          "path": "/DiagnosticReport",
+          "method": "GET",
+          "description": "Diagnostic reports"
+        },
+        {
+          "path": "/Immunization",
+          "method": "GET",
+          "description": "Immunization records"
+        },
+        {
+          "path": "/Procedure",
+          "method": "GET",
+          "description": "Procedures performed"
+        },
+        {
+          "path": "/CarePlan",
+          "method": "GET",
+          "description": "Patient care plans"
+        },
+        {
+          "path": "/DocumentReference",
+          "method": "GET",
+          "description": "Clinical documents"
+        }
+      ],
+      "authentication": {
+        "type": "oauth",
+        "envVariable": "EPIC_ACCESS_TOKEN"
+      },
+      "examples": [
+        {
+          "title": "Fetch Patient Data",
+          "language": "typescript",
+          "code": "const response = await fetch('/api/epic/fhir/Patient/123');\nconst patient = await response.json();"
+        },
+        {
+          "title": "Search Medications",
+          "language": "typescript",
+          "code": "const response = await fetch('/api/epic/fhir/MedicationRequest?patient=123');\nconst bundle = await response.json();\nconst medications = bundle.entry?.map(e => e.resource) || [];"
+        }
+      ],
+      "tags": [
+        "healthcare",
+        "fhir",
+        "epic",
+        "ehr",
+        "hipaa"
+      ],
+      "enabled": true,
+      "requiresSetup": true,
+      "setupInstructions": "Configure Epic credentials in Settings > Epic Integration"
+    },
+    {
+      "id": "compliance-scan",
+      "name": "HIPAA Compliance Scanner",
+      "description": "Scan code for HIPAA compliance violations and generate annotations.",
+      "category": "healthcare",
+      "baseUrl": "/api/compliance/scan",
+      "endpoints": [
+        {
+          "path": "/",
+          "method": "POST",
+          "description": "Scan project for compliance issues",
+          "requestBody": {
+            "projectId": "Project ID to scan",
+            "outputFormat": "full | summary | violations-only"
+          }
+        }
+      ],
+      "authentication": {
+        "type": "none"
+      },
+      "examples": [
+        {
+          "title": "Run Compliance Scan",
+          "language": "typescript",
+          "code": "const response = await fetch('/api/compliance/scan', {\n  method: 'POST',\n  headers: { 'Content-Type': 'application/json' },\n  body: JSON.stringify({ projectId: 'my-project', outputFormat: 'full' })\n});"
+        }
+      ],
+      "tags": [
+        "compliance",
+        "hipaa",
+        "healthcare",
+        "security"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "infrastructure-analyze",
+      "name": "Infrastructure Analyzer",
+      "description": "Analyze project requirements and detect needed infrastructure (databases, caches, storage).",
+      "category": "utility",
+      "baseUrl": "/api/infrastructure/analyze",
+      "endpoints": [
+        {
+          "path": "/",
+          "method": "POST",
+          "description": "Analyze project infrastructure needs",
+          "requestBody": {
+            "projectId": "Project ID to analyze"
+          }
+        }
+      ],
+      "authentication": {
+        "type": "none"
+      },
+      "examples": [
+        {
+          "title": "Analyze Infrastructure",
+          "language": "typescript",
+          "code": "const response = await fetch('/api/infrastructure/analyze', {\n  method: 'POST',\n  headers: { 'Content-Type': 'application/json' },\n  body: JSON.stringify({ projectId: 'my-project' })\n});\nconst { databases, caches, storage } = await response.json();"
+        }
+      ],
+      "tags": [
+        "infrastructure",
+        "devops",
+        "analysis"
+      ],
+      "enabled": true
+    }
+  ],
+  "mcpServers": [
+    {
+      "id": "filesystem",
+      "name": "Filesystem Server",
+      "description": "Read/write files and directories via MCP protocol",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "/tmp/mcp-workspace"
+      ],
+      "tools": [
+        {
+          "name": "read_file",
+          "description": "Read contents of a file"
+        },
+        {
+          "name": "write_file",
+          "description": "Write content to a file"
+        },
+        {
+          "name": "list_directory",
+          "description": "List directory contents"
+        },
+        {
+          "name": "create_directory",
+          "description": "Create a new directory"
+        },
+        {
+          "name": "move_file",
+          "description": "Move or rename a file"
+        }
+      ],
+      "enabled": true,
+      "autoStart": false,
+      "category": "filesystem"
+    },
+    {
+      "id": "postgres",
+      "name": "PostgreSQL Server",
+      "description": "Query PostgreSQL databases via MCP",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-postgres"
+      ],
+      "env": {
+        "DATABASE_URL": "${DATABASE_URL}"
+      },
+      "tools": [
+        {
+          "name": "query",
+          "description": "Execute SQL query"
+        },
+        {
+          "name": "list_tables",
+          "description": "List database tables"
+        },
+        {
+          "name": "describe_table",
+          "description": "Get table schema"
+        }
+      ],
+      "enabled": false,
+      "autoStart": false,
+      "category": "database"
+    },
+    {
+      "id": "brave-search",
+      "name": "Brave Search",
+      "description": "Web search via Brave Search API",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-brave-search"
+      ],
+      "env": {
+        "BRAVE_API_KEY": "${BRAVE_API_KEY}"
+      },
+      "tools": [
+        {
+          "name": "brave_web_search",
+          "description": "Search the web for information"
+        },
+        {
+          "name": "brave_local_search",
+          "description": "Search for local businesses and places"
+        }
+      ],
+      "enabled": false,
+      "autoStart": false,
+      "category": "search"
+    },
+    {
+      "id": "github",
+      "name": "GitHub Server",
+      "description": "Interact with GitHub repositories, issues, and PRs",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-github"
+      ],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_TOKEN}"
+      },
+      "tools": [
+        {
+          "name": "create_repository",
+          "description": "Create a new GitHub repository"
+        },
+        {
+          "name": "search_repositories",
+          "description": "Search for repositories"
+        },
+        {
+          "name": "create_issue",
+          "description": "Create an issue in a repository"
+        },
+        {
+          "name": "create_pull_request",
+          "description": "Create a pull request"
+        },
+        {
+          "name": "list_commits",
+          "description": "List commits in a repository"
+        }
+      ],
+      "enabled": false,
+      "autoStart": false,
+      "category": "code"
+    },
+    {
+      "id": "memory",
+      "name": "Memory Server",
+      "description": "Persistent memory and knowledge graph for agents",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-memory"
+      ],
+      "tools": [
+        {
+          "name": "store_memory",
+          "description": "Store information in memory"
+        },
+        {
+          "name": "retrieve_memory",
+          "description": "Retrieve stored information"
+        },
+        {
+          "name": "search_memory",
+          "description": "Search through memories"
+        }
+      ],
+      "enabled": true,
+      "autoStart": false,
+      "category": "custom"
+    }
+  ],
+  "llmProviders": [
+    {
+      "id": "anthropic",
+      "name": "Anthropic Claude",
+      "type": "anthropic",
+      "apiKeyEnvVar": "ANTHROPIC_API_KEY",
+      "models": [
+        {
+          "id": "claude-sonnet-4-20250514",
+          "name": "Claude Sonnet 4",
+          "contextWindow": 200000,
+          "supportsVision": true,
+          "supportsTools": true
+        },
+        {
+          "id": "claude-opus-4-20250514",
+          "name": "Claude Opus 4",
+          "contextWindow": 200000,
+          "supportsVision": true,
+          "supportsTools": true
+        },
+        {
+          "id": "claude-3-5-haiku-20241022",
+          "name": "Claude 3.5 Haiku",
+          "contextWindow": 200000,
+          "supportsVision": true,
+          "supportsTools": true
+        }
+      ],
+      "capabilities": [
+        "vision",
+        "code",
+        "chat",
+        "function-calling"
+      ],
+      "useCases": [
+        "Complex reasoning",
+        "Code generation",
+        "Analysis",
+        "Multi-step tasks"
+      ],
+      "enabled": false,
+      "isDefault": false
+    },
+    {
+      "id": "mlx",
+      "name": "MLX (Apple Silicon)",
+      "type": "mlx",
+      "baseUrl": "http://localhost:8080",
+      "models": [
+        {
+          "id": "mlx-community/DeepSeek-VL-7B-chat-4bit",
+          "name": "DeepSeek-VL 7B (Vision)",
+          "contextWindow": 4096,
+          "supportsVision": true,
+          "supportsTools": false
+        },
+        {
+          "id": "mlx-community/Qwen2.5-7B-Instruct-4bit",
+          "name": "Qwen 2.5 7B Instruct",
+          "contextWindow": 32768,
+          "supportsVision": false,
+          "supportsTools": false
+        },
+        {
+          "id": "mlx-community/Llama-3.2-3B-Instruct-4bit",
+          "name": "Llama 3.2 3B Instruct",
+          "contextWindow": 128000,
+          "supportsVision": false,
+          "supportsTools": false
+        },
+        {
+          "id": "mlx-community/Mistral-7B-Instruct-v0.3-4bit",
+          "name": "Mistral 7B Instruct",
+          "contextWindow": 32768,
+          "supportsVision": false,
+          "supportsTools": false
+        }
+      ],
+      "capabilities": [
+        "vision",
+        "code",
+        "chat"
+      ],
+      "useCases": [
+        "Local inference on Apple Silicon",
+        "Vision/OCR tasks",
+        "Privacy-sensitive tasks",
+        "Fast local generation"
+      ],
+      "enabled": false
+    },
+    {
+      "id": "openai",
+      "name": "OpenAI",
+      "type": "openai",
+      "apiKeyEnvVar": "OPENAI_API_KEY",
+      "models": [
+        {
+          "id": "gpt-4o",
+          "name": "GPT-4o",
+          "contextWindow": 128000,
+          "supportsVision": true,
+          "supportsTools": true
+        },
+        {
+          "id": "gpt-4o-mini",
+          "name": "GPT-4o Mini",
+          "contextWindow": 128000,
+          "supportsVision": true,
+          "supportsTools": true
+        },
+        {
+          "id": "o1",
+          "name": "o1",
+          "contextWindow": 200000,
+          "supportsVision": true,
+          "supportsTools": false
+        }
+      ],
+      "capabilities": [
+        "vision",
+        "code",
+        "chat",
+        "function-calling"
+      ],
+      "useCases": [
+        "Alternative to Claude",
+        "Specific model requirements"
+      ],
+      "enabled": true,
+      "isDefault": true
+    },
+    {
+      "id": "groq",
+      "name": "Groq (Fast)",
+      "type": "groq",
+      "baseUrl": "https://api.groq.com/openai/v1",
+      "apiKeyEnvVar": "GROQ_API_KEY",
+      "models": [
+        {
+          "id": "llama-3.3-70b-versatile",
+          "name": "Llama 3.3 70B",
+          "contextWindow": 128000,
+          "supportsVision": false,
+          "supportsTools": true
+        },
+        {
+          "id": "mixtral-8x7b-32768",
+          "name": "Mixtral 8x7B",
+          "contextWindow": 32768,
+          "supportsVision": false,
+          "supportsTools": true
+        }
+      ],
+      "capabilities": [
+        "code",
+        "chat",
+        "function-calling"
+      ],
+      "useCases": [
+        "Fast inference",
+        "High throughput",
+        "Cost-effective"
+      ],
+      "enabled": false
+    }
+  ],
+  "externalIntegrations": [
+    {
+      "id": "google-analytics",
+      "name": "Google Analytics 4",
+      "description": "Track user behavior and website analytics with Google Analytics 4. Includes page views, events, and user metrics.",
+      "category": "analytics",
+      "icon": "BarChart",
+      "packages": [
+        "@next/third-parties"
+      ],
+      "envVars": [
+        {
+          "name": "NEXT_PUBLIC_GA_ID",
+          "description": "Google Analytics 4 Measurement ID (starts with G-)",
+          "required": true,
+          "example": "G-XXXXXXXXXX"
+        }
+      ],
+      "injections": [
+        {
+          "target": "layout",
+          "importStatement": "import { GoogleAnalytics } from '@next/third-parties/google'",
+          "code": "<GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID!} />",
+          "filename": "app/layout.tsx"
+        },
+        {
+          "target": "lib",
+          "filename": "lib/analytics.ts",
+          "code": "// Google Analytics 4 utility functions\nexport const GA_ID = process.env.NEXT_PUBLIC_GA_ID;\n\n// Track custom events\nexport const trackEvent = (action: string, category: string, label?: string, value?: number) => {\n  if (typeof window !== 'undefined' && window.gtag) {\n    window.gtag('event', action, {\n      event_category: category,\n      event_label: label,\n      value: value,\n    });\n  }\n};\n\n// Track page views (automatic with GoogleAnalytics component, but available for SPAs)\nexport const trackPageView = (url: string) => {\n  if (typeof window !== 'undefined' && window.gtag) {\n    window.gtag('config', GA_ID!, {\n      page_path: url,\n    });\n  }\n};\n\n// Extend window type for gtag\ndeclare global {\n  interface Window {\n    gtag: (...args: any[]) => void;\n  }\n}"
+        }
+      ],
+      "setupSteps": [
+        "Go to analytics.google.com and create a new GA4 property",
+        "Copy your Measurement ID (starts with G-)",
+        "Add NEXT_PUBLIC_GA_ID=G-XXXXXXXXXX to your .env.local file",
+        "The GoogleAnalytics component will be added to your layout automatically"
+      ],
+      "docsUrl": "https://nextjs.org/docs/app/building-your-application/optimizing/third-party-libraries#google-analytics",
+      "enabled": false
+    },
+    {
+      "id": "mock-analytics",
+      "name": "Mock Analytics Service",
+      "description": "A mock analytics service for testing integration injection. Mimics Google Analytics API patterns.",
+      "category": "mock",
+      "icon": "TestTube",
+      "packages": [],
+      "envVars": [
+        {
+          "name": "NEXT_PUBLIC_MOCK_ANALYTICS_ID",
+          "description": "Mock Analytics ID for testing",
+          "required": true,
+          "example": "MOCK-12345"
+        }
+      ],
+      "injections": [
+        {
+          "target": "providers",
+          "filename": "components/providers/MockAnalyticsProvider.tsx",
+          "code": "'use client';\n\nimport { createContext, useContext, useEffect, ReactNode } from 'react';\n\ninterface MockAnalyticsContextType {\n  trackEvent: (action: string, category: string, label?: string) => void;\n  trackPageView: (url: string) => void;\n}\n\nconst MockAnalyticsContext = createContext<MockAnalyticsContextType | null>(null);\n\nexport function MockAnalyticsProvider({ children }: { children: ReactNode }) {\n  const analyticsId = process.env.NEXT_PUBLIC_MOCK_ANALYTICS_ID;\n\n  useEffect(() => {\n    console.log('[MockAnalytics] Initialized with ID:', analyticsId);\n  }, [analyticsId]);\n\n  const trackEvent = (action: string, category: string, label?: string) => {\n    console.log('[MockAnalytics] Event:', { action, category, label, analyticsId });\n    fetch('/api/mock-analytics/event', {\n      method: 'POST',\n      headers: { 'Content-Type': 'application/json' },\n      body: JSON.stringify({ action, category, label, analyticsId }),\n    }).catch(() => {});\n  };\n\n  const trackPageView = (url: string) => {\n    console.log('[MockAnalytics] Page View:', { url, analyticsId });\n    fetch('/api/mock-analytics/pageview', {\n      method: 'POST',\n      headers: { 'Content-Type': 'application/json' },\n      body: JSON.stringify({ url, analyticsId }),\n    }).catch(() => {});\n  };\n\n  return (\n    <MockAnalyticsContext.Provider value={{ trackEvent, trackPageView }}>\n      {children}\n    </MockAnalyticsContext.Provider>\n  );\n}\n\nexport function useMockAnalytics() {\n  const context = useContext(MockAnalyticsContext);\n  if (!context) {\n    throw new Error('useMockAnalytics must be used within MockAnalyticsProvider');\n  }\n  return context;\n}"
+        },
+        {
+          "target": "api-route",
+          "filename": "app/api/mock-analytics/event/route.ts",
+          "code": "import { NextRequest, NextResponse } from 'next/server';\n\nconst events: any[] = [];\n\nexport async function POST(request: NextRequest) {\n  try {\n    const body = await request.json();\n    const event = {\n      ...body,\n      timestamp: new Date().toISOString(),\n      id: crypto.randomUUID(),\n    };\n    events.push(event);\n    console.log('[MockAnalytics API] Event received:', event);\n    return NextResponse.json({ success: true, eventId: event.id });\n  } catch (error) {\n    return NextResponse.json({ error: 'Invalid request' }, { status: 400 });\n  }\n}\n\nexport async function GET() {\n  return NextResponse.json({ events, count: events.length });\n}"
+        },
+        {
+          "target": "api-route",
+          "filename": "app/api/mock-analytics/pageview/route.ts",
+          "code": "import { NextRequest, NextResponse } from 'next/server';\n\nconst pageviews: any[] = [];\n\nexport async function POST(request: NextRequest) {\n  try {\n    const body = await request.json();\n    const pageview = {\n      ...body,\n      timestamp: new Date().toISOString(),\n      id: crypto.randomUUID(),\n    };\n    pageviews.push(pageview);\n    console.log('[MockAnalytics API] Pageview received:', pageview);\n    return NextResponse.json({ success: true, pageviewId: pageview.id });\n  } catch (error) {\n    return NextResponse.json({ error: 'Invalid request' }, { status: 400 });\n  }\n}\n\nexport async function GET() {\n  return NextResponse.json({ pageviews, count: pageviews.length });\n}"
+        }
+      ],
+      "setupSteps": [
+        "Set NEXT_PUBLIC_MOCK_ANALYTICS_ID=MOCK-12345 in your .env.local",
+        "Wrap your app with MockAnalyticsProvider",
+        "Use useMockAnalytics() hook to track events",
+        "View tracked events at /api/mock-analytics/event"
+      ],
+      "mockEndpoint": "/api/mock-analytics",
+      "enabled": false
+    },
+    {
+      "id": "mock-ga-data-api",
+      "name": "Mock GA Data API",
+      "description": "A complete mock implementation of the Google Analytics 4 Data API. Provides realistic report data for testing GA4 integrations without needing real credentials.",
+      "category": "mock",
+      "icon": "Database",
+      "packages": [],
+      "envVars": [
+        {
+          "name": "NEXT_PUBLIC_GA_PROPERTY_ID",
+          "description": "GA4 Property ID for mock API calls",
+          "required": false,
+          "example": "123456789"
+        }
+      ],
+      "injections": [
+        {
+          "target": "lib",
+          "filename": "lib/ga-data-client.ts",
+          "code": "/**\n * Google Analytics Data API Client (Mock)\n * \n * This client connects to the local mock GA Data API.\n * Replace the base URL with the real GA API in production.\n */\n\nconst MOCK_GA_API_BASE = '/api/mock-ga/v1beta';\nconst PROPERTY_ID = process.env.NEXT_PUBLIC_GA_PROPERTY_ID || '123456789';\n\nexport interface GADimension {\n  name: string;\n}\n\nexport interface GAMetric {\n  name: string;\n}\n\nexport interface GADateRange {\n  startDate: string;\n  endDate: string;\n}\n\nexport interface GAReportRequest {\n  dimensions?: GADimension[];\n  metrics?: GAMetric[];\n  dateRanges?: GADateRange[];\n  limit?: number;\n}\n\nexport interface GAReportRow {\n  dimensionValues: { value: string }[];\n  metricValues: { value: string }[];\n}\n\nexport interface GAReportResponse {\n  dimensionHeaders: { name: string }[];\n  metricHeaders: { name: string; type: string }[];\n  rows: GAReportRow[];\n  rowCount: number;\n  metadata: {\n    currencyCode: string;\n    timeZone: string;\n  };\n}\n\nexport async function getMetadata(): Promise<any> {\n  const res = await fetch(`${MOCK_GA_API_BASE}/properties/${PROPERTY_ID}/metadata`);\n  if (!res.ok) throw new Error('Failed to fetch metadata');\n  return res.json();\n}\n\nexport async function runReport(request: GAReportRequest): Promise<GAReportResponse> {\n  const res = await fetch(`${MOCK_GA_API_BASE}/properties/${PROPERTY_ID}:runReport`, {\n    method: 'POST',\n    headers: { 'Content-Type': 'application/json' },\n    body: JSON.stringify(request),\n  });\n  if (!res.ok) throw new Error('Failed to run report');\n  return res.json();\n}\n\nexport async function runRealtimeReport(request: GAReportRequest): Promise<GAReportResponse> {\n  const res = await fetch(`${MOCK_GA_API_BASE}/properties/${PROPERTY_ID}:runRealtimeReport`, {\n    method: 'POST',\n    headers: { 'Content-Type': 'application/json' },\n    body: JSON.stringify(request),\n  });\n  if (!res.ok) throw new Error('Failed to run realtime report');\n  return res.json();\n}\n\nexport async function batchRunReports(requests: GAReportRequest[]): Promise<{ reports: GAReportResponse[] }> {\n  const res = await fetch(`${MOCK_GA_API_BASE}/properties/${PROPERTY_ID}:batchRunReports`, {\n    method: 'POST',\n    headers: { 'Content-Type': 'application/json' },\n    body: JSON.stringify({ requests }),\n  });\n  if (!res.ok) throw new Error('Failed to run batch reports');\n  return res.json();\n}\n\n// Common report shortcuts\nexport async function getTopCountries(limit = 10) {\n  return runReport({\n    dimensions: [{ name: 'country' }],\n    metrics: [{ name: 'activeUsers' }, { name: 'sessions' }],\n    limit,\n  });\n}\n\nexport async function getTopPages(limit = 10) {\n  return runReport({\n    dimensions: [{ name: 'pagePath' }],\n    metrics: [{ name: 'screenPageViews' }, { name: 'activeUsers' }],\n    limit,\n  });\n}\n\nexport async function getDeviceBreakdown() {\n  return runReport({\n    dimensions: [{ name: 'deviceCategory' }],\n    metrics: [{ name: 'activeUsers' }, { name: 'sessions' }, { name: 'bounceRate' }],\n  });\n}\n\nexport async function getTrafficSources(limit = 10) {\n  return runReport({\n    dimensions: [{ name: 'sessionSource' }, { name: 'sessionMedium' }],\n    metrics: [{ name: 'sessions' }, { name: 'activeUsers' }],\n    limit,\n  });\n}"
+        }
+      ],
+      "setupSteps": [
+        "The Mock GA Data API is available at /api/mock-ga",
+        "Import functions from lib/ga-data-client.ts",
+        "Use runReport(), runRealtimeReport(), etc. to fetch mock analytics data",
+        "View available dimensions/metrics at /api/mock-ga",
+        "Test with: curl http://localhost:3000/api/mock-ga/v1beta/properties/123:runReport -X POST -H 'Content-Type: application/json' -d '{\"dimensions\":[{\"name\":\"country\"}],\"metrics\":[{\"name\":\"activeUsers\"}]}'"
+      ],
+      "mockEndpoint": "/api/mock-ga",
+      "docsUrl": "https://developers.google.com/analytics/devguides/reporting/data/v1",
+      "enabled": false
+    }
+  ]
+}

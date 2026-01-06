@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <!-- Green circular arrow - goes ~95% around the circle -->
+  <path
+    d="M 50 8 A 42 42 0 1 1 32 11"
+    fill="none"
+    stroke="#4CAF50"
+    stroke-width="7"
+    stroke-linecap="round"
+  />
+  <!-- Arrow head pointing in direction of rotation -->
+  <polygon points="24,6 36,18 40,4" fill="#4CAF50"/>
+
+  <!-- Caduceus in teal/blue color like the original -->
+  <g fill="#247094" stroke="#247094">
+    <!-- Central vertical staff - thin -->
+    <rect x="47" y="28" width="2" height="48" rx="1" fill="#247094" stroke="none"/>
+
+    <!-- Small ball/orb at very top of staff -->
+    <circle cx="48" cy="25" r="2.5" fill="#247094" stroke="none"/>
+
+    <!-- Left wing - smooth elegant sweep like original -->
+    <path d="M 46 32
+             C 42 30 34 27 20 28
+             C 24 34 32 38 40 38
+             C 44 38 46 37 46 36 Z" fill="#247094" stroke="none"/>
+
+    <!-- Right wing - smooth elegant sweep like original -->
+    <path d="M 50 32
+             C 54 30 62 27 76 28
+             C 72 34 64 38 56 38
+             C 52 38 50 37 50 36 Z" fill="#247094" stroke="none"/>
+
+    <!-- Two snakes intertwined tightly around staff -->
+    <!-- Left snake -->
+    <path
+      d="M 47 70 C 42 68 42 64 48 62 C 54 60 54 56 48 54 C 42 52 42 48 48 46 C 50 45 48 42 46 40"
+      fill="none"
+      stroke="#247094"
+      stroke-width="2.5"
+      stroke-linecap="round"
+    />
+
+    <!-- Right snake -->
+    <path
+      d="M 49 70 C 54 68 54 64 48 62 C 42 60 42 56 48 54 C 54 52 54 48 48 46 C 46 45 48 42 50 40"
+      fill="none"
+      stroke="#247094"
+      stroke-width="2.5"
+      stroke-linecap="round"
+    />
+  </g>
+</svg>

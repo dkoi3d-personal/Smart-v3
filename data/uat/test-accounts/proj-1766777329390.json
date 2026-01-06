@@ -1,0 +1,160 @@
+{
+  "projectId": "proj-1766777329390",
+  "accounts": [
+    {
+      "email": "admin@test.com",
+      "password": "Admin123!",
+      "displayName": "Test Admin",
+      "role": "admin",
+      "description": "Full administrative access. Use to test admin panels, user management, and settings.",
+      "capabilities": [
+        "Access admin dashboard",
+        "Manage users",
+        "Edit settings",
+        "View analytics",
+        "Delete content"
+      ],
+      "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=admin",
+      "isPreset": true,
+      "id": "preset-admin-0",
+      "createdAt": "2025-12-27T03:36:18.942Z"
+    },
+    {
+      "email": "user@test.com",
+      "password": "User123!",
+      "displayName": "Test User",
+      "role": "user",
+      "description": "Standard user account. Use to test normal user features and workflows.",
+      "capabilities": [
+        "View dashboard",
+        "Edit own profile",
+        "Create content",
+        "View public pages"
+      ],
+      "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=user",
+      "isPreset": true,
+      "id": "preset-user-1",
+      "createdAt": "2025-12-27T03:36:18.942Z"
+    },
+    {
+      "email": "guest@test.com",
+      "password": "Guest123!",
+      "displayName": "Test Guest",
+      "role": "guest",
+      "description": "Limited access guest. Use to test public pages and restricted access.",
+      "capabilities": [
+        "View public pages",
+        "Limited features"
+      ],
+      "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=guest",
+      "isPreset": true,
+      "id": "preset-guest-2",
+      "createdAt": "2025-12-27T03:36:18.942Z"
+    },
+    {
+      "email": "manager@test.com",
+      "password": "Manager123!",
+      "displayName": "Test Manager",
+      "role": "manager",
+      "description": "Manager-level access. Use to test team management and approval workflows.",
+      "capabilities": [
+        "Manage team members",
+        "Approve requests",
+        "View team analytics",
+        "Edit team settings"
+      ],
+      "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=manager",
+      "isPreset": true,
+      "id": "preset-manager-3",
+      "createdAt": "2025-12-27T03:36:18.942Z"
+    },
+    {
+      "email": "support@test.com",
+      "password": "Support123!",
+      "displayName": "Test Support",
+      "role": "support",
+      "description": "Support staff access. Use to test customer support features and ticket handling.",
+      "capabilities": [
+        "View customer data",
+        "Handle tickets",
+        "Limited admin access"
+      ],
+      "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=support",
+      "isPreset": true,
+      "id": "preset-support-4",
+      "createdAt": "2025-12-27T03:36:18.942Z"
+    },
+    {
+      "id": "mockdata-1766806578942-er8sn",
+      "email": "user0@example.com",
+      "password": "TestPass123!",
+      "displayName": "Alice",
+      "role": "admin",
+      "description": "Generated from User mock data",
+      "capabilities": [
+        "Full access",
+        "Manage users",
+        "Edit settings"
+      ],
+      "isPreset": false,
+      "createdAt": "2025-12-27T03:36:18.942Z"
+    },
+    {
+      "id": "mockdata-1766806578942-63979",
+      "email": "user1@example.com",
+      "password": "TestPass123!",
+      "displayName": "Bob",
+      "role": "user",
+      "description": "Generated from User mock data",
+      "capabilities": [
+        "Standard user access"
+      ],
+      "isPreset": false,
+      "createdAt": "2025-12-27T03:36:18.942Z"
+    },
+    {
+      "id": "mockdata-1766806578942-5408g",
+      "email": "user2@example.com",
+      "password": "TestPass123!",
+      "displayName": "Charlie",
+      "role": "guest",
+      "description": "Generated from User mock data",
+      "capabilities": [
+        "View public pages",
+        "Limited access"
+      ],
+      "isPreset": false,
+      "createdAt": "2025-12-27T03:36:18.942Z"
+    },
+    {
+      "id": "mockdata-1766806578942-o3czr",
+      "email": "user3@example.com",
+      "password": "TestPass123!",
+      "displayName": "Diana",
+      "role": "user",
+      "description": "Generated from User mock data",
+      "capabilities": [
+        "Standard user access"
+      ],
+      "isPreset": false,
+      "createdAt": "2025-12-27T03:36:18.942Z"
+    },
+    {
+      "id": "mockdata-1766806578942-4asc6",
+      "email": "user4@example.com",
+      "password": "TestPass123!",
+      "displayName": "Eve",
+      "role": "admin",
+      "description": "Generated from User mock data",
+      "capabilities": [
+        "Full access",
+        "Manage users",
+        "Edit settings"
+      ],
+      "isPreset": false,
+      "createdAt": "2025-12-27T03:36:18.942Z"
+    }
+  ],
+  "generatedAt": "2025-12-27T03:36:18.942Z",
+  "source": "mock-data"
+}

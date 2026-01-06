@@ -1,0 +1,47 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run:*)",
+      "Bash(npm test:*)",
+      "Bash(npx:*)",
+      "Bash(node:*)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git branch:*)",
+      "Edit(src/**)",
+      "Edit(lib/**)",
+      "Edit(components/**)",
+      "Edit(app/**)",
+      "Write(src/**)",
+      "Write(lib/**)",
+      "Write(components/**)",
+      "Write(app/**)"
+    ],
+    "deny": [
+      "Bash(rm -rf:*)",
+      "Bash(dd:*)",
+      "Bash(mkfs:*)",
+      "Bash(curl:*)",
+      "Read(.env)",
+      "Read(.env.*)",
+      "Read(**/credentials*)",
+      "Read(**/secrets*)",
+      "Read(.git/config)",
+      "Read(**/*id_rsa*)",
+      "Edit(.env*)",
+      "Edit(**/credentials*)",
+      "Edit(**/secrets*)",
+      "Write(.env*)"
+    ],
+    "ask": [
+      "Bash(git push:*)",
+      "Bash(git commit:*)",
+      "Bash(docker:*)",
+      "Bash(npm publish:*)",
+      "Edit(package.json)",
+      "Edit(tsconfig.json)"
+    ]
+  },
+  "hooks": {}
+}

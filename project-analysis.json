@@ -1,0 +1,86 @@
+{
+  "epics": [
+    {
+      "id": "epic-1763953520001",
+      "title": "Core Taxonomy Management Foundation",
+      "description": "Build the foundational CRUD operations for taxonomy creation and management using PostgreSQL with ltree extension for hierarchical data. Implements drag-and-drop taxonomy builder with real-time validation, version control system with diff visualization, and optimistic locking for concurrent editing. This epic covers the core domain model and basic UI components needed for taxonomy stewards to create and manage hierarchical classification schemes.",
+      "priority": "critical",
+      "estimatedPoints": 35,
+      "technicalApproach": "Next.js 14 App Router + PostgreSQL ltree + Prisma ORM + React DnD for hierarchical data modeling with adjacency list pattern. Implements CQRS pattern separation between taxonomy management (OLTP) operations.",
+      "status": "backlog",
+      "stories": []
+    },
+    {
+      "id": "epic-1763953520002", 
+      "title": "Authentication & Authorization Infrastructure",
+      "description": "Implement enterprise-grade security with NextAuth.js v5 OAuth integration, RBAC with inheritance patterns, and attribute-based access control (ABAC) for fine-grained taxonomy permissions. Includes permission inheritance down taxonomy hierarchy using PostgreSQL ltree paths, multi-factor authentication support, and secure session management. Critical for enterprise adoption and compliance requirements.",
+      "priority": "critical",
+      "estimatedPoints": 25,
+      "technicalApproach": "NextAuth.js v5 with OAuth 2.0/OIDC + PostgreSQL ltree for path-based permissions + JWT with secure refresh rotation. Implements hierarchical role inheritance and API-level authorization middleware.",
+      "status": "backlog",
+      "stories": []
+    },
+    {
+      "id": "epic-1763953520003",
+      "title": "Dimensional Analytics Dashboard",
+      "description": "Build the analytics engine with dimensional modeling following Kimball methodology, featuring multi-dimensional analytics dashboard with drill-down capabilities across Taxonomy, Usage, Compliance, and Time dimensions. Includes real-time usage tracking, compliance scoring, and trend analysis. Uses star/snowflake schema pattern with pre-aggregated OLAP cubes for performance.",
+      "priority": "high", 
+      "estimatedPoints": 40,
+      "technicalApproach": "Separate OLAP database design + Recharts for visualizations + React Query infinite queries + Redis caching. Implements CDC pipelines with Debezium for real-time analytics updates and materialized views for performance.",
+      "status": "backlog",
+      "stories": []
+    },
+    {
+      "id": "epic-1763953520004",
+      "title": "Real-time Collaboration & Audit System",
+      "description": "Implement event sourcing for complete audit trails, real-time collaboration with conflict resolution, and comprehensive change tracking with field-level granularity. Features include real-time cursors showing collaborator presence, operational transform algorithms for collaborative editing, and immutable audit logs for SOX compliance. Includes diff visualization for taxonomy changes and rollback functionality.",
+      "priority": "high",
+      "estimatedPoints": 30,
+      "technicalApproach": "Event sourcing with PostgreSQL event store + WebSocket connections + operational transform algorithms. Uses react-diff-viewer for change visualization and optimistic updates with conflict resolution.",
+      "status": "backlog",
+      "stories": []
+    },
+    {
+      "id": "epic-1763953520005",
+      "title": "Enterprise Integration & Data Import/Export",
+      "description": "Build bulk import/export capabilities with Excel compatibility, API integrations for external systems, and enterprise data connectors. Includes file upload validation with virus scanning, data transformation pipelines, and integration APIs following OpenAPI 3.1 specification. Supports business users' existing workflows while providing programmatic access for system integrations.",
+      "priority": "medium",
+      "estimatedPoints": 25,
+      "technicalApproach": "OpenAPI 3.1 REST APIs + file processing with validation + data transformation pipelines. Implements tRPC for type-safe internal APIs and GraphQL consideration for complex analytical queries.",
+      "status": "backlog", 
+      "stories": []
+    },
+    {
+      "id": "epic-1763953520006",
+      "title": "Performance Optimization & Scalability",
+      "description": "Implement advanced performance optimizations including Redis cluster for distributed caching, PostgreSQL read replicas for analytics separation, virtual scrolling for large taxonomy trees, and materialized views for complex hierarchy queries. Addresses performance degradation with deep hierarchies and enables real-time analytics on large datasets through CDC pipelines.",
+      "priority": "medium",
+      "estimatedPoints": 20,
+      "technicalApproach": "Redis cluster with 5-minute TTL + PostgreSQL read replicas + react-virtualized-auto-sizer + materialized path pattern. Implements CDC using Debezium and OLAP cube pre-aggregation for analytics performance.",
+      "status": "backlog",
+      "stories": []
+    }
+  ],
+  "techStack": [
+    "Next.js 14.2+",
+    "React 18+", 
+    "TypeScript 5.0+",
+    "PostgreSQL 16+ with ltree extension",
+    "Prisma 5.7+",
+    "NextAuth.js v5",
+    "@tanstack/react-query v5+",
+    "Zustand 4.4+",
+    "Zod 3.22+",
+    "Redis 7+",
+    "Recharts 2.8+",
+    "@dnd-kit/core 6.1+",
+    "react-virtualized-auto-sizer 1.0+",
+    "react-diff-viewer 3.1+",
+    "@radix-ui/react-select 2.0+",
+    "jose 5.0+",
+    "tRPC v11+",
+    "Tailwind CSS 3.3+",
+    "Framer Motion 10+"
+  ],
+  "architecturePattern": "Domain-Driven Design with CQRS pattern - Next.js 14 App Router with SSR for SEO, PostgreSQL with ltree for hierarchical data modeling, Redis for caching, separate OLTP/OLAP concerns with read replicas, event sourcing for audit trails, and hexagonal architecture with clean domain separation"
+}

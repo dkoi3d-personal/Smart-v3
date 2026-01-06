@@ -1,0 +1,12 @@
+{
+  "keys": [
+    {
+      "kty": "RSA",
+      "alg": "RS384",
+      "use": "sig",
+      "kid": "epic-fhir-key-1",
+      "n": "wvOhCQ2tKK-PCSdfq4LVKk9G_6je25kVENiDp8dZpJq2Sst4jBqwUzRfAUoKm1EREFT_q7_ZU35peRa3Jmsx6qdikjke-RHeT2LGCmODiFEebG4MLMBbiRpn6R7_gKT5nBP9NIw78BX1xiV_hmpZ5JaX5CpSzEnIkLVHG6M742QXSi03AjK00v74vQZXxTjycYQBU3xA3gBCnpdg002ZGhlN22HgyEKznUUhEw383C7D_eFNbALdigKnNpJauktTw7lvqUtbvcw4qlZq9D8IWoajUnYShElEdgB9NhckosFJ5hx3_cYHBJ3fU_dTa01aXChjccb7PrrdQ6pvjYCcew",
+      "e": "AQAB"
+    }
+  ]
+}

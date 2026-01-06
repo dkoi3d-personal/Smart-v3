@@ -1,0 +1,55 @@
+{
+  "mcpServers": {
+    "figma": {
+      "type": "stdio",
+      "command": "cmd",
+      "args": ["/c", "npx", "-y", "figma-developer-mcp", "--stdio"],
+      "env": {
+        "FIGMA_API_KEY": "${FIGMA_PERSONAL_ACCESS_TOKEN}"
+      },
+      "description": "Figma design context for code generation - extracts layout, styles, components"
+    },
+    "cipher": {
+      "type": "stdio",
+      "command": "cmd",
+      "args": ["/c", "npx", "-y", "@byterover/cipher", "--mode", "mcp"],
+      "env": {
+        "MCP_SERVER_MODE": "aggregator"
+      },
+      "description": "Memory layer for coding agents, stores reasoning traces"
+    },
+    "memory": {
+      "type": "stdio",
+      "command": "cmd",
+      "args": ["/c", "npx", "-y", "@modelcontextprotocol/server-memory"],
+      "description": "Knowledge graph-based persistent memory"
+    },
+    "eslint": {
+      "type": "stdio",
+      "command": "cmd",
+      "args": ["/c", "npx", "eslint", "--mcp"],
+      "description": "ESLint integration for JavaScript/TypeScript linting"
+    },
+    "github": {
+      "type": "stdio",
+      "command": "cmd",
+      "args": ["/c", "npx", "-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_TOKEN": "${GITHUB_TOKEN}"
+      },
+      "description": "GitHub integration for repos, PRs, issues"
+    },
+    "filesystem": {
+      "type": "stdio",
+      "command": "cmd",
+      "args": ["/c", "npx", "-y", "@modelcontextprotocol/server-filesystem", "."],
+      "description": "Secure file operations with access controls"
+    },
+    "sequential-thinking": {
+      "type": "stdio",
+      "command": "cmd",
+      "args": ["/c", "npx", "-y", "@modelcontextprotocol/server-sequential-thinking"],
+      "description": "Dynamic problem-solving through thought sequences"
+    }
+  }
+}

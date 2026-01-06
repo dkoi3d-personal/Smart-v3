@@ -1,0 +1,508 @@
+{
+  "version": "1.0.0",
+  "lastUpdated": "2025-12-10T00:00:00.000Z",
+  "defaultDatabaseId": "azure-postgresql-flexible",
+  "defaultComplianceLevel": "hipaa",
+  "databases": [
+    {
+      "id": "azure-postgresql-flexible",
+      "name": "Azure PostgreSQL Flexible Server",
+      "engine": "postgresql",
+      "description": "Fully managed PostgreSQL with flexible scaling. Best choice for HIPAA-compliant healthcare applications.",
+      "supportedCompliance": ["hipaa", "standard", "development"],
+      "hipaaRecommended": true,
+      "pricing": [
+        {
+          "tier": "burstable",
+          "estimatedMonthlyCost": "$15-50",
+          "computeSize": "B1ms (1 vCore, 2GB RAM)",
+          "storage": "32GB",
+          "description": "Best for dev/test and small production workloads"
+        },
+        {
+          "tier": "general-purpose",
+          "estimatedMonthlyCost": "$100-300",
+          "computeSize": "D2s_v3 (2 vCores, 8GB RAM)",
+          "storage": "64GB",
+          "description": "Balanced compute and memory for production"
+        },
+        {
+          "tier": "memory-optimized",
+          "estimatedMonthlyCost": "$200-500",
+          "computeSize": "E2s_v3 (2 vCores, 16GB RAM)",
+          "storage": "128GB",
+          "description": "High memory for complex queries and analytics"
+        }
+      ],
+      "hipaaConfig": {
+        "requireSecureTransport": true,
+        "encryptionAtRest": true,
+        "customerManagedKeys": false,
+        "auditLogging": true,
+        "auditLogRetentionDays": 90,
+        "pgAudit": true,
+        "privateEndpoint": false,
+        "minTlsVersion": "TLS1_2",
+        "azureAdAuth": true,
+        "geoRedundantBackup": true,
+        "backupRetentionDays": 35,
+        "postgresParams": {
+          "log_checkpoints": "ON",
+          "log_connections": "ON",
+          "log_disconnections": "ON",
+          "log_duration": "ON",
+          "log_statement": "all"
+        }
+      },
+      "standardConfig": {
+        "requireSecureTransport": true,
+        "encryptionAtRest": true,
+        "auditLogging": false,
+        "backupRetentionDays": 7,
+        "geoRedundantBackup": false,
+        "minTlsVersion": "TLS1_2"
+      },
+      "localDev": {
+        "dockerImage": "postgres:16-alpine",
+        "defaultPort": 5432,
+        "environment": {
+          "POSTGRES_USER": "devuser",
+          "POSTGRES_PASSWORD": "devpassword",
+          "POSTGRES_DB": "appdb"
+        },
+        "composeConfig": {
+          "volumes": ["postgres_data:/var/lib/postgresql/data"],
+          "healthcheck": {
+            "test": "[\"CMD-SHELL\", \"pg_isready -U devuser -d appdb\"]",
+            "interval": "10s",
+            "timeout": "5s",
+            "retries": 5
+          }
+        }
+      },
+      "azureDeploy": {
+        "resourceType": "Microsoft.DBforPostgreSQL/flexibleServers",
+        "terraformResource": "azurerm_postgresql_flexible_server",
+        "bicepResource": "Microsoft.DBforPostgreSQL/flexibleServers@2023-03-01-preview",
+        "requiredProviders": ["Microsoft.DBforPostgreSQL"],
+        "skuOptions": {
+          "burstable": "B_Standard_B1ms",
+          "general-purpose": "GP_Standard_D2s_v3",
+          "memory-optimized": "MO_Standard_E2s_v3",
+          "serverless": "B_Standard_B1ms"
+        },
+        "availableRegions": ["eastus", "eastus2", "westus2", "centralus", "northeurope", "westeurope"],
+        "azureSettings": {
+          "version": "16",
+          "highAvailability": { "mode": "Disabled" }
+        }
+      },
+      "recommendedOrm": ["prisma", "drizzle", "typeorm"],
+      "connectionStringTemplate": {
+        "local": "postgresql://devuser:devpassword@localhost:5432/appdb",
+        "azure": "postgresql://${username}:${password}@${server}.postgres.database.azure.com:5432/${database}?sslmode=require"
+      },
+      "features": [
+        "HIPAA eligible with BAA",
+        "Automatic backups up to 35 days",
+        "Point-in-time restore",
+        "Read replicas",
+        "pgAudit for compliance logging",
+        "Azure AD authentication",
+        "Private Link support",
+        "Automatic patching"
+      ],
+      "limitations": [
+        "No true serverless option",
+        "Cold start on burstable tier"
+      ],
+      "tags": ["postgresql", "hipaa", "recommended", "azure", "managed"],
+      "enabled": true,
+      "sortOrder": 1
+    },
+    {
+      "id": "azure-sql-database",
+      "name": "Azure SQL Database",
+      "engine": "sqlserver",
+      "description": "Fully managed SQL Server with built-in intelligence. Good for .NET applications and complex T-SQL.",
+      "supportedCompliance": ["hipaa", "standard", "development"],
+      "hipaaRecommended": true,
+      "pricing": [
+        {
+          "tier": "serverless",
+          "estimatedMonthlyCost": "$5-50",
+          "computeSize": "Auto-scale (0.5-2 vCores)",
+          "storage": "32GB",
+          "description": "Pay per second, auto-pause when idle"
+        },
+        {
+          "tier": "burstable",
+          "estimatedMonthlyCost": "$15-30",
+          "computeSize": "Basic (5 DTUs)",
+          "storage": "2GB",
+          "description": "Cheapest fixed option for small workloads"
+        },
+        {
+          "tier": "general-purpose",
+          "estimatedMonthlyCost": "$100-400",
+          "computeSize": "Standard S3 (100 DTUs)",
+          "storage": "250GB",
+          "description": "Balanced performance for production"
+        }
+      ],
+      "hipaaConfig": {
+        "requireSecureTransport": true,
+        "encryptionAtRest": true,
+        "customerManagedKeys": false,
+        "auditLogging": true,
+        "auditLogRetentionDays": 90,
+        "pgAudit": false,
+        "privateEndpoint": false,
+        "minTlsVersion": "TLS1_2",
+        "azureAdAuth": true,
+        "geoRedundantBackup": true,
+        "backupRetentionDays": 35
+      },
+      "standardConfig": {
+        "requireSecureTransport": true,
+        "encryptionAtRest": true,
+        "auditLogging": false,
+        "backupRetentionDays": 7
+      },
+      "localDev": {
+        "dockerImage": "mcr.microsoft.com/azure-sql-edge:latest",
+        "defaultPort": 1433,
+        "environment": {
+          "ACCEPT_EULA": "Y",
+          "MSSQL_SA_PASSWORD": "DevPassword123!",
+          "MSSQL_PID": "Developer"
+        },
+        "composeConfig": {
+          "volumes": ["sqlserver_data:/var/opt/mssql"],
+          "healthcheck": {
+            "test": "[\"/opt/mssql-tools/bin/sqlcmd\", \"-S\", \"localhost\", \"-U\", \"sa\", \"-P\", \"DevPassword123!\", \"-Q\", \"SELECT 1\"]",
+            "interval": "10s",
+            "timeout": "5s",
+            "retries": 5
+          }
+        }
+      },
+      "azureDeploy": {
+        "resourceType": "Microsoft.Sql/servers/databases",
+        "terraformResource": "azurerm_mssql_database",
+        "bicepResource": "Microsoft.Sql/servers/databases@2022-05-01-preview",
+        "requiredProviders": ["Microsoft.Sql"],
+        "skuOptions": {
+          "serverless": "GP_S_Gen5_1",
+          "burstable": "Basic",
+          "general-purpose": "S3",
+          "memory-optimized": "P4"
+        },
+        "availableRegions": ["eastus", "eastus2", "westus2", "centralus", "northeurope", "westeurope"],
+        "azureSettings": {
+          "collation": "SQL_Latin1_General_CP1_CI_AS",
+          "maxSizeBytes": 34359738368
+        }
+      },
+      "recommendedOrm": ["prisma", "typeorm", "sequelize"],
+      "connectionStringTemplate": {
+        "local": "Server=localhost,1433;Database=appdb;User Id=sa;Password=DevPassword123!;TrustServerCertificate=true",
+        "azure": "Server=${server}.database.windows.net;Database=${database};User Id=${username};Password=${password};Encrypt=true;TrustServerCertificate=false"
+      },
+      "features": [
+        "HIPAA eligible with BAA",
+        "Transparent Data Encryption (TDE)",
+        "Always Encrypted for column-level",
+        "Serverless auto-pause",
+        "Automatic tuning",
+        "Built-in threat detection",
+        "Point-in-time restore"
+      ],
+      "limitations": [
+        "Higher cost than PostgreSQL",
+        "Vendor lock-in to SQL Server"
+      ],
+      "tags": ["sqlserver", "hipaa", "azure", "managed", "serverless"],
+      "enabled": true,
+      "sortOrder": 2
+    },
+    {
+      "id": "azure-cosmosdb",
+      "name": "Azure Cosmos DB",
+      "engine": "cosmosdb",
+      "description": "Globally distributed NoSQL database. Best for high-scale document storage with global replication.",
+      "supportedCompliance": ["hipaa", "standard"],
+      "hipaaRecommended": false,
+      "pricing": [
+        {
+          "tier": "serverless",
+          "estimatedMonthlyCost": "$0-100+",
+          "computeSize": "Pay per RU consumed",
+          "storage": "Pay per GB",
+          "description": "Best for sporadic, unpredictable workloads"
+        },
+        {
+          "tier": "burstable",
+          "estimatedMonthlyCost": "$25-100",
+          "computeSize": "400 RU/s provisioned",
+          "storage": "5GB included",
+          "description": "Minimum provisioned throughput"
+        },
+        {
+          "tier": "general-purpose",
+          "estimatedMonthlyCost": "$200-1000+",
+          "computeSize": "4000 RU/s",
+          "storage": "50GB",
+          "description": "Production workloads"
+        }
+      ],
+      "hipaaConfig": {
+        "requireSecureTransport": true,
+        "encryptionAtRest": true,
+        "customerManagedKeys": true,
+        "auditLogging": true,
+        "auditLogRetentionDays": 90,
+        "pgAudit": false,
+        "privateEndpoint": true,
+        "minTlsVersion": "TLS1_2",
+        "azureAdAuth": true,
+        "geoRedundantBackup": true,
+        "backupRetentionDays": 30
+      },
+      "standardConfig": {
+        "requireSecureTransport": true,
+        "encryptionAtRest": true,
+        "auditLogging": false
+      },
+      "localDev": {
+        "dockerImage": "mcr.microsoft.com/cosmosdb/linux/azure-cosmos-emulator:latest",
+        "defaultPort": 8081,
+        "environment": {
+          "AZURE_COSMOS_EMULATOR_PARTITION_COUNT": "10",
+          "AZURE_COSMOS_EMULATOR_ENABLE_DATA_PERSISTENCE": "true"
+        },
+        "composeConfig": {
+          "volumes": ["cosmos_data:/data"],
+          "healthcheck": {
+            "test": "[\"CMD\", \"curl\", \"-f\", \"https://localhost:8081/_explorer/emulator.pem\"]",
+            "interval": "30s",
+            "timeout": "10s",
+            "retries": 5
+          }
+        }
+      },
+      "azureDeploy": {
+        "resourceType": "Microsoft.DocumentDB/databaseAccounts",
+        "terraformResource": "azurerm_cosmosdb_account",
+        "bicepResource": "Microsoft.DocumentDB/databaseAccounts@2023-04-15",
+        "requiredProviders": ["Microsoft.DocumentDB"],
+        "skuOptions": {
+          "serverless": "serverless",
+          "burstable": "provisioned-400",
+          "general-purpose": "provisioned-4000",
+          "memory-optimized": "provisioned-10000"
+        },
+        "availableRegions": ["eastus", "eastus2", "westus2", "centralus", "northeurope", "westeurope"],
+        "azureSettings": {
+          "kind": "GlobalDocumentDB",
+          "capabilities": [{ "name": "EnableServerless" }],
+          "consistencyPolicy": { "defaultConsistencyLevel": "Session" }
+        }
+      },
+      "recommendedOrm": ["@azure/cosmos", "mongoose-cosmos"],
+      "connectionStringTemplate": {
+        "local": "AccountEndpoint=https://localhost:8081/;AccountKey=C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==",
+        "azure": "AccountEndpoint=https://${account}.documents.azure.com:443/;AccountKey=${key}"
+      },
+      "features": [
+        "HIPAA eligible with BAA",
+        "Global distribution",
+        "Multiple consistency levels",
+        "Serverless option",
+        "Automatic indexing",
+        "Multi-model (document, graph, key-value)"
+      ],
+      "limitations": [
+        "Can be expensive at scale",
+        "Complex pricing model (RU/s)",
+        "Local emulator has limitations"
+      ],
+      "tags": ["nosql", "document", "hipaa", "azure", "global", "serverless"],
+      "enabled": true,
+      "sortOrder": 3
+    },
+    {
+      "id": "azure-mysql-flexible",
+      "name": "Azure MySQL Flexible Server",
+      "engine": "mysql",
+      "description": "Fully managed MySQL with flexible scaling. Good for apps requiring MySQL compatibility.",
+      "supportedCompliance": ["hipaa", "standard", "development"],
+      "hipaaRecommended": false,
+      "pricing": [
+        {
+          "tier": "burstable",
+          "estimatedMonthlyCost": "$12-40",
+          "computeSize": "B1ms (1 vCore, 2GB RAM)",
+          "storage": "20GB",
+          "description": "Best for dev/test workloads"
+        },
+        {
+          "tier": "general-purpose",
+          "estimatedMonthlyCost": "$80-250",
+          "computeSize": "D2s_v3 (2 vCores, 8GB RAM)",
+          "storage": "64GB",
+          "description": "Balanced for production"
+        }
+      ],
+      "hipaaConfig": {
+        "requireSecureTransport": true,
+        "encryptionAtRest": true,
+        "customerManagedKeys": false,
+        "auditLogging": true,
+        "auditLogRetentionDays": 90,
+        "pgAudit": false,
+        "privateEndpoint": false,
+        "minTlsVersion": "TLS1_2",
+        "azureAdAuth": true,
+        "geoRedundantBackup": true,
+        "backupRetentionDays": 35
+      },
+      "standardConfig": {
+        "requireSecureTransport": true,
+        "encryptionAtRest": true,
+        "auditLogging": false,
+        "backupRetentionDays": 7
+      },
+      "localDev": {
+        "dockerImage": "mysql:8.0",
+        "defaultPort": 3306,
+        "environment": {
+          "MYSQL_ROOT_PASSWORD": "devpassword",
+          "MYSQL_DATABASE": "appdb",
+          "MYSQL_USER": "devuser",
+          "MYSQL_PASSWORD": "devpassword"
+        },
+        "composeConfig": {
+          "volumes": ["mysql_data:/var/lib/mysql"],
+          "healthcheck": {
+            "test": "[\"CMD\", \"mysqladmin\", \"ping\", \"-h\", \"localhost\"]",
+            "interval": "10s",
+            "timeout": "5s",
+            "retries": 5
+          }
+        }
+      },
+      "azureDeploy": {
+        "resourceType": "Microsoft.DBforMySQL/flexibleServers",
+        "terraformResource": "azurerm_mysql_flexible_server",
+        "bicepResource": "Microsoft.DBforMySQL/flexibleServers@2023-06-01-preview",
+        "requiredProviders": ["Microsoft.DBforMySQL"],
+        "skuOptions": {
+          "burstable": "B_Standard_B1ms",
+          "general-purpose": "GP_Standard_D2s_v3",
+          "memory-optimized": "MO_Standard_E2s_v3",
+          "serverless": "B_Standard_B1ms"
+        },
+        "availableRegions": ["eastus", "eastus2", "westus2", "centralus", "northeurope", "westeurope"],
+        "azureSettings": {
+          "version": "8.0.21"
+        }
+      },
+      "recommendedOrm": ["prisma", "typeorm", "sequelize"],
+      "connectionStringTemplate": {
+        "local": "mysql://devuser:devpassword@localhost:3306/appdb",
+        "azure": "mysql://${username}:${password}@${server}.mysql.database.azure.com:3306/${database}?ssl=true"
+      },
+      "features": [
+        "HIPAA eligible with BAA",
+        "Automatic backups",
+        "Read replicas",
+        "MySQL 8.0 compatibility",
+        "Azure AD authentication"
+      ],
+      "limitations": [
+        "Less ecosystem than PostgreSQL",
+        "No pgAudit equivalent built-in"
+      ],
+      "tags": ["mysql", "hipaa", "azure", "managed"],
+      "enabled": true,
+      "sortOrder": 4
+    },
+    {
+      "id": "sqlite-local",
+      "name": "SQLite (Local Development Only)",
+      "engine": "sqlite",
+      "description": "File-based database for local development and prototyping. NOT suitable for production healthcare apps.",
+      "supportedCompliance": ["development"],
+      "hipaaRecommended": false,
+      "pricing": [
+        {
+          "tier": "burstable",
+          "estimatedMonthlyCost": "$0",
+          "computeSize": "N/A (local file)",
+          "storage": "Unlimited (local disk)",
+          "description": "Free, no server required"
+        }
+      ],
+      "hipaaConfig": {
+        "requireSecureTransport": false,
+        "encryptionAtRest": false,
+        "customerManagedKeys": false,
+        "auditLogging": false,
+        "auditLogRetentionDays": 0,
+        "pgAudit": false,
+        "privateEndpoint": false,
+        "minTlsVersion": "TLS1_2",
+        "azureAdAuth": false,
+        "geoRedundantBackup": false,
+        "backupRetentionDays": 0
+      },
+      "standardConfig": {
+        "requireSecureTransport": false,
+        "encryptionAtRest": false
+      },
+      "localDev": {
+        "dockerImage": "",
+        "defaultPort": 0,
+        "environment": {},
+        "composeConfig": {}
+      },
+      "azureDeploy": {
+        "resourceType": "",
+        "terraformResource": "",
+        "bicepResource": "",
+        "requiredProviders": [],
+        "skuOptions": {
+          "burstable": "",
+          "general-purpose": "",
+          "memory-optimized": "",
+          "serverless": ""
+        },
+        "availableRegions": [],
+        "azureSettings": {}
+      },
+      "recommendedOrm": ["prisma", "drizzle", "better-sqlite3"],
+      "connectionStringTemplate": {
+        "local": "file:./dev.db",
+        "azure": ""
+      },
+      "features": [
+        "Zero configuration",
+        "No server needed",
+        "Fast for development",
+        "Single file database",
+        "Great for prototyping"
+      ],
+      "limitations": [
+        "NOT HIPAA compliant",
+        "Cannot deploy to production",
+        "No concurrent write support",
+        "No user authentication",
+        "No network access"
+      ],
+      "tags": ["sqlite", "development", "local", "prototype"],
+      "enabled": true,
+      "sortOrder": 10
+    }
+  ]
+}
