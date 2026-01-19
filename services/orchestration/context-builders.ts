@@ -74,7 +74,16 @@ If the requirements ask for something that ALREADY EXISTS, do NOT create a story
 
   const existingProjectWarning = '';  // Merged into iterationBuildInstructions
 
+  // Generate base timestamp for story IDs - PO will increment from this
+  const baseTimestamp = Date.now();
+
   return `
+=== CURRENT TIMESTAMP FOR STORY IDs ===
+Use this base timestamp for generating story and epic IDs: ${baseTimestamp}
+- For stories: story-${baseTimestamp}01, story-${baseTimestamp}02, story-${baseTimestamp}03, etc.
+- For epics: epic-${baseTimestamp}01, epic-${baseTimestamp}02, etc.
+⚠️ DO NOT make up timestamps! Use the number above as the base.
+
 === PROJECT REQUIREMENTS ===
 ${requirements}
 

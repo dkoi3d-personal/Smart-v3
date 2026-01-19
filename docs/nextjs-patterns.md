@@ -147,7 +147,51 @@ const random = seededRandom(42); // Same on server AND client
 
 ---
 
+## API Route Configuration (CRITICAL)
+
+### Force Dynamic for Database/SearchParams Routes
+
+ALL API routes that use `searchParams` OR Prisma database calls MUST include:
+
+```typescript
+export const dynamic = 'force-dynamic';
+```
+
+This prevents Next.js build errors like "Dynamic server usage: Page couldn't be rendered statically because it used searchParams.get".
+
+### Correct API Route Pattern
+```typescript
+import { NextRequest, NextResponse } from 'next/server';
+import { prisma } from '@/lib/prisma';
+
+// REQUIRED for routes using searchParams or database
+export const dynamic = 'force-dynamic';
+
+export async function GET(request: NextRequest) {
+  const searchParams = request.nextUrl.searchParams;
+  const id = searchParams.get('id');
+
+  const data = await prisma.myModel.findMany({
+    where: id ? { id: parseInt(id) } : {},
+  });
+
+  return NextResponse.json({ data });
+}
+```
+
+### When to Add `force-dynamic`
+- Route uses `request.nextUrl.searchParams`
+- Route calls Prisma or any database
+- Route depends on request headers or cookies
+- Route has any dynamic data that can't be statically analyzed
+
+---
+
 ## Common Errors & Fixes
+
+### "Dynamic server usage" / "Page couldn't be rendered statically"
+- Add `export const dynamic = 'force-dynamic';` at top of the API route file
+- This tells Next.js to skip static rendering for routes with dynamic data
 
 ### "Html imported outside _document"
 - DELETE the `pages/` folder - we use App Router only

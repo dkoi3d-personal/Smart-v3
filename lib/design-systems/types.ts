@@ -35,8 +35,22 @@ export interface DesignSystem {
 
   /** Source information for uploaded design systems */
   source?: {
-    type: 'json' | 'markdown' | 'zip' | 'builtin';
+    type: 'json' | 'markdown' | 'zip' | 'builtin' | 'figma';
     originalFileName?: string;
+  };
+
+  /** Figma source for syncing (if imported from Figma) */
+  figmaSource?: {
+    /** Full Figma URL */
+    url: string;
+    /** Figma file ID */
+    fileId: string;
+    /** Figma node ID (if specific node) */
+    nodeId?: string;
+    /** File name from Figma */
+    fileName: string;
+    /** Last synced timestamp */
+    lastSyncedAt: string;
   };
 }
 
@@ -238,6 +252,25 @@ export interface DesignSystemListItem {
   updatedAt: string;
   componentCount: number;
   exampleCount: number;
+  /** Figma source URL if imported from Figma */
+  figmaSourceUrl?: string;
+  /** Last synced from Figma */
+  lastSyncedAt?: string;
+}
+
+// =============================================================================
+// Figma Import Types
+// =============================================================================
+
+export interface ImportFigmaInput {
+  /** Figma design system URL */
+  figmaUrl: string;
+  /** Optional custom name (defaults to Figma file name) */
+  name?: string;
+  /** Set as default design system */
+  setAsDefault?: boolean;
+  /** Existing design system ID to update (for re-sync) */
+  existingId?: string;
 }
 
 // =============================================================================

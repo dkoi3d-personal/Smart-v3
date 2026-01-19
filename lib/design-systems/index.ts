@@ -25,6 +25,7 @@ export type {
   DesignSystemListItem,
   UploadedDesignSystemFile,
   ParsedDesignSystem,
+  ImportFigmaInput,
 } from './types';
 
 // Store operations

@@ -13,6 +13,8 @@ import type {
   DiagnosticReport,
   Procedure,
   Immunization,
+  Coverage,
+  ExplanationOfBenefit,
   FHIRBundle,
   EpicConnectionStatus,
   EpicAPIError,
@@ -345,6 +347,64 @@ export class EpicFHIRClient {
     });
 
     const response = await fetch(`${this.baseUrl}/fhir/Immunization?${searchParams}`);
+    if (!response.ok) {
+      throw await this.handleError(response);
+    }
+    return response.json();
+  }
+
+  // ========================================
+  // Billing APIs (Coverage, EOB)
+  // NOTE: These only work in production - Epic sandbox has no billing data
+  // ========================================
+
+  /**
+   * Get insurance coverage for a patient
+   * WARNING: Epic sandbox does NOT have coverage test data
+   */
+  async getCoverage(patientId: string, params: {
+    status?: 'active' | 'cancelled' | 'draft';
+    _count?: number;
+  } = {}): Promise<FHIRBundle<Coverage>> {
+    const searchParams = new URLSearchParams({ patient: patientId });
+    Object.entries(params).forEach(([key, value]) => {
+      if (value !== undefined) {
+        searchParams.set(key, String(value));
+      }
+    });
+
+    const response = await fetch(`${this.baseUrl}/fhir/Coverage?${searchParams}`);
+    if (!response.ok) {
+      throw await this.handleError(response);
+    }
+    return response.json();
+  }
+
+  /**
+   * Get active insurance coverage for a patient
+   * WARNING: Epic sandbox does NOT have coverage test data
+   */
+  async getActiveCoverage(patientId: string): Promise<FHIRBundle<Coverage>> {
+    return this.getCoverage(patientId, { status: 'active' });
+  }
+
+  /**
+   * Get Explanation of Benefits for a patient
+   * WARNING: Epic sandbox does NOT have EOB test data
+   */
+  async getExplanationOfBenefits(patientId: string, params: {
+    status?: 'active' | 'cancelled' | 'draft';
+    created?: string;
+    _count?: number;
+  } = {}): Promise<FHIRBundle<ExplanationOfBenefit>> {
+    const searchParams = new URLSearchParams({ patient: patientId });
+    Object.entries(params).forEach(([key, value]) => {
+      if (value !== undefined) {
+        searchParams.set(key, String(value));
+      }
+    });
+
+    const response = await fetch(`${this.baseUrl}/fhir/ExplanationOfBenefit?${searchParams}`);
     if (!response.ok) {
       throw await this.handleError(response);
     }

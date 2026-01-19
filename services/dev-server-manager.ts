@@ -287,12 +287,14 @@ class DevServerManager {
 
   /**
    * Start a development server for a project
+   * @param forceDevMode - If true, always use dev mode even if production build exists (enables hot reload)
    */
   async startDevServer(
     projectId: string,
     projectDir: string,
     emitLog?: (type: string, message: string) => void,
-    emitStatus?: (status: string, message?: string) => void
+    emitStatus?: (status: string, message?: string) => void,
+    forceDevMode: boolean = false
   ): Promise<{ port: number; url: string }> {
     // Normalize the project directory path - use forward slashes for Windows compatibility
     // Windows accepts forward slashes in paths and this avoids escaping issues
@@ -666,7 +668,8 @@ class DevServerManager {
 
       if (isNextJs) {
         // Force production mode for projects with middleware (avoids Edge Runtime eval issues)
-        const shouldUseProductionMode = hasNextBuild && (hasStartScript || hasMiddleware);
+        // UNLESS forceDevMode is true (UAT mode wants hot reload)
+        const shouldUseProductionMode = !forceDevMode && hasNextBuild && (hasStartScript || hasMiddleware);
         if (shouldUseProductionMode) {
           // Use production server for pre-built Next.js apps or when middleware requires it
           devArgs = hasStartScript
@@ -676,6 +679,9 @@ class DevServerManager {
         } else {
           // Next.js dev mode: use npm run dev -- -p PORT or npx next dev -p PORT
           devArgs = hasDevScript ? ['run', 'dev', '--', '-p', port.toString()] : ['exec', 'next', 'dev', '-p', port.toString()];
+          if (forceDevMode && hasNextBuild) {
+            emitLog?.('info', 'Using dev mode (forceDevMode=true) - hot reload enabled');
+          }
         }
       } else if (isVite) {
         // Vite: use --port flag

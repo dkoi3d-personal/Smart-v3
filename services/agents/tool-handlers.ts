@@ -644,17 +644,48 @@ registerTool('report_test_results', async (ctx) => {
     task.status = 'failed';
     task.result = `Tests failed: ${failed_tests}/${total_tests}. ${summary}\n\nError output:\n${error_output || 'No error details'}`;
     task.workingAgent = null;
+    const retryCount = (task as any).retryCount || 0;
+
+    // Detailed failure logging
+    console.log(`\n${'='.repeat(60)}`);
+    console.log(`❌ STORY FAILED: ${task.title}`);
+    console.log(`${'='.repeat(60)}`);
+    console.log(`Story ID: ${task_id}`);
+    console.log(`Retry count: ${retryCount}/3`);
+    console.log(`Tests: ${passed_tests} passed, ${failed_tests} failed of ${total_tests} total`);
+    console.log(`Summary: ${summary}`);
+    if (error_output) {
+      console.log(`\nError output:\n${error_output.slice(0, 1000)}`);
+    }
+    console.log(`${'='.repeat(60)}\n`);
+
     ctx.emit('task:updated', task);
+
+    // Emit detailed failure event for UI
+    ctx.emit('story:failed', {
+      storyId: task_id,
+      storyTitle: task.title,
+      status: 'failed',
+      retryCount,
+      testResults: {
+        passed: passed_tests,
+        failed: failed_tests,
+        total: total_tests,
+        summary,
+        errorOutput: error_output?.slice(0, 500),
+      },
+    });
+
     await ctx.persistStoriesToFile();
 
     ctx.emitAgentMessage({
       agentRole: ctx.role,
       agentName: ctx.config.name,
       type: 'error',
-      content: `❌ Story "${task.title}" FAILED - ${failed_tests}/${total_tests} tests failed\n${error_output?.slice(0, 500) || ''}`,
+      content: `❌ Story "${task.title}" FAILED - ${failed_tests}/${total_tests} tests failed (retry ${retryCount}/3)\n${error_output?.slice(0, 500) || ''}`,
     });
 
-    return `Story ${task_id} marked as failed. ${failed_tests} tests failed.`;
+    return `Story ${task_id} marked as failed. ${failed_tests} tests failed. Will retry (attempt ${retryCount + 1}/3).`;
   }
 });
 
@@ -685,7 +716,24 @@ registerTool('report_setup_error', async (ctx) => {
     task.status = 'failed';
     task.result = `Setup error: ${error_type} - ${error_message}`;
     task.workingAgent = null;
+
+    // Detailed setup error logging
+    console.log(`\n${'='.repeat(60)}`);
+    console.log(`🔧 SETUP ERROR - Story: ${task.title}`);
+    console.log(`${'='.repeat(60)}`);
+    console.log(`Story ID: ${task_id}`);
+    console.log(`Error type: ${error_type}`);
+    console.log(`Error message: ${error_message}`);
+    console.log(`Suggested fix: ${suggested_fix || 'N/A'}`);
+    console.log(`${'='.repeat(60)}\n`);
+
     ctx.emit('task:updated', task);
+    ctx.emit('story:failed', {
+      storyId: task_id,
+      storyTitle: task.title,
+      status: 'failed',
+      setupError: { errorType: error_type, errorMessage: error_message, suggestedFix: suggested_fix },
+    });
     await ctx.persistStoriesToFile();
   }
 

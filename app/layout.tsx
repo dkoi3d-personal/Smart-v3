@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Ochsner AI Studio",
+  title: "Employers AI Studio",
   description: "Build smarter, ship faster - AI-powered development from requirements to deployment",
 };
 

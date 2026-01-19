@@ -2035,7 +2035,7 @@ export default function SettingsPage() {
                       <h4 className="font-medium text-sm">Built-in Systems</h4>
                     </div>
                     <p className="text-xs text-muted-foreground">
-                      Modern Dark and Ochsner Health design systems included out of the box.
+                      Modern Dark and Employers design systems included out of the box.
                     </p>
                   </div>
                   <div className="p-4 rounded-lg bg-muted/50">

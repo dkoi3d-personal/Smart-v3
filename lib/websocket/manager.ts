@@ -29,7 +29,7 @@ export class WebSocketManager {
 
       // Send welcome message
       socket.emit('connected', {
-        message: 'Connected to Ochsner AI Studio',
+        message: 'Connected to Employers AI Studio',
         socketId: socket.id,
       });
 

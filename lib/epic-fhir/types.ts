@@ -631,6 +631,324 @@ export interface ImmunizationProtocolApplied {
 }
 
 // ========================================
+// Coverage Resource (Billing)
+// ========================================
+export interface Coverage extends FHIRResource {
+  resourceType: 'Coverage';
+  identifier?: Identifier[];
+  status: 'active' | 'cancelled' | 'draft' | 'entered-in-error';
+  type?: CodeableConcept;
+  policyHolder?: Reference;
+  subscriber?: Reference;
+  subscriberId?: string;
+  beneficiary: Reference;
+  dependent?: string;
+  relationship?: CodeableConcept;
+  period?: Period;
+  payor: Reference[];
+  class?: CoverageClass[];
+  order?: number;
+  network?: string;
+  costToBeneficiary?: CoverageCostToBeneficiary[];
+  subrogation?: boolean;
+  contract?: Reference[];
+}
+
+export interface CoverageClass {
+  type: CodeableConcept;
+  value: string;
+  name?: string;
+}
+
+export interface CoverageCostToBeneficiary {
+  type?: CodeableConcept;
+  valueQuantity?: Quantity;
+  valueMoney?: Money;
+  exception?: CoverageException[];
+}
+
+export interface CoverageException {
+  type: CodeableConcept;
+  period?: Period;
+}
+
+export interface Money {
+  value?: number;
+  currency?: string;
+}
+
+// ========================================
+// ExplanationOfBenefit Resource (Billing)
+// ========================================
+export interface ExplanationOfBenefit extends FHIRResource {
+  resourceType: 'ExplanationOfBenefit';
+  identifier?: Identifier[];
+  status: 'active' | 'cancelled' | 'draft' | 'entered-in-error';
+  type: CodeableConcept;
+  subType?: CodeableConcept;
+  use: 'claim' | 'preauthorization' | 'predetermination';
+  patient: Reference;
+  billablePeriod?: Period;
+  created: string;
+  enterer?: Reference;
+  insurer: Reference;
+  provider: Reference;
+  priority?: CodeableConcept;
+  fundsReserveRequested?: CodeableConcept;
+  fundsReserve?: CodeableConcept;
+  related?: EOBRelated[];
+  prescription?: Reference;
+  originalPrescription?: Reference;
+  payee?: EOBPayee;
+  referral?: Reference;
+  facility?: Reference;
+  claim?: Reference;
+  claimResponse?: Reference;
+  outcome: 'queued' | 'complete' | 'error' | 'partial';
+  disposition?: string;
+  preAuthRef?: string[];
+  preAuthRefPeriod?: Period[];
+  careTeam?: EOBCareTeam[];
+  supportingInfo?: EOBSupportingInfo[];
+  diagnosis?: EOBDiagnosis[];
+  procedure?: EOBProcedure[];
+  precedence?: number;
+  insurance: EOBInsurance[];
+  accident?: EOBAccident;
+  item?: EOBItem[];
+  addItem?: EOBAddItem[];
+  adjudication?: EOBAdjudication[];
+  total?: EOBTotal[];
+  payment?: EOBPayment;
+  formCode?: CodeableConcept;
+  form?: Attachment;
+  processNote?: EOBProcessNote[];
+  benefitPeriod?: Period;
+  benefitBalance?: EOBBenefitBalance[];
+}
+
+export interface EOBRelated {
+  claim?: Reference;
+  relationship?: CodeableConcept;
+  reference?: Identifier;
+}
+
+export interface EOBPayee {
+  type?: CodeableConcept;
+  party?: Reference;
+}
+
+export interface EOBCareTeam {
+  sequence: number;
+  provider: Reference;
+  responsible?: boolean;
+  role?: CodeableConcept;
+  qualification?: CodeableConcept;
+}
+
+export interface EOBSupportingInfo {
+  sequence: number;
+  category: CodeableConcept;
+  code?: CodeableConcept;
+  timingDate?: string;
+  timingPeriod?: Period;
+  valueBoolean?: boolean;
+  valueString?: string;
+  valueQuantity?: Quantity;
+  valueAttachment?: Attachment;
+  valueReference?: Reference;
+  reason?: Coding;
+}
+
+export interface EOBDiagnosis {
+  sequence: number;
+  diagnosisCodeableConcept?: CodeableConcept;
+  diagnosisReference?: Reference;
+  type?: CodeableConcept[];
+  onAdmission?: CodeableConcept;
+  packageCode?: CodeableConcept;
+}
+
+export interface EOBProcedure {
+  sequence: number;
+  type?: CodeableConcept[];
+  date?: string;
+  procedureCodeableConcept?: CodeableConcept;
+  procedureReference?: Reference;
+  udi?: Reference[];
+}
+
+export interface EOBInsurance {
+  focal: boolean;
+  coverage: Reference;
+  preAuthRef?: string[];
+}
+
+export interface EOBAccident {
+  date?: string;
+  type?: CodeableConcept;
+  locationAddress?: Address;
+  locationReference?: Reference;
+}
+
+export interface EOBItem {
+  sequence: number;
+  careTeamSequence?: number[];
+  diagnosisSequence?: number[];
+  procedureSequence?: number[];
+  informationSequence?: number[];
+  revenue?: CodeableConcept;
+  category?: CodeableConcept;
+  productOrService: CodeableConcept;
+  modifier?: CodeableConcept[];
+  programCode?: CodeableConcept[];
+  servicedDate?: string;
+  servicedPeriod?: Period;
+  locationCodeableConcept?: CodeableConcept;
+  locationAddress?: Address;
+  locationReference?: Reference;
+  quantity?: Quantity;
+  unitPrice?: Money;
+  factor?: number;
+  net?: Money;
+  udi?: Reference[];
+  bodySite?: CodeableConcept;
+  subSite?: CodeableConcept[];
+  encounter?: Reference[];
+  noteNumber?: number[];
+  adjudication?: EOBAdjudication[];
+  detail?: EOBItemDetail[];
+}
+
+export interface EOBItemDetail {
+  sequence: number;
+  revenue?: CodeableConcept;
+  category?: CodeableConcept;
+  productOrService: CodeableConcept;
+  modifier?: CodeableConcept[];
+  programCode?: CodeableConcept[];
+  quantity?: Quantity;
+  unitPrice?: Money;
+  factor?: number;
+  net?: Money;
+  udi?: Reference[];
+  noteNumber?: number[];
+  adjudication?: EOBAdjudication[];
+  subDetail?: EOBItemSubDetail[];
+}
+
+export interface EOBItemSubDetail {
+  sequence: number;
+  revenue?: CodeableConcept;
+  category?: CodeableConcept;
+  productOrService: CodeableConcept;
+  modifier?: CodeableConcept[];
+  programCode?: CodeableConcept[];
+  quantity?: Quantity;
+  unitPrice?: Money;
+  factor?: number;
+  net?: Money;
+  udi?: Reference[];
+  noteNumber?: number[];
+  adjudication?: EOBAdjudication[];
+}
+
+export interface EOBAddItem {
+  itemSequence?: number[];
+  detailSequence?: number[];
+  subDetailSequence?: number[];
+  provider?: Reference[];
+  productOrService: CodeableConcept;
+  modifier?: CodeableConcept[];
+  programCode?: CodeableConcept[];
+  servicedDate?: string;
+  servicedPeriod?: Period;
+  locationCodeableConcept?: CodeableConcept;
+  locationAddress?: Address;
+  locationReference?: Reference;
+  quantity?: Quantity;
+  unitPrice?: Money;
+  factor?: number;
+  net?: Money;
+  bodySite?: CodeableConcept;
+  subSite?: CodeableConcept[];
+  noteNumber?: number[];
+  adjudication?: EOBAdjudication[];
+  detail?: EOBAddItemDetail[];
+}
+
+export interface EOBAddItemDetail {
+  productOrService: CodeableConcept;
+  modifier?: CodeableConcept[];
+  quantity?: Quantity;
+  unitPrice?: Money;
+  factor?: number;
+  net?: Money;
+  noteNumber?: number[];
+  adjudication?: EOBAdjudication[];
+  subDetail?: EOBAddItemSubDetail[];
+}
+
+export interface EOBAddItemSubDetail {
+  productOrService: CodeableConcept;
+  modifier?: CodeableConcept[];
+  quantity?: Quantity;
+  unitPrice?: Money;
+  factor?: number;
+  net?: Money;
+  noteNumber?: number[];
+  adjudication?: EOBAdjudication[];
+}
+
+export interface EOBAdjudication {
+  category: CodeableConcept;
+  reason?: CodeableConcept;
+  amount?: Money;
+  value?: number;
+}
+
+export interface EOBTotal {
+  category: CodeableConcept;
+  amount: Money;
+}
+
+export interface EOBPayment {
+  type?: CodeableConcept;
+  adjustment?: Money;
+  adjustmentReason?: CodeableConcept;
+  date?: string;
+  amount?: Money;
+  identifier?: Identifier;
+}
+
+export interface EOBProcessNote {
+  number?: number;
+  type?: 'display' | 'print' | 'printoper';
+  text?: string;
+  language?: CodeableConcept;
+}
+
+export interface EOBBenefitBalance {
+  category: CodeableConcept;
+  excluded?: boolean;
+  name?: string;
+  description?: string;
+  network?: CodeableConcept;
+  unit?: CodeableConcept;
+  term?: CodeableConcept;
+  financial?: EOBBenefitBalanceFinancial[];
+}
+
+export interface EOBBenefitBalanceFinancial {
+  type: CodeableConcept;
+  allowedUnsignedInt?: number;
+  allowedString?: string;
+  allowedMoney?: Money;
+  usedUnsignedInt?: number;
+  usedMoney?: Money;
+}
+
+// ========================================
 // API Response Types
 // ========================================
 export interface EpicAPIError {

@@ -65,6 +65,7 @@ interface IconInfo {
   contextPath?: string;  // Full path of parent containers (e.g., "Learn Tab > Resources > Healthy Eating Card")
   isIllustration?: boolean; // true if larger than typical icon size (> 64px)
   imageRef?: string; // Figma imageRef for IMAGE fills - indicates this needs PNG export, not SVG
+  description?: string; // Human-readable description of what this icon visually shows (IMPORTANT for PO/coders to understand icon content)
 }
 
 interface FigmaDesignContext {
@@ -281,30 +282,74 @@ function findIconContext(
 }
 
 /**
- * Generate a semantic filename from context label
+ * Generate a semantic filename from the icon's actual name (prioritized) and context
+ * IMPORTANT: We now prioritize the actual Figma node name over context path to avoid misleading filenames
  */
-function generateSemanticFileName(contextLabel: string | undefined, nodeName: string, nodeId: string): string {
-  // If we have a context label, use it for the filename
+function generateSemanticFileName(contextLabel: string | undefined, nodeName: string, nodeId: string, contextPath?: string): string {
+  // First, try to use the actual node name (most accurate representation of what the icon IS)
+  // This fixes issues like "Apple" icon being named "illustration-ios-learn-tab-program-overview.svg"
+  const cleanNodeName = nodeName
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '')
+    .slice(0, 40);
+
+  // Check if node name is meaningful (not generic like "vector", "group", "frame", etc.)
+  const genericNames = ['vector', 'group', 'frame', 'rectangle', 'ellipse', 'path', 'shape', 'icon', 'instance', 'component', 'mask', 'clip'];
+  const isGenericNodeName = genericNames.some(g => cleanNodeName === g || cleanNodeName.startsWith(`${g}-`));
+
+  if (cleanNodeName.length >= 2 && !isGenericNodeName) {
+    // Use actual node name - this is what the icon ACTUALLY shows
+    return cleanNodeName.startsWith('icon') ? `${cleanNodeName}.svg` : `icon-${cleanNodeName}.svg`;
+  }
+
+  // Fallback: If node name is generic, try context label
   if (contextLabel) {
     const cleanContext = contextLabel
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/^-|-$/g, '')
-      .slice(0, 50); // Limit length
+      .slice(0, 50);
 
     if (cleanContext.length >= 3) {
       return `icon-${cleanContext}.svg`;
     }
   }
 
-  // Fall back to node name
-  const cleanName = nodeName
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-|-$/g, '')
-    || `icon-${nodeId.replace(':', '-')}`;
+  // Last resort: use node ID
+  return `icon-${nodeId.replace(':', '-')}.svg`;
+}
 
-  return cleanName.startsWith('icon') ? `${cleanName}.svg` : `icon-${cleanName}.svg`;
+/**
+ * Generate a human-readable description of what an icon visually shows
+ * This helps PO/coders understand icon content without having to view each image
+ */
+function generateIconDescription(nodeName: string, contextLabel?: string, contextPath?: string, isIllustration?: boolean): string {
+  const type = isIllustration ? 'Illustration' : 'Icon';
+
+  // Clean up the node name for readability
+  const cleanName = nodeName
+    .replace(/[-_]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  // Build description parts
+  const parts: string[] = [];
+
+  // Add the actual visual content (what the icon SHOWS)
+  parts.push(`${type} showing: "${cleanName}"`);
+
+  // Add context if different from name and meaningful
+  if (contextLabel && contextLabel.toLowerCase() !== cleanName.toLowerCase()) {
+    parts.push(`Label: "${contextLabel}"`);
+  }
+
+  // Add location context
+  if (contextPath) {
+    parts.push(`Location: ${contextPath}`);
+  }
+
+  return parts.join(' | ');
 }
 
 /**
@@ -440,7 +485,12 @@ function detectIcons(
                             lowerName.includes('meal') ||
                             lowerName.includes('recipe') ||
                             lowerName.includes('photo') ||
-                            lowerName.includes('banner');
+                            lowerName.includes('banner') ||
+                            lowerName.includes('program') ||
+                            lowerName.includes('library') ||
+                            lowerName.includes('tutorial') ||
+                            lowerName.includes('mission') ||
+                            lowerName.includes('overview');
 
   // Identify as illustration if:
   // 1. It's named like an illustration AND is illustration-sized
@@ -459,17 +509,20 @@ function detectIcons(
     // Find context from parent/sibling nodes
     const { label: contextLabel, path: contextPath } = findIconContext(parentNode, node, currentPath);
 
-    // Generate semantic filename based on context
-    // Use different prefix for illustrations vs icons
-    const prefix = isIllustration ? 'illustration' : 'icon';
-    let fileName = generateSemanticFileName(contextLabel, nodeName, nodeId);
+    // Generate semantic filename based on ACTUAL icon name (prioritized) and context
+    // This fixes the bug where "Apple" icon was named "illustration-ios-learn-tab-program-overview.svg"
+    let fileName = generateSemanticFileName(contextLabel, nodeName, nodeId, contextPath);
 
-    // Ensure correct prefix
+    // Ensure correct prefix for illustrations
     if (isIllustration && fileName.startsWith('icon-')) {
       fileName = fileName.replace('icon-', 'illustration-');
     } else if (isIllustration && !fileName.startsWith('illustration-')) {
       fileName = `illustration-${fileName.replace(/^(icon-|illustration-)/, '')}`;
     }
+
+    // Generate human-readable description
+    // This is CRITICAL for PO/coders to understand what the icon actually shows
+    const description = generateIconDescription(nodeName, contextLabel, contextPath, isIllustration);
 
     // Avoid duplicates (by ID and by filename to prevent overwrites)
     const existingById = icons.find(i => i.id === nodeId);
@@ -500,8 +553,9 @@ function detectIcons(
         contextLabel,
         contextPath: contextPath || undefined,
         isIllustration: isIllustration || undefined,
-        // Track if this needs PNG download (photo vs vector)
         imageRef: imageRef || undefined,
+        // NEW: Include human-readable description to help PO/coders understand icon content
+        description,
       });
     }
   }
@@ -1381,11 +1435,26 @@ export async function POST(request: NextRequest) {
     const allFrames: Record<string, unknown>[] = [];
     const frameIds: string[] = [];
 
-    // Helper to add frame if it's a FRAME type
+    // Helper to add frame if it's a FRAME type or a RECTANGLE with image fill (screenshot)
     function addIfFrame(node: Record<string, unknown>) {
-      if (node.type === 'FRAME') {
+      const nodeType = node.type as string;
+
+      if (nodeType === 'FRAME') {
         allFrames.push(node);
         frameIds.push(node.id as string);
+        return;
+      }
+
+      // Also handle RECTANGLE nodes with image fills (pasted screenshots)
+      if (nodeType === 'RECTANGLE' || nodeType === 'ELLIPSE') {
+        const fills = node.fills as Array<{ type?: string }> | undefined;
+        const hasImageFill = fills && Array.isArray(fills) && fills.some(f => f.type === 'IMAGE');
+        const bounds = node.absoluteBoundingBox as { width?: number } | undefined;
+
+        if (hasImageFill && bounds && bounds.width && bounds.width >= 500) {
+          allFrames.push(node);
+          frameIds.push(node.id as string);
+        }
       }
     }
 
@@ -1394,22 +1463,37 @@ export async function POST(request: NextRequest) {
     if (parsedUrl.nodeId) {
       // For node-specific fetch, search for frames up to 4 levels deep
       // The selected node could be a SECTION, GROUP, or FRAME containing screens
+      // Also handles RECTANGLE nodes with image fills (pasted screenshots)
       function findFramesInNode(node: Record<string, unknown>, depth = 0, maxDepth = 4) {
         if (depth > maxDepth) return;
 
         const nodeType = node.type as string;
         const nodeName = node.name as string;
+        const bounds = node.absoluteBoundingBox as { width?: number; height?: number } | undefined;
 
         console.log(`[Figma] Checking node at depth ${depth}: type=${nodeType}, name="${nodeName?.slice(0, 50)}"`);
 
         // Add if it's a FRAME (but skip very small frames which are likely components)
         if (nodeType === 'FRAME') {
-          const bounds = node.absoluteBoundingBox as { width?: number; height?: number } | undefined;
           // Only add frames that look like screens (reasonably sized)
           if (!bounds || (bounds.width && bounds.width >= 200)) {
             allFrames.push(node);
             frameIds.push(node.id as string);
             console.log(`[Figma] Added frame: ${nodeName}`);
+          }
+        }
+
+        // Also add RECTANGLE nodes that have image fills (pasted screenshots)
+        // These are common when designers paste screenshots into Figma
+        if (nodeType === 'RECTANGLE' || nodeType === 'ELLIPSE') {
+          const fills = node.fills as Array<{ type?: string; imageRef?: string }> | undefined;
+          const hasImageFill = fills && Array.isArray(fills) && fills.some(f => f.type === 'IMAGE');
+
+          // Only add if it has an image fill and is screen-sized (> 500px wide)
+          if (hasImageFill && bounds && bounds.width && bounds.width >= 500) {
+            allFrames.push(node);
+            frameIds.push(node.id as string);
+            console.log(`[Figma] Added screenshot rectangle: ${nodeName} (${bounds.width}x${bounds.height})`);
           }
         }
 
@@ -1428,14 +1512,28 @@ export async function POST(request: NextRequest) {
         findFramesInNode(page, 0);
       }
     } else {
-      // Full file: only get direct children of pages that are FRAME type
-      for (const page of pages) {
-        const children = page.children as Record<string, unknown>[] | undefined;
-        if (children && Array.isArray(children)) {
-          for (const child of children) {
-            addIfFrame(child);
+      // Full file: get frames from pages, including inside SECTIONs
+      function findFramesInPage(node: Record<string, unknown>, depth = 0) {
+        if (depth > 3) return;
+
+        const nodeType = node.type as string;
+
+        // Add if it's a frame or screenshot
+        addIfFrame(node);
+
+        // Recurse into SECTION, GROUP containers to find nested frames
+        if (['SECTION', 'GROUP', 'CANVAS'].includes(nodeType) || depth === 0) {
+          const children = node.children as Record<string, unknown>[] | undefined;
+          if (children && Array.isArray(children)) {
+            for (const child of children) {
+              findFramesInPage(child, depth + 1);
+            }
           }
         }
+      }
+
+      for (const page of pages) {
+        findFramesInPage(page, 0);
       }
     }
 

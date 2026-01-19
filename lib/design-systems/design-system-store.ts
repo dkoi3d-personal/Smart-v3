@@ -123,6 +123,8 @@ export async function getDesignSystemsList(): Promise<DesignSystemListItem[]> {
     updatedAt: ds.updatedAt,
     componentCount: Object.keys(ds.components).length,
     exampleCount: ds.examples.length,
+    figmaSourceUrl: ds.figmaSource?.url,
+    lastSyncedAt: ds.figmaSource?.lastSyncedAt,
   }));
 }
 

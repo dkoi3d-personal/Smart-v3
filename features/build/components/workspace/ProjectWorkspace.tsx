@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import {
   Sparkles,
   Search,
@@ -21,6 +21,8 @@ import {
   FileText,
   ExternalLink,
   AlertCircle,
+  Upload,
+  X,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -41,11 +43,17 @@ type BuildSource = 'text' | 'figma';
 
 // Launch messages for Figma progress bar (outside component to avoid re-creation)
 const FIGMA_LAUNCH_MESSAGES = [
-  'Connecting to Figma...',
-  'Extracting frames...',
-  'Analyzing colors & typography...',
-  'Processing components...',
-  'Almost ready...'
+  'Connecting to Figma API...',
+  'Downloading design frames...',
+  'Extracting component hierarchy...',
+  'Product Owner analyzing design patterns...',
+  'Breaking design into user stories...',
+  'Identifying acceptance criteria from layouts...',
+  'Mapping components to features...',
+  'Creating story point estimates...',
+  'Defining technical requirements...',
+  'Finalizing product backlog...',
+  'Ready to build!'
 ];
 
 // Launch messages for text build progress bar
@@ -141,6 +149,11 @@ export function ProjectWorkspace({
   const [figmaError, setFigmaError] = useState<string | null>(null);
   const [isExtractingFigma, setIsExtractingFigma] = useState(false);
 
+  // Document upload state
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [contextDocuments, setContextDocuments] = useState<Array<{ name: string; text: string; size: number }>>([]);
+  const [isProcessingFile, setIsProcessingFile] = useState(false);
+
   // Check Figma configuration on mount
   useEffect(() => {
     const checkFigmaStatus = async () => {
@@ -217,14 +230,15 @@ export function ProjectWorkspace({
       setWorkspaceState('figma-extracting');
     } else {
       // Handle text build - show loading state like Figma
-      if (!userPrompt.trim()) {
-        console.log('[ProjectWorkspace] userPrompt is empty, returning early');
+      // Allow build if there's text OR uploaded documents
+      if (!userPrompt.trim() && contextDocuments.length === 0) {
+        console.log('[ProjectWorkspace] userPrompt is empty and no documents, returning early');
         return;
       }
       console.log('[ProjectWorkspace] Setting text-starting state');
       setWorkspaceState('text-starting');
     }
-  }, [buildSource, figmaUrl, userPrompt, isValidFigmaUrl]);
+  }, [buildSource, figmaUrl, userPrompt, contextDocuments.length, isValidFigmaUrl]);
 
   // Handle restoring to a previous Git version
   const handleRestoreVersion = useCallback(async (commitHash: string) => {
@@ -334,6 +348,42 @@ ${designContext?.requirements || 'Implement the design as shown in the Figma fil
     }, 100);
   }, [onUserPromptChange]);
 
+  // Handle document upload for requirements
+  const handleFileUpload = useCallback(async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    const fileName = file.name.toLowerCase();
+    if (fileName.endsWith('.doc') && !fileName.endsWith('.docx')) {
+      alert('The older .doc format is not supported. Please save as .docx');
+      return;
+    }
+
+    setIsProcessingFile(true);
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      const response = await fetch('/api/extract-text', { method: 'POST', body: formData });
+
+      if (!response.ok) {
+        throw new Error('Failed to extract text from file');
+      }
+
+      const { text } = await response.json();
+
+      if (text && text.trim()) {
+        setContextDocuments(prev => [...prev, { name: file.name, text, size: file.size }]);
+      }
+    } catch (error) {
+      console.error('File upload error:', error);
+      alert('Failed to process file. Please try again.');
+    } finally {
+      setIsProcessingFile(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  }, [userPrompt, onUserPromptChange]);
+
   // Trigger Figma extraction when entering figma-extracting state
   useEffect(() => {
     if (workspaceState === 'figma-extracting' && !isExtractingFigma) {
@@ -347,11 +397,21 @@ ${designContext?.requirements || 'Implement the design as shown in the Figma fil
       // Delay the actual build to show loading animation
       const timer = setTimeout(() => {
         console.log('[ProjectWorkspace] Text loading complete, calling onStartBuild');
-        onStartBuild(userPrompt);
+        // Combine user prompt with any uploaded context documents
+        let fullRequirements = userPrompt.trim();
+        if (contextDocuments.length > 0) {
+          const docsContent = contextDocuments
+            .map(doc => `=== Document: ${doc.name} ===\n${doc.text}`)
+            .join('\n\n');
+          fullRequirements = fullRequirements
+            ? `${fullRequirements}\n\n${docsContent}`
+            : docsContent;
+        }
+        onStartBuild(fullRequirements);
       }, 1500); // Show loading for 1.5 seconds
       return () => clearTimeout(timer);
     }
-  }, [workspaceState, userPrompt, onStartBuild]);
+  }, [workspaceState, userPrompt, contextDocuments, onStartBuild]);
 
   // Reset extracting/starting state when build actually starts (isBuilding becomes true)
   useEffect(() => {
@@ -380,21 +440,24 @@ ${designContext?.requirements || 'Implement the design as shown in the Figma fil
     setLaunchMessage(messages[0]);
     setLaunchProgress(5);
 
-    // Progress animation
-    const progressInterval = setInterval(() => {
-      setLaunchProgress(prev => {
-        if (prev >= 90) return prev;
-        const increment = prev < 30 ? 8 : prev < 60 ? 5 : prev < 80 ? 3 : 1;
-        return Math.min(90, prev + increment);
-      });
-    }, 300);
-
-    // Message rotation
+    // Message rotation with progress tied to message index
     let messageIndex = 0;
     const messageInterval = setInterval(() => {
       messageIndex = (messageIndex + 1) % messages.length;
       setLaunchMessage(messages[messageIndex]);
-    }, 1500);
+      // Progress is based on message position for accuracy
+      const targetProgress = Math.min(90, Math.round((messageIndex / (messages.length - 1)) * 85) + 5);
+      setLaunchProgress(targetProgress);
+    }, 3500); // Slower rotation: 3.5 seconds per message
+
+    // Smooth progress animation between message milestones
+    const progressInterval = setInterval(() => {
+      setLaunchProgress(prev => {
+        const targetProgress = Math.min(90, Math.round((messageIndex / (messages.length - 1)) * 85) + 5);
+        if (prev >= targetProgress - 2) return prev;
+        return prev + 1;
+      });
+    }, 500);
 
     return () => {
       clearInterval(progressInterval);
@@ -633,6 +696,55 @@ ${designContext?.requirements || 'Implement the design as shown in the Figma fil
                       disabled={isBuilding}
                     />
 
+                    {/* Document upload */}
+                    <div className="flex items-center gap-2 mt-2">
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="outline"
+                        onClick={() => fileInputRef.current?.click()}
+                        disabled={isBuilding || isProcessingFile}
+                        className="h-8 text-xs border-indigo-500/30 hover:bg-indigo-500/10"
+                      >
+                        {isProcessingFile ? (
+                          <Loader2 className="h-4 w-4 mr-1.5 animate-spin" />
+                        ) : (
+                          <Upload className="h-4 w-4 mr-1.5" />
+                        )}
+                        Upload Doc
+                      </Button>
+                      <span className="text-xs text-muted-foreground">PDF, DOCX, MD, TXT</span>
+                      <input
+                        ref={fileInputRef}
+                        type="file"
+                        accept=".txt,.md,.pdf,.docx"
+                        onChange={handleFileUpload}
+                        className="hidden"
+                      />
+                    </div>
+
+                    {/* Display uploaded documents */}
+                    {contextDocuments.length > 0 && (
+                      <div className="flex flex-wrap gap-2 mt-2">
+                        {contextDocuments.map((doc, index) => (
+                          <div
+                            key={index}
+                            className="flex items-center gap-2 px-2.5 py-1.5 rounded-md bg-indigo-500/20 border border-indigo-500/30 text-xs"
+                          >
+                            <FileText className="h-3.5 w-3.5 text-indigo-400" />
+                            <span className="text-indigo-300 font-medium">{doc.name}</span>
+                            <span className="text-indigo-400/60">({(doc.size / 1024).toFixed(1)}KB)</span>
+                            <button
+                              onClick={() => setContextDocuments(prev => prev.filter((_, i) => i !== index))}
+                              className="ml-0.5 text-indigo-400 hover:text-indigo-300"
+                            >
+                              <X className="h-3.5 w-3.5" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
                     {/* Quick suggestion chips - categorized */}
                     <div className="space-y-2">
                       <div className="flex items-center gap-2">
@@ -723,7 +835,7 @@ ${designContext?.requirements || 'Implement the design as shown in the Figma fil
                     /* Normal build button */
                     <Button
                       onClick={handleStartBuild}
-                      disabled={isBuilding || (buildSource === 'text' ? !userPrompt.trim() : !figmaUrl.trim())}
+                      disabled={isBuilding || (buildSource === 'text' ? (!userPrompt.trim() && contextDocuments.length === 0) : !figmaUrl.trim())}
                       className={cn(
                         "flex-1 text-white shadow-lg h-14 text-base font-semibold",
                         buildSource === 'figma'

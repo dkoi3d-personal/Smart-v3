@@ -1,0 +1,8 @@
+node_modules/
+.next/
+out/
+prisma/
+*.prisma
+*.md
+*.json
+*.lock

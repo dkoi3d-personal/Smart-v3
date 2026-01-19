@@ -22,6 +22,23 @@ import { Separator } from '@/components/ui/separator';
 import { Switch } from '@/components/ui/switch';
 import { Checkbox } from '@/components/ui/checkbox';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Slider } from '@/components/ui/slider';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from '@/components/ui/collapsible';
 import {
   Dialog,
   DialogContent,
@@ -74,6 +91,7 @@ import {
   Loader2,
   MoreHorizontal,
   ChevronDown,
+  ChevronsUpDown,
   Search,
   Bell,
   User,
@@ -172,6 +190,20 @@ function colorToHsl(color: string | Record<string, string> | undefined): string 
  * Handles both flat format (background, foreground) and scaled format (primary.DEFAULT)
  * Also handles mixed formats where both exist
  */
+/**
+ * Check if a color is transparent or nearly transparent
+ */
+function isTransparent(color: string): boolean {
+  if (!color) return true;
+  // Check for transparent hex (8-digit with 00 alpha)
+  if (color.length === 9 && color.endsWith('00')) return true;
+  // Check for named transparent
+  if (color === 'transparent' || color === '#00000000') return true;
+  // Check for very low alpha
+  if (color.includes('rgba') && color.includes(',0)')) return true;
+  return false;
+}
+
 function normalizeColors(colors: DesignSystem['tokens']['colors']): Record<string, string> {
   // Cast to unknown first, then to Record for type safety
   const colorsRecord = colors as unknown as Record<string, unknown>;
@@ -179,12 +211,34 @@ function normalizeColors(colors: DesignSystem['tokens']['colors']): Record<strin
   // Helper to get a string color value from a potentially nested structure
   const getStringColor = (key: string, fallback: string): string => {
     const val = colorsRecord[key];
-    if (typeof val === 'string') return val;
+    if (typeof val === 'string') {
+      // If transparent, use fallback
+      if (isTransparent(val)) return fallback;
+      return val;
+    }
     if (val && typeof val === 'object') {
       const obj = val as Record<string, string>;
-      return obj.DEFAULT || obj['500'] || obj['600'] || Object.values(obj)[0] || fallback;
+      const result = obj.DEFAULT || obj['500'] || obj['600'] || Object.values(obj)[0] || fallback;
+      return isTransparent(result) ? fallback : result;
     }
     return fallback;
+  };
+
+  // Helper to check if two colors are too similar (need contrast fix)
+  const needsContrastFix = (bg: string, fg: string): boolean => {
+    if (!bg || !fg) return true;
+    // Same color = definitely needs fix
+    if (bg.toLowerCase() === fg.toLowerCase()) return true;
+    // Both dark or both light
+    if (bg.startsWith('#') && fg.startsWith('#') && bg.length >= 7 && fg.length >= 7) {
+      const bgBrightness = (parseInt(bg.slice(1, 3), 16) + parseInt(bg.slice(3, 5), 16) + parseInt(bg.slice(5, 7), 16)) / 3;
+      const fgBrightness = (parseInt(fg.slice(1, 3), 16) + parseInt(fg.slice(3, 5), 16) + parseInt(fg.slice(5, 7), 16)) / 3;
+      // Both dark (< 100) or both light (> 200)
+      if ((bgBrightness < 100 && fgBrightness < 100) || (bgBrightness > 200 && fgBrightness > 200)) {
+        return true;
+      }
+    }
+    return false;
   };
 
   // Helper to get a color scale object
@@ -200,90 +254,160 @@ function normalizeColors(colors: DesignSystem['tokens']['colors']): Record<strin
   const neutral = getColorScale('neutral');
   const primary = getColorScale('primary');
 
-  // Build the flat format, preferring explicit flat values if they exist
+  // Get raw values first
+  let background = getStringColor('background', neutral?.['50'] || '#ffffff');
+  let foreground = getStringColor('foreground', primary?.['900'] || neutral?.['900'] || '#0a0a0a');
+  let card = getStringColor('card', neutral?.['50'] || '#ffffff');
+  let cardForeground = getStringColor('cardForeground', primary?.['900'] || neutral?.['900'] || '#0a0a0a');
+  let popover = getStringColor('popover', neutral?.['50'] || '#ffffff');
+  let popoverForeground = getStringColor('popoverForeground', primary?.['900'] || neutral?.['900'] || '#0a0a0a');
+  const primaryColor = getStringColor('primary', primary?.DEFAULT || primary?.['600'] || '#3b82f6');
+  let muted = getStringColor('muted', neutral?.['100'] || '#f4f4f5');
+  let mutedForeground = getStringColor('mutedForeground', neutral?.['500'] || '#71717a');
+  let border = getStringColor('border', neutral?.['200'] || '#e4e4e7');
+
+  // Detect if this is a broken/dark theme based on background
+  const bgBrightness = background.startsWith('#') && background.length >= 7
+    ? (parseInt(background.slice(1, 3), 16) + parseInt(background.slice(3, 5), 16) + parseInt(background.slice(5, 7), 16)) / 3
+    : 255;
+  const isDarkTheme = bgBrightness < 128;
+
+  // Fix contrast issues - if card and cardForeground are same/similar
+  if (needsContrastFix(card, cardForeground)) {
+    if (isDarkTheme) {
+      // Dark theme: card should be dark, foreground should be light
+      cardForeground = '#fafafa';
+    } else {
+      // Light theme: card should be light, foreground should be dark
+      card = '#ffffff';
+      cardForeground = '#0a0a0a';
+    }
+  }
+
+  // Fix background/foreground contrast
+  if (needsContrastFix(background, foreground)) {
+    if (isDarkTheme) {
+      foreground = '#fafafa';
+    } else {
+      background = '#ffffff';
+      foreground = '#0a0a0a';
+    }
+  }
+
+  // Fix popover contrast
+  if (needsContrastFix(popover, popoverForeground)) {
+    popover = card;
+    popoverForeground = cardForeground;
+  }
+
+  // Fix muted contrast
+  if (needsContrastFix(muted, mutedForeground)) {
+    if (isDarkTheme) {
+      muted = '#262626';
+      mutedForeground = '#a3a3a3';
+    } else {
+      muted = '#f4f4f5';
+      mutedForeground = '#71717a';
+    }
+  }
+
+  // Fix border visibility
+  if (isDarkTheme && border === background) {
+    border = '#404040';
+  } else if (!isDarkTheme && border === background) {
+    border = '#e4e4e7';
+  }
+
   return {
-    // Background and foreground
-    background: getStringColor('background', neutral?.['50'] || '#ffffff'),
-    foreground: getStringColor('foreground', primary?.['900'] || neutral?.['900'] || '#0a0a0a'),
-    // Cards
-    card: getStringColor('card', neutral?.['50'] || '#ffffff'),
-    cardForeground: getStringColor('cardForeground', primary?.['900'] || neutral?.['900'] || '#0a0a0a'),
-    // Popovers
-    popover: getStringColor('popover', neutral?.['50'] || '#ffffff'),
-    popoverForeground: getStringColor('popoverForeground', primary?.['900'] || neutral?.['900'] || '#0a0a0a'),
-    // Primary brand color
-    primary: getStringColor('primary', primary?.DEFAULT || primary?.['600'] || '#3b82f6'),
-    primaryForeground: getStringColor('primaryForeground', '#ffffff'),
-    // Secondary
+    background,
+    foreground,
+    card,
+    cardForeground,
+    popover,
+    popoverForeground,
+    primary: primaryColor,
+    primaryForeground: '#ffffff',
     secondary: getStringColor('secondary', '#6b7280'),
     secondaryForeground: getStringColor('secondaryForeground', '#ffffff'),
-    // Muted
-    muted: getStringColor('muted', neutral?.['100'] || '#f4f4f5'),
-    mutedForeground: getStringColor('mutedForeground', neutral?.['500'] || '#71717a'),
-    // Accent
-    accent: getStringColor('accent', '#f59e0b'),
-    accentForeground: getStringColor('accentForeground', '#ffffff'),
-    // Destructive
+    muted,
+    mutedForeground,
+    accent: getStringColor('accent', primaryColor),
+    accentForeground: '#ffffff',
     destructive: getStringColor('destructive', '#ef4444'),
-    destructiveForeground: getStringColor('destructiveForeground', '#ffffff'),
-    // Borders and inputs
-    border: getStringColor('border', neutral?.['200'] || '#e4e4e7'),
-    input: getStringColor('input', neutral?.['200'] || '#e4e4e7'),
-    ring: getStringColor('ring', primary?.DEFAULT || '#3b82f6'),
+    destructiveForeground: '#ffffff',
+    border,
+    input: border,
+    ring: primaryColor,
   };
 }
 
 /**
- * Generate dark mode colors from a light theme
- * Creates proper dark theme with good contrast
+ * Generate inverted theme colors
+ * If source is dark → creates light theme
+ * If source is light → creates dark theme
  */
 function generateInvertedColors(colors: DesignSystem['tokens']['colors']): Record<string, string> {
   const normalized = normalizeColors(colors);
-  const colorsRecord = colors as unknown as Record<string, unknown>;
 
-  // Helper to get color scale for dark mode variants
-  const getColorScale = (key: string): Record<string, string> | null => {
-    const val = colorsRecord[key];
-    if (val && typeof val === 'object') {
-      return val as Record<string, string>;
-    }
-    return null;
-  };
+  // Detect if source is dark or light based on background brightness
+  const bgColor = normalized.background || '#ffffff';
+  let bgBrightness = 255;
+  if (bgColor.startsWith('#') && bgColor.length >= 7) {
+    const r = parseInt(bgColor.slice(1, 3), 16);
+    const g = parseInt(bgColor.slice(3, 5), 16);
+    const b = parseInt(bgColor.slice(5, 7), 16);
+    bgBrightness = (r + g + b) / 3;
+  }
 
-  const neutral = getColorScale('neutral');
-  const primary = getColorScale('primary');
+  const sourceIsDark = bgBrightness < 128;
 
-  // Create proper dark mode colors
-  return {
-    // Dark backgrounds
-    background: neutral?.['900'] || neutral?.['950'] || '#0a0a0a',
-    foreground: neutral?.['50'] || neutral?.['100'] || '#fafafa',
-    // Cards slightly lighter than background
-    card: neutral?.['800'] || neutral?.['900'] || '#171717',
-    cardForeground: neutral?.['50'] || neutral?.['100'] || '#fafafa',
-    // Popovers
-    popover: neutral?.['800'] || neutral?.['900'] || '#171717',
-    popoverForeground: neutral?.['50'] || neutral?.['100'] || '#fafafa',
-    // Primary stays the same but ensure good contrast
-    primary: primary?.['400'] || primary?.['500'] || normalized.primary,
-    primaryForeground: '#ffffff',
-    // Secondary
-    secondary: neutral?.['700'] || neutral?.['800'] || '#262626',
-    secondaryForeground: neutral?.['100'] || '#fafafa',
-    // Muted - darker backgrounds, lighter text
-    muted: neutral?.['800'] || neutral?.['700'] || '#262626',
-    mutedForeground: neutral?.['400'] || neutral?.['300'] || '#a3a3a3',
-    // Accent - keep vibrant
-    accent: normalized.accent,
-    accentForeground: '#ffffff',
-    // Destructive
-    destructive: normalized.destructive,
-    destructiveForeground: '#ffffff',
-    // Borders - darker
-    border: neutral?.['700'] || neutral?.['800'] || '#262626',
-    input: neutral?.['700'] || neutral?.['800'] || '#262626',
-    ring: primary?.['400'] || primary?.['500'] || normalized.primary,
-  };
+  if (sourceIsDark) {
+    // Source is dark → generate light theme
+    return {
+      background: '#ffffff',
+      foreground: '#0a0a0a',
+      card: '#ffffff',
+      cardForeground: '#0a0a0a',
+      popover: '#ffffff',
+      popoverForeground: '#0a0a0a',
+      primary: normalized.primary,
+      primaryForeground: '#ffffff',
+      secondary: '#f4f4f5',
+      secondaryForeground: '#18181b',
+      muted: '#f4f4f5',
+      mutedForeground: '#71717a',
+      accent: normalized.accent || normalized.primary,
+      accentForeground: '#ffffff',
+      destructive: normalized.destructive || '#dc2626',
+      destructiveForeground: '#ffffff',
+      border: '#e4e4e7',
+      input: '#e4e4e7',
+      ring: normalized.primary,
+    };
+  } else {
+    // Source is light → generate dark theme
+    return {
+      background: '#0a0a0a',
+      foreground: '#fafafa',
+      card: '#171717',
+      cardForeground: '#fafafa',
+      popover: '#171717',
+      popoverForeground: '#fafafa',
+      primary: normalized.primary,
+      primaryForeground: '#ffffff',
+      secondary: '#262626',
+      secondaryForeground: '#fafafa',
+      muted: '#262626',
+      mutedForeground: '#a3a3a3',
+      accent: normalized.accent || normalized.primary,
+      accentForeground: '#ffffff',
+      destructive: normalized.destructive || '#dc2626',
+      destructiveForeground: '#ffffff',
+      border: '#262626',
+      input: '#262626',
+      ring: normalized.primary,
+    };
+  }
 }
 
 /**
@@ -398,14 +522,25 @@ function generateScopedCss(
     #${scopeId} p, #${scopeId} span, #${scopeId} div, #${scopeId} label {
       color: ${bg(colors.foreground)};
     }
-    /* Background utilities */
-    #${scopeId} .bg-background { background-color: ${bg(colors.background)}; }
-    #${scopeId} .bg-card { background-color: ${bg(colors.card)}; }
-    #${scopeId} .bg-muted { background-color: ${bg(colors.muted)}; }
-    #${scopeId} .bg-primary { background-color: ${bg(colors.primary)}; }
-    #${scopeId} .bg-secondary { background-color: ${bg(colors.secondary)}; }
-    #${scopeId} .bg-accent { background-color: ${bg(colors.accent)}; }
-    #${scopeId} .bg-destructive { background-color: ${bg(colors.destructive)}; }
+    /* Background utilities - using !important to override Tailwind */
+    #${scopeId} .bg-background { background-color: ${bg(colors.background)} !important; }
+    #${scopeId} .bg-card, #${scopeId} [data-slot="card"] { background-color: ${bg(colors.card)} !important; }
+    #${scopeId} .bg-muted { background-color: ${bg(colors.muted)} !important; }
+    #${scopeId} .bg-primary { background-color: ${bg(colors.primary)} !important; }
+    #${scopeId} .bg-secondary { background-color: ${bg(colors.secondary)} !important; }
+    #${scopeId} .bg-accent { background-color: ${bg(colors.accent)} !important; }
+    #${scopeId} .bg-destructive { background-color: ${bg(colors.destructive)} !important; }
+    /* Card specific - ensure cards get proper styling */
+    #${scopeId} [data-slot="card"] {
+      background-color: ${bg(colors.card)} !important;
+      border-color: ${bg(colors.border)} !important;
+    }
+    #${scopeId} .text-card-foreground, #${scopeId} [data-slot="card"] * {
+      color: ${bg(colors.cardForeground)} !important;
+    }
+    #${scopeId} [data-slot="card-description"] {
+      color: ${bg(colors.mutedForeground)} !important;
+    }
     /* Text color utilities */
     #${scopeId} .text-foreground { color: ${bg(colors.foreground)} !important; }
     #${scopeId} .text-primary { color: ${bg(colors.primary)} !important; }
@@ -438,14 +573,118 @@ function generateScopedCss(
     #${scopeId} .border-rose-500\\/25, #${scopeId} .border-rose-500\\/30 { border-color: ${semanticColors.errorBorder} !important; }
     #${scopeId} .border-blue-500\\/25, #${scopeId} .border-blue-500\\/30 { border-color: ${semanticColors.infoBorder} !important; }
     /* Border utilities */
-    #${scopeId} .border-border { border-color: ${bg(colors.border)}; }
-    #${scopeId} .border-primary { border-color: ${bg(colors.primary)}; }
-    #${scopeId} .border-input { border-color: ${bg(colors.input)}; }
+    #${scopeId} .border-border { border-color: ${bg(colors.border)} !important; }
+    #${scopeId} .border-primary { border-color: ${bg(colors.primary)} !important; }
+    #${scopeId} .border-input { border-color: ${bg(colors.input)} !important; }
     #${scopeId} .ring-ring { --tw-ring-color: ${bg(colors.ring)}; }
+    /* Input styling */
+    #${scopeId} input, #${scopeId} textarea, #${scopeId} select {
+      background-color: ${bg(colors.background)} !important;
+      border-color: ${bg(colors.input)} !important;
+      color: ${bg(colors.foreground)} !important;
+    }
+    #${scopeId} input::placeholder, #${scopeId} textarea::placeholder {
+      color: ${bg(colors.mutedForeground)} !important;
+    }
+    /* Button styling */
+    #${scopeId} button[data-slot] {
+      border-color: ${bg(colors.border)} !important;
+    }
+    /* Tables */
+    #${scopeId} table { border-color: ${bg(colors.border)} !important; }
+    #${scopeId} th, #${scopeId} td { border-color: ${bg(colors.border)} !important; }
+    #${scopeId} th { color: ${bg(colors.mutedForeground)} !important; }
+    /* Tabs */
+    #${scopeId} [role="tablist"] { background-color: ${bg(colors.muted)} !important; }
+    #${scopeId} [role="tab"][data-state="active"] {
+      background-color: ${bg(colors.background)} !important;
+      color: ${bg(colors.foreground)} !important;
+    }
+    #${scopeId} [role="tab"]:not([data-state="active"]) {
+      color: ${bg(colors.mutedForeground)} !important;
+    }
     /* Status indicator dots */
     #${scopeId} .bg-emerald-500 { background-color: ${semanticColors.success} !important; }
     #${scopeId} .bg-amber-500 { background-color: ${semanticColors.warning} !important; }
     #${scopeId} .bg-rose-500 { background-color: ${semanticColors.error} !important; }
+    /* Progress bar */
+    #${scopeId} [role="progressbar"] {
+      background-color: ${bg(colors.muted)} !important;
+    }
+    #${scopeId} [role="progressbar"] > div {
+      background-color: ${bg(colors.primary)} !important;
+    }
+    /* Avatar */
+    #${scopeId} [data-slot="avatar-fallback"] {
+      background-color: ${bg(colors.muted)} !important;
+      color: ${bg(colors.mutedForeground)} !important;
+    }
+    /* Alert */
+    #${scopeId} [role="alert"] {
+      background-color: ${bg(colors.muted)} !important;
+      border-color: ${bg(colors.border)} !important;
+    }
+    /* Badge default */
+    #${scopeId} [data-slot="badge"] {
+      border-color: ${bg(colors.border)} !important;
+    }
+    /* Dropdown/popover */
+    #${scopeId} [data-radix-popper-content-wrapper] [role="menu"],
+    #${scopeId} [data-radix-popper-content-wrapper] [role="listbox"] {
+      background-color: ${bg(colors.popover)} !important;
+      border-color: ${bg(colors.border)} !important;
+    }
+    #${scopeId} [role="menuitem"], #${scopeId} [role="option"] {
+      color: ${bg(colors.popoverForeground)} !important;
+    }
+    /* Switch */
+    #${scopeId} button[role="switch"] {
+      background-color: ${isLight ? '#e4e4e7' : '#3f3f46'} !important;
+      border: 1px solid ${isLight ? '#d4d4d8' : '#52525b'} !important;
+    }
+    #${scopeId} button[role="switch"][data-state="checked"] {
+      background-color: ${bg(colors.primary)} !important;
+      border-color: ${bg(colors.primary)} !important;
+    }
+    #${scopeId} button[role="switch"] > span {
+      background-color: ${isLight ? '#ffffff' : '#fafafa'} !important;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2) !important;
+    }
+    /* Checkbox */
+    #${scopeId} button[role="checkbox"] {
+      border-color: ${isLight ? '#d4d4d8' : '#52525b'} !important;
+      background-color: ${bg(colors.background)} !important;
+    }
+    #${scopeId} button[role="checkbox"][data-state="checked"] {
+      background-color: ${bg(colors.primary)} !important;
+      border-color: ${bg(colors.primary)} !important;
+    }
+    /* Slider */
+    #${scopeId} [role="slider"] {
+      background-color: ${bg(colors.background)} !important;
+      border-color: ${bg(colors.primary)} !important;
+    }
+    #${scopeId} [data-orientation="horizontal"] > span:first-child {
+      background-color: ${bg(colors.muted)} !important;
+    }
+    #${scopeId} [data-orientation="horizontal"] > span:first-child > span {
+      background-color: ${bg(colors.primary)} !important;
+    }
+    /* Collapsible */
+    #${scopeId} [data-state="open"], #${scopeId} [data-state="closed"] {
+      border-color: ${bg(colors.border)} !important;
+    }
+    /* Alert Dialog */
+    #${scopeId} [role="alertdialog"] {
+      background-color: ${bg(colors.background)} !important;
+      border-color: ${bg(colors.border)} !important;
+    }
+    #${scopeId} [role="alertdialog"] * {
+      color: ${bg(colors.foreground)} !important;
+    }
+    #${scopeId} [role="alertdialog"] p {
+      color: ${bg(colors.mutedForeground)} !important;
+    }
   `;
 }
 
@@ -515,6 +754,24 @@ const COMPONENT_PROPS: ComponentPropsDoc = {
     { name: 'value', type: 'string', description: 'Controlled active tab' },
     { name: 'onValueChange', type: '(value: string) => void', description: 'Callback when tab changes' },
     { name: 'defaultValue', type: 'string', description: 'Default active tab for uncontrolled' },
+  ],
+  sliders: [
+    { name: 'value', type: 'number[]', description: 'Controlled value(s)' },
+    { name: 'onValueChange', type: '(value: number[]) => void', description: 'Callback when value changes' },
+    { name: 'defaultValue', type: 'number[]', description: 'Default value for uncontrolled' },
+    { name: 'max', type: 'number', default: '100', description: 'Maximum value' },
+    { name: 'step', type: 'number', default: '1', description: 'Step increment' },
+    { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables the slider' },
+  ],
+  'alert-dialogs': [
+    { name: 'open', type: 'boolean', description: 'Controlled open state' },
+    { name: 'onOpenChange', type: '(open: boolean) => void', description: 'Callback when open state changes' },
+  ],
+  collapsible: [
+    { name: 'open', type: 'boolean', description: 'Controlled open state' },
+    { name: 'onOpenChange', type: '(open: boolean) => void', description: 'Callback when open state changes' },
+    { name: 'defaultOpen', type: 'boolean', default: 'false', description: 'Default open state for uncontrolled' },
+    { name: 'disabled', type: 'boolean', default: 'false', description: 'Prevents opening/closing' },
   ],
 };
 
@@ -663,10 +920,10 @@ function CardDemo() {
         </CardContent>
       </Card>
 
-      <Card className="bg-card/50 backdrop-blur-xl border-border/50 md:col-span-2">
+      <Card className="md:col-span-2">
         <CardHeader>
-          <CardTitle>Glass Effect Card</CardTitle>
-          <CardDescription>Premium card with backdrop blur effect</CardDescription>
+          <CardTitle>Stats Card</CardTitle>
+          <CardDescription>Card showing metrics with progress indicator</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex items-center justify-between">
@@ -1135,6 +1392,186 @@ function TabsDemo() {
   );
 }
 
+function SliderDemo() {
+  const [value, setValue] = useState([50]);
+  const [range, setRange] = useState([25, 75]);
+
+  return (
+    <div className="space-y-8 max-w-md">
+      <div className="space-y-4">
+        <h4 className="text-sm font-medium">Single Value Slider</h4>
+        <Slider
+          value={value}
+          onValueChange={setValue}
+          max={100}
+          step={1}
+        />
+        <p className="text-sm text-muted-foreground">Value: {value[0]}</p>
+      </div>
+
+      <div className="space-y-4">
+        <h4 className="text-sm font-medium">Range Slider</h4>
+        <Slider
+          value={range}
+          onValueChange={setRange}
+          max={100}
+          step={1}
+        />
+        <p className="text-sm text-muted-foreground">Range: {range[0]} - {range[1]}</p>
+      </div>
+
+      <div className="space-y-4">
+        <h4 className="text-sm font-medium">With Labels</h4>
+        <div className="space-y-2">
+          <div className="flex justify-between text-xs text-muted-foreground">
+            <span>0%</span>
+            <span>50%</span>
+            <span>100%</span>
+          </div>
+          <Slider defaultValue={[33]} max={100} step={1} />
+        </div>
+      </div>
+
+      <div className="space-y-4">
+        <h4 className="text-sm font-medium">Disabled</h4>
+        <Slider defaultValue={[50]} max={100} step={1} disabled />
+      </div>
+    </div>
+  );
+}
+
+function AlertDialogDemo() {
+  return (
+    <div className="space-y-6">
+      <div className="space-y-4">
+        <h4 className="text-sm font-medium">Confirmation Dialog</h4>
+        <div className="flex flex-wrap gap-3">
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="destructive">Delete Account</Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This action cannot be undone. This will permanently delete your
+                  account and remove your data from our servers.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                  Delete
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="outline">Discard Changes</Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Discard unsaved changes?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  You have unsaved changes. Are you sure you want to discard them?
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Keep Editing</AlertDialogCancel>
+                <AlertDialogAction>Discard</AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function CollapsibleDemo() {
+  const [isOpen1, setIsOpen1] = useState(false);
+  const [isOpen2, setIsOpen2] = useState(true);
+
+  return (
+    <div className="space-y-6 max-w-md">
+      <div className="space-y-4">
+        <h4 className="text-sm font-medium">Collapsible Section</h4>
+        <Collapsible open={isOpen1} onOpenChange={setIsOpen1}>
+          <div className="flex items-center justify-between space-x-4 px-4 py-2 border rounded-lg">
+            <h4 className="text-sm font-semibold">
+              Advanced Settings
+            </h4>
+            <CollapsibleTrigger asChild>
+              <Button variant="ghost" size="sm">
+                <ChevronsUpDown className="h-4 w-4" />
+                <span className="sr-only">Toggle</span>
+              </Button>
+            </CollapsibleTrigger>
+          </div>
+          <CollapsibleContent className="space-y-2 mt-2">
+            <div className="rounded-md border px-4 py-2 text-sm">
+              Enable dark mode
+            </div>
+            <div className="rounded-md border px-4 py-2 text-sm">
+              Show notifications
+            </div>
+            <div className="rounded-md border px-4 py-2 text-sm">
+              Auto-save drafts
+            </div>
+          </CollapsibleContent>
+        </Collapsible>
+      </div>
+
+      <div className="space-y-4">
+        <h4 className="text-sm font-medium">Initially Open</h4>
+        <Collapsible open={isOpen2} onOpenChange={setIsOpen2}>
+          <div className="flex items-center justify-between space-x-4 px-4 py-2 border rounded-lg">
+            <h4 className="text-sm font-semibold">
+              Team Members (3)
+            </h4>
+            <CollapsibleTrigger asChild>
+              <Button variant="ghost" size="sm">
+                <ChevronsUpDown className="h-4 w-4" />
+              </Button>
+            </CollapsibleTrigger>
+          </div>
+          <CollapsibleContent className="space-y-2 mt-2">
+            <div className="flex items-center gap-3 rounded-md border px-4 py-2">
+              <Avatar className="h-8 w-8">
+                <AvatarFallback>JD</AvatarFallback>
+              </Avatar>
+              <div>
+                <p className="text-sm font-medium">John Doe</p>
+                <p className="text-xs text-muted-foreground">Admin</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3 rounded-md border px-4 py-2">
+              <Avatar className="h-8 w-8">
+                <AvatarFallback>AS</AvatarFallback>
+              </Avatar>
+              <div>
+                <p className="text-sm font-medium">Alice Smith</p>
+                <p className="text-xs text-muted-foreground">Editor</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3 rounded-md border px-4 py-2">
+              <Avatar className="h-8 w-8">
+                <AvatarFallback>BW</AvatarFallback>
+              </Avatar>
+              <div>
+                <p className="text-sm font-medium">Bob Wilson</p>
+                <p className="text-xs text-muted-foreground">Viewer</p>
+              </div>
+            </div>
+          </CollapsibleContent>
+        </Collapsible>
+      </div>
+    </div>
+  );
+}
+
 // ============================================================================
 // Sample Page Demo
 // ============================================================================
@@ -1305,6 +1742,9 @@ const COMPONENT_SECTIONS = [
   { id: 'progress', name: 'Progress', component: ProgressDemo },
   { id: 'avatars', name: 'Avatars', component: AvatarDemo },
   { id: 'tabs', name: 'Tabs', component: TabsDemo },
+  { id: 'sliders', name: 'Sliders', component: SliderDemo },
+  { id: 'alert-dialogs', name: 'Alert Dialogs', component: AlertDialogDemo },
+  { id: 'collapsible', name: 'Collapsible', component: CollapsibleDemo },
   { id: 'sample-page', name: 'Sample Page', component: SamplePageDemo },
 ];
 

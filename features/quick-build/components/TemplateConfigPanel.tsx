@@ -301,7 +301,7 @@ export function TemplateConfigPanel({
               </button>
             </div>
 
-            <div className="space-y-2 max-h-[400px] overflow-y-auto">
+            <div className="space-y-2 max-h-[500px] overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-muted-foreground/20 scrollbar-track-transparent">
               {selectedApis.map(api => {
                 const apiColors = COLOR_MAP[api.color] || COLOR_MAP.blue;
                 const isFromTemplate = template.defaultEpicApis.includes(api.id);

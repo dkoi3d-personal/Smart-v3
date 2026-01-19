@@ -449,12 +449,6 @@ export function BuildPageHeader({
                 Fixing
               </Badge>
             )}
-            {isIterating && (
-              <Badge variant="outline" className="border-blue-500/50 text-blue-400 text-[10px] h-6 animate-pulse">
-                <Edit3 className="h-3 w-3 mr-1 animate-spin" />
-                Iterating
-              </Badge>
-            )}
           </div>
 
           {/* Agent Status Indicators */}

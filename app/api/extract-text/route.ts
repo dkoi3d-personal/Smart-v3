@@ -30,9 +30,12 @@ export async function POST(request: NextRequest) {
       extractedText = await extractPdfText(file);
     } else if (fileName.endsWith('.docx')) {
       extractedText = await extractDocxText(file);
+    } else if (fileName.endsWith('.md') || fileName.endsWith('.markdown') || fileName.endsWith('.txt')) {
+      // Plain text and markdown files - just read as text
+      extractedText = await file.text();
     } else {
       return NextResponse.json(
-        { error: 'Unsupported file type. Only PDF and DOCX are supported.' },
+        { error: 'Unsupported file type. Supported: PDF, DOCX, MD, TXT.' },
         { status: 400 }
       );
     }

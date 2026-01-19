@@ -135,7 +135,7 @@ export async function POST(request: NextRequest) {
           // Use ClaudeSubscriptionService with context
           for await (const message of claudeSubscriptionService.runAgent(fullPrompt, {
             model: 'sonnet',
-            maxTurns: 10,
+            maxTurns: 100,
             permissionMode: 'bypassPermissions',
             workingDirectory: projectDir,
           })) {

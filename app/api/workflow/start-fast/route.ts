@@ -1,5 +1,5 @@
 /**
- * Fast Workflow API - Uses Ochsner AI Studio for optimized secure builds
+ * Fast Workflow API - Uses Employers AI Studio for optimized secure builds
  *
  * This is the new recommended endpoint for starting projects.
  * Uses task-based architecture instead of epic/story model.
@@ -120,7 +120,7 @@ export async function POST(request: NextRequest) {
         id: `msg-starting-${Date.now()}`,
         agentId: 'system',
         agentType: 'system',
-        content: '🚀 Fast workflow started! Ochsner AI Studio is building your secure application...',
+        content: '🚀 Fast workflow started! Employers AI Studio is building your secure application...',
         timestamp: new Date(),
       });
 
@@ -198,7 +198,7 @@ export async function POST(request: NextRequest) {
       projectDirectory: projectDir,
       projectName: projectName.trim(),
       mode: 'fast',
-      message: 'Fast workflow started using Ochsner AI Studio',
+      message: 'Fast workflow started using Employers AI Studio',
     });
 
   } catch (error: any) {

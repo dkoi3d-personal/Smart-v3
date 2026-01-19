@@ -79,11 +79,10 @@ interface BuildTabProps {
 }
 
 function getKanbanStatus(status: Task['status']): string {
-  if (status === 'backlog' || status === 'pending') return 'backlog';
+  if (status === 'backlog' || status === 'pending' || status === 'failed') return 'backlog';
   if (status === 'in_progress') return 'in_progress';
   if (status === 'testing') return 'testing';
-  if (status === 'done') return 'done';
-  if (status === 'completed') return 'completed';
+  if (status === 'done' || status === 'completed') return 'done';
   return 'backlog';
 }
 

@@ -1,5 +1,397 @@
 [
   {
+    "projectId": "qb-1767894090159-49nlf3",
+    "templateId": "patient-dashboard",
+    "templateConfig": {
+      "templateId": "patient-dashboard",
+      "appName": "Patient Dashboard",
+      "epicApis": [
+        {
+          "apiId": "allergy-intolerance",
+          "resourceType": "AllergyIntolerance",
+          "displayName": "Allergies",
+          "isFromTemplate": true,
+          "isRequired": false,
+          "generateComponents": [
+            "AllergyList",
+            "AllergyBadge",
+            "AllergySeverityIcon"
+          ],
+          "generateHooks": [
+            "useAllergies"
+          ]
+        },
+        {
+          "apiId": "patient",
+          "resourceType": "Patient",
+          "displayName": "Patient Demographics",
+          "isFromTemplate": true,
+          "isRequired": true,
+          "generateComponents": [
+            "PatientBanner",
+            "PatientCard",
+            "PatientSearch",
+            "PatientDemographics"
+          ],
+          "generateHooks": [
+            "usePatient",
+            "usePatientSearch"
+          ]
+        },
+        {
+          "apiId": "medication-request",
+          "resourceType": "MedicationRequest",
+          "displayName": "Medications",
+          "isFromTemplate": true,
+          "isRequired": false,
+          "generateComponents": [
+            "MedicationList",
+            "MedicationCard",
+            "HighRiskMedicationAlert",
+            "DrugInteractionWarning"
+          ],
+          "generateHooks": [
+            "useMedications"
+          ]
+        },
+        {
+          "apiId": "observation-vitals",
+          "resourceType": "Observation",
+          "displayName": "Vital Signs",
+          "isFromTemplate": true,
+          "isRequired": false,
+          "generateComponents": [
+            "VitalSignsChart",
+            "VitalSignsCard",
+            "BloodPressureDisplay"
+          ],
+          "generateHooks": [
+            "useVitalSigns"
+          ]
+        }
+      ],
+      "enabledFeatures": [
+        "demographics",
+        "vitals",
+        "medications",
+        "allergies"
+      ]
+    },
+    "status": "complete",
+    "createdAt": "2026-01-08T17:41:30.159Z",
+    "updatedAt": "2026-01-08T17:41:46.495Z"
+  },
+  {
+    "projectId": "qb-1767888246848-hzak53",
+    "templateId": "patient-dashboard",
+    "templateConfig": {
+      "templateId": "patient-dashboard",
+      "appName": "Patient Dashboard",
+      "epicApis": [
+        {
+          "apiId": "allergy-intolerance",
+          "resourceType": "AllergyIntolerance",
+          "displayName": "Allergies",
+          "isFromTemplate": true,
+          "isRequired": false,
+          "generateComponents": [
+            "AllergyList",
+            "AllergyBadge",
+            "AllergySeverityIcon"
+          ],
+          "generateHooks": [
+            "useAllergies"
+          ]
+        },
+        {
+          "apiId": "patient",
+          "resourceType": "Patient",
+          "displayName": "Patient Demographics",
+          "isFromTemplate": true,
+          "isRequired": true,
+          "generateComponents": [
+            "PatientBanner",
+            "PatientCard",
+            "PatientSearch",
+            "PatientDemographics"
+          ],
+          "generateHooks": [
+            "usePatient",
+            "usePatientSearch"
+          ]
+        },
+        {
+          "apiId": "medication-request",
+          "resourceType": "MedicationRequest",
+          "displayName": "Medications",
+          "isFromTemplate": true,
+          "isRequired": false,
+          "generateComponents": [
+            "MedicationList",
+            "MedicationCard",
+            "HighRiskMedicationAlert",
+            "DrugInteractionWarning"
+          ],
+          "generateHooks": [
+            "useMedications"
+          ]
+        },
+        {
+          "apiId": "observation-vitals",
+          "resourceType": "Observation",
+          "displayName": "Vital Signs",
+          "isFromTemplate": true,
+          "isRequired": false,
+          "generateComponents": [
+            "VitalSignsChart",
+            "VitalSignsCard",
+            "BloodPressureDisplay"
+          ],
+          "generateHooks": [
+            "useVitalSigns"
+          ]
+        }
+      ],
+      "enabledFeatures": [
+        "demographics",
+        "vitals",
+        "medications",
+        "allergies"
+      ]
+    },
+    "status": "complete",
+    "createdAt": "2026-01-08T16:04:06.848Z",
+    "updatedAt": "2026-01-08T16:04:22.144Z"
+  },
+  {
+    "projectId": "qb-1767750424146-8ebeoz",
+    "templateId": "custom",
+    "templateConfig": {
+      "templateId": "custom",
+      "appName": "Custom Build",
+      "epicApis": [
+        {
+          "apiId": "coverage",
+          "resourceType": "Coverage",
+          "displayName": "Insurance Coverage",
+          "isFromTemplate": false,
+          "isRequired": false,
+          "generateComponents": [
+            "InsuranceCard",
+            "CoverageDetails"
+          ],
+          "generateHooks": [
+            "useCoverage"
+          ]
+        },
+        {
+          "apiId": "patient",
+          "resourceType": "Patient",
+          "displayName": "Patient Demographics",
+          "isFromTemplate": true,
+          "isRequired": true,
+          "generateComponents": [
+            "PatientBanner",
+            "PatientCard",
+            "PatientSearch",
+            "PatientDemographics"
+          ],
+          "generateHooks": [
+            "usePatient",
+            "usePatientSearch"
+          ]
+        },
+        {
+          "apiId": "related-person",
+          "resourceType": "RelatedPerson",
+          "displayName": "Related People",
+          "isFromTemplate": false,
+          "isRequired": false,
+          "generateComponents": [
+            "RelatedPersonList",
+            "EmergencyContactCard"
+          ],
+          "generateHooks": [
+            "useRelatedPersons"
+          ]
+        },
+        {
+          "apiId": "imaging-study",
+          "resourceType": "ImagingStudy",
+          "displayName": "Imaging Studies",
+          "isFromTemplate": false,
+          "isRequired": false,
+          "generateComponents": [
+            "ImagingStudyList",
+            "ImagingViewer"
+          ],
+          "generateHooks": [
+            "useImagingStudies"
+          ]
+        },
+        {
+          "apiId": "document-reference",
+          "resourceType": "DocumentReference",
+          "displayName": "Documents",
+          "isFromTemplate": false,
+          "isRequired": false,
+          "generateComponents": [
+            "DocumentList",
+            "DocumentViewer",
+            "DocumentUpload"
+          ],
+          "generateHooks": [
+            "useDocuments"
+          ]
+        },
+        {
+          "apiId": "allergy-intolerance",
+          "resourceType": "AllergyIntolerance",
+          "displayName": "Allergies",
+          "isFromTemplate": false,
+          "isRequired": false,
+          "generateComponents": [
+            "AllergyList",
+            "AllergyBadge",
+            "AllergySeverityIcon"
+          ],
+          "generateHooks": [
+            "useAllergies"
+          ]
+        },
+        {
+          "apiId": "medication-request",
+          "resourceType": "MedicationRequest",
+          "displayName": "Medications",
+          "isFromTemplate": false,
+          "isRequired": false,
+          "generateComponents": [
+            "MedicationList",
+            "MedicationCard",
+            "HighRiskMedicationAlert",
+            "DrugInteractionWarning"
+          ],
+          "generateHooks": [
+            "useMedications"
+          ]
+        }
+      ],
+      "enabledFeatures": []
+    },
+    "status": "complete",
+    "createdAt": "2026-01-07T01:47:04.146Z",
+    "updatedAt": "2026-01-07T01:47:18.511Z"
+  },
+  {
+    "projectId": "qb-1767746904732-2ten7y",
+    "templateId": "patient-dashboard",
+    "templateConfig": {
+      "templateId": "patient-dashboard",
+      "appName": "Test Patient App",
+      "epicApis": [
+        {
+          "apiId": "patient",
+          "resourceType": "Patient",
+          "displayName": "Patient",
+          "isFromTemplate": true,
+          "isRequired": true,
+          "generateComponents": [
+            "PatientBanner",
+            "PatientCard"
+          ],
+          "generateHooks": [
+            "usePatient"
+          ]
+        },
+        {
+          "apiId": "observation-vitals",
+          "resourceType": "Observation",
+          "displayName": "Vital Signs",
+          "isFromTemplate": true,
+          "isRequired": false,
+          "generateComponents": [
+            "VitalSignsChart"
+          ],
+          "generateHooks": [
+            "useVitalSigns"
+          ]
+        }
+      ],
+      "enabledFeatures": [
+        "demographics",
+        "vitals"
+      ]
+    },
+    "status": "pending",
+    "createdAt": "2026-01-07T00:48:24.732Z",
+    "updatedAt": "2026-01-07T00:48:24.732Z"
+  },
+  {
+    "projectId": "qb-1767745621690-8q416j",
+    "templateId": "lab-results-viewer",
+    "templateConfig": {
+      "templateId": "lab-results-viewer",
+      "appName": "Lab Results Viewer",
+      "epicApis": [
+        {
+          "apiId": "diagnostic-report",
+          "resourceType": "DiagnosticReport",
+          "displayName": "Diagnostic Reports",
+          "isFromTemplate": true,
+          "isRequired": false,
+          "generateComponents": [
+            "DiagnosticReportViewer",
+            "ReportSummaryCard"
+          ],
+          "generateHooks": [
+            "useDiagnosticReports"
+          ]
+        },
+        {
+          "apiId": "patient",
+          "resourceType": "Patient",
+          "displayName": "Patient Demographics",
+          "isFromTemplate": true,
+          "isRequired": true,
+          "generateComponents": [
+            "PatientBanner",
+            "PatientCard",
+            "PatientSearch",
+            "PatientDemographics"
+          ],
+          "generateHooks": [
+            "usePatient",
+            "usePatientSearch"
+          ]
+        },
+        {
+          "apiId": "observation-labs",
+          "resourceType": "Observation",
+          "displayName": "Lab Results",
+          "isFromTemplate": true,
+          "isRequired": false,
+          "generateComponents": [
+            "LabResultsPanel",
+            "LabTrendChart",
+            "AbnormalLabAlert"
+          ],
+          "generateHooks": [
+            "useLabResults"
+          ]
+        }
+      ],
+      "enabledFeatures": [
+        "lab-panels",
+        "trend-charts",
+        "abnormal-flags",
+        "reference-ranges"
+      ]
+    },
+    "status": "complete",
+    "createdAt": "2026-01-07T00:27:01.690Z",
+    "updatedAt": "2026-01-07T00:27:15.832Z"
+  },
+  {
     "projectId": "qb-1767730493867-bl9vfw",
     "templateId": "patient-dashboard",
     "templateConfig": {

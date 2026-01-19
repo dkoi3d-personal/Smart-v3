@@ -160,10 +160,9 @@ export async function loadProjectState(projectDir: string): Promise<ProjectState
     const stateFile = path.join(projectDir, 'project-state.json');
     const data = await fs.readFile(stateFile, 'utf-8');
     const state = JSON.parse(data);
-    console.log(`✅ Loaded project state from ${stateFile}`);
     return state;
-  } catch (error) {
-    console.log(`ℹ️ No existing project state found at ${projectDir}`);
+  } catch {
+    // Normal for new projects - no state file yet
     return null;
   }
 }
@@ -665,7 +664,7 @@ export async function loadFullProjectState(projectDir: string): Promise<ProjectS
         };
         console.log('📂 Created state from project.json');
       } catch {
-        console.log('ℹ️ No project.json found either');
+        // Normal for new projects - no files yet
         return null;
       }
     }

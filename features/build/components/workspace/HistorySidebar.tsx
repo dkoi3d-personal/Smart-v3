@@ -108,6 +108,7 @@ export function HistorySidebar({
   const [loading, setLoading] = useState(true);
 
   // Fetch build history from API with stories included
+  // Re-fetch when build completes (isBuilding goes from true to false)
   useEffect(() => {
     async function fetchBuildHistory() {
       try {
@@ -123,8 +124,11 @@ export function HistorySidebar({
       }
     }
 
-    fetchBuildHistory();
-  }, [projectId]);
+    // Fetch on mount and when build completes
+    if (!isBuilding) {
+      fetchBuildHistory();
+    }
+  }, [projectId, isBuilding]);
 
   // Calculate totals from builds
   const totals = useMemo(() => {
@@ -394,9 +398,6 @@ export function HistorySidebar({
                                     <span className="text-[10px] font-medium text-foreground/90 truncate flex-1 min-w-0">
                                       {epic.title}
                                     </span>
-                                    <Badge variant="outline" className="text-[9px] h-4 px-1 border-emerald-500/30 text-emerald-400 flex-shrink-0">
-                                      {epicTasks.length}
-                                    </Badge>
                                   </div>
                                   {epicTasks.length > 0 && (
                                     <div className="mt-1 pl-4 space-y-0.5 overflow-hidden">

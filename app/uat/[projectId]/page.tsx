@@ -1451,7 +1451,7 @@ export default function UATPage() {
                 </ScrollArea>
               )}
 
-              {/* AI Terminal View - SmartCycleAI CLI with full permissions */}
+              {/* AI Terminal View - Employers AI CLI with full permissions */}
               {sidebarView === 'ai' && (
                 <div className="h-full flex flex-col">
                   <div className="p-3 border-b bg-gradient-to-r from-orange-950/50 to-red-950/30">
@@ -1459,7 +1459,7 @@ export default function UATPage() {
                       <div>
                         <h3 className="font-semibold text-sm flex items-center gap-2">
                           <Terminal className="h-4 w-4 text-orange-500" />
-                          <span className="text-orange-400">SmartCycleAI</span>
+                          <span className="text-orange-400">Employers AI</span>
                           <Badge className="text-[9px] font-normal bg-red-600/80 text-white border-0">
                             FULL ACCESS
                           </Badge>
@@ -1492,7 +1492,7 @@ export default function UATPage() {
                     >
                       {claudeOutput.length === 0 ? (
                         <div className="space-y-2">
-                          <div className="text-orange-400 font-semibold">╭─ SmartCycleAI Terminal ─╮</div>
+                          <div className="text-orange-400 font-semibold">╭─ Employers AI Terminal ─╮</div>
                           <div className="text-gray-400 pl-2">
                             Full access mode enabled - can read, write, and execute
                           </div>
@@ -1530,7 +1530,7 @@ export default function UATPage() {
                       {isClaudeRunning && (
                         <div className="flex items-center gap-2 text-orange-400 mt-2">
                           <Loader2 className="h-3 w-3 animate-spin" />
-                          <span>SmartCycleAI is working...</span>
+                          <span>Employers AI is working...</span>
                         </div>
                       )}
                     </div>
@@ -1542,7 +1542,7 @@ export default function UATPage() {
                         value={claudeInput}
                         onChange={(e) => setClaudeInput(e.target.value)}
                         onKeyDown={(e) => e.key === 'Enter' && runClaudeCommand()}
-                        placeholder="Ask SmartCycleAI to fix, build, or modify your project..."
+                        placeholder="Ask Employers AI to fix, build, or modify your project..."
                         className="font-mono text-xs pl-7 bg-[#0d1117] border-orange-900/50 focus:border-orange-500 text-gray-200 placeholder:text-gray-600"
                         disabled={isClaudeRunning}
                       />

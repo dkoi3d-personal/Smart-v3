@@ -578,8 +578,12 @@ function generateAppFromTemplate(requirements: string, designSystem: DesignSyste
         pageAdded = true;
         break;
       case 'custom':
-        // Custom template - don't add a page, let keyword detection analyze the requirements
-        console.log('[SimpleBuilder] Custom template - using keyword detection for page selection');
+        // Custom template - generate a comprehensive dashboard with all selected APIs
+        console.log('[SimpleBuilder] Custom template - generating dynamic dashboard');
+        if (templateConfig) {
+          files.push({ path: 'app/page.tsx', content: getCustomDashboardPage(templateConfig) });
+          pageAdded = true;
+        }
         break;
       default:
         // Unknown template, will fall back to keyword detection
@@ -4012,7 +4016,143 @@ function getComponentContent(componentName: string): string | null {
   };
 
   const generator = generators[componentName];
-  return generator ? generator() : null;
+  if (generator) {
+    return generator();
+  }
+
+  // Fallback: Generate a generic component for any missing component
+  return generateGenericComponent(componentName);
+}
+
+/**
+ * Generate a generic component for APIs that don't have custom generators
+ */
+function generateGenericComponent(componentName: string): string {
+  // Extract resource type from component name (e.g., "ImagingStudyList" -> "ImagingStudy")
+  const resourceType = componentName
+    .replace(/List$|Card$|Viewer$|Display$|Chart$|Panel$|Timeline$|Tracker$|Badge$|Alert$|Grid$|Picker$|Directory$|Summary$|Details$|Record$|History$/i, '')
+    .trim() || componentName;
+
+  const hookName = `use${resourceType}`;
+  const isListComponent = /List|History|Timeline|Directory/i.test(componentName);
+  const isCardComponent = /Card|Badge/i.test(componentName);
+  const isViewerComponent = /Viewer|Display|Panel|Details|Summary|Chart/i.test(componentName);
+
+  return `'use client';
+
+import { useState, useEffect } from 'react';
+import { cn } from '@/lib/utils';
+
+interface ${componentName}Props {
+  patientId?: string;
+  resourceId?: string;
+  data?: any;
+  className?: string;
+}
+
+export function ${componentName}({ patientId, resourceId, data: initialData, className }: ${componentName}Props) {
+  const [data, setData] = useState<any>(initialData || ${isListComponent ? '[]' : 'null'});
+  const [loading, setLoading] = useState(!initialData);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (initialData || (!patientId && !resourceId)) return;
+
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const endpoint = patientId
+          ? \`/api/epic/fhir/${resourceType}?patient=\${patientId}\`
+          : \`/api/epic/fhir/${resourceType}/\${resourceId}\`;
+        const res = await fetch(endpoint);
+        if (!res.ok) throw new Error('Failed to fetch');
+        const json = await res.json();
+        setData(json.entry?.map((e: any) => e.resource) || json);
+      } catch (e: any) {
+        setError(e.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, [patientId, resourceId, initialData]);
+
+  if (loading) {
+    return (
+      <div className={cn("animate-pulse", className)}>
+        <div className="bg-muted rounded-lg p-4">
+          <div className="h-4 bg-muted-foreground/20 rounded w-1/3 mb-2"></div>
+          <div className="h-3 bg-muted-foreground/20 rounded w-2/3"></div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className={cn("text-destructive text-sm p-4 bg-destructive/10 rounded-lg", className)}>
+        Error: {error}
+      </div>
+    );
+  }
+
+  ${isListComponent ? `
+  const items = Array.isArray(data) ? data : [];
+
+  return (
+    <div className={cn("space-y-2", className)}>
+      <h3 className="font-semibold text-lg mb-3">${resourceType}s</h3>
+      {items.length === 0 ? (
+        <p className="text-muted-foreground text-sm">No ${resourceType.toLowerCase()}s found</p>
+      ) : (
+        <div className="space-y-2">
+          {items.map((item: any, idx: number) => (
+            <div key={item.id || idx} className="p-3 bg-muted/50 rounded-lg border">
+              <div className="font-medium text-sm">
+                {item.code?.text || item.code?.coding?.[0]?.display || item.name?.[0]?.text || item.type?.text || \`${resourceType} #\${idx + 1}\`}
+              </div>
+              {item.status && (
+                <span className="text-xs text-muted-foreground capitalize">{item.status}</span>
+              )}
+              {item.effectiveDateTime && (
+                <span className="text-xs text-muted-foreground ml-2">
+                  {new Date(item.effectiveDateTime).toLocaleDateString()}
+                </span>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );` : isCardComponent ? `
+  if (!data) return null;
+
+  return (
+    <div className={cn("p-4 rounded-lg border bg-card", className)}>
+      <div className="font-medium">
+        {data.code?.text || data.code?.coding?.[0]?.display || data.name?.[0]?.text || '${resourceType}'}
+      </div>
+      {data.status && (
+        <span className="text-xs text-muted-foreground capitalize">{data.status}</span>
+      )}
+    </div>
+  );` : `
+  return (
+    <div className={cn("p-4 rounded-lg border bg-card", className)}>
+      <h3 className="font-semibold mb-2">${resourceType}</h3>
+      {data ? (
+        <pre className="text-xs text-muted-foreground overflow-auto max-h-40">
+          {JSON.stringify(data, null, 2)}
+        </pre>
+      ) : (
+        <p className="text-muted-foreground text-sm">No data available</p>
+      )}
+    </div>
+  );`}
+}
+
+export default ${componentName};
+`;
 }
 
 // =============================================================================
@@ -5723,6 +5863,376 @@ export async function GET(
   }
 }
 `;
+}
+
+/**
+ * Generate a comprehensive custom dashboard page based on selected APIs
+ */
+function getCustomDashboardPage(templateConfig: TemplateConfig): string {
+  const apis = templateConfig.epicApis || [];
+
+  // Group APIs by category for the UI
+  const categories: Record<string, typeof apis> = {
+    patient: [],
+    clinical: [],
+    medications: [],
+    scheduling: [],
+    documents: [],
+    care: [],
+    providers: [],
+    billing: [],
+  };
+
+  apis.forEach(api => {
+    const category = getCategoryForApi(api.apiId);
+    if (categories[category]) {
+      categories[category].push(api);
+    } else {
+      categories.patient.push(api); // Default to patient
+    }
+  });
+
+  // Build the tabs array
+  const tabs = Object.entries(categories)
+    .filter(([_, apis]) => apis.length > 0)
+    .map(([cat, apis]) => ({
+      id: cat,
+      label: cat.charAt(0).toUpperCase() + cat.slice(1),
+      apis
+    }));
+
+  // Generate imports for all components
+  const componentImports = apis.flatMap(api => api.generateComponents).join(', ');
+
+  return `'use client';
+
+import { useState, useEffect } from 'react';
+import { usePatient, useVitalSigns, useMedications, useAllergies, useConditions, useAppointments, useEncounters, useImmunizations, useDocuments, useCarePlans, useGoals, useCareTeam } from '@/lib/epic-fhir';
+
+const SANDBOX_PATIENTS = [
+  { name: 'Camila Lopez', id: 'erXuFYUfucBZaryVksYEcMg3', subtitle: 'Full clinical data' },
+  { name: 'Theodore Mychart', id: 'e63wRTbPfr1p8UW81d8Seiw3', subtitle: 'MyChart patient' },
+  { name: 'Derrick Lin', id: 'eq081-VQEgP8drUUqCWzHfw3', subtitle: 'Basic demographics' },
+];
+
+const TABS = ${JSON.stringify(tabs.map(t => ({ id: t.id, label: t.label, count: t.apis.length })), null, 2)};
+
+export default function CustomDashboard() {
+  const [patientId, setPatientId] = useState<string | null>(null);
+  const [isConnected, setIsConnected] = useState(false);
+  const [activeTab, setActiveTab] = useState('${tabs[0]?.id || 'patient'}');
+
+  // Fetch hooks for all data
+  const patient = usePatient(isConnected ? patientId : null);
+  const vitals = useVitalSigns(isConnected ? patientId : null);
+  const medications = useMedications(isConnected ? patientId : null);
+  const allergies = useAllergies(isConnected ? patientId : null);
+  const conditions = useConditions(isConnected ? patientId : null);
+
+  useEffect(() => {
+    fetch('/api/epic').then(r => r.json()).then(data => setIsConnected(data.connected)).catch(() => {});
+  }, []);
+
+  const getValue = (obj: any, key: string) => obj?.[key]?.text || obj?.[key]?.coding?.[0]?.display || '—';
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50/30">
+      {/* Header */}
+      <header className="bg-white/80 backdrop-blur-sm border-b border-slate-200/50 sticky top-0 z-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/25">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                </svg>
+              </div>
+              <div>
+                <h1 className="text-xl font-bold text-slate-900">${templateConfig.appName || 'Custom Dashboard'}</h1>
+                <p className="text-xs text-slate-500">${apis.length} Epic FHIR APIs</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <span className={\`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-all \${isConnected ? 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-500/20' : 'bg-amber-50 text-amber-700 ring-1 ring-amber-500/20'}\`}>
+                <span className={\`w-2 h-2 rounded-full \${isConnected ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500'}\`}></span>
+                {isConnected ? 'Epic Connected' : 'Not Connected'}
+              </span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Patient Selection */}
+        <section className="mb-8">
+          <h2 className="text-sm font-semibold text-slate-600 uppercase tracking-wider mb-3">Select Patient</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {SANDBOX_PATIENTS.map((p) => (
+              <button key={p.id} onClick={() => setPatientId(p.id)} disabled={!isConnected}
+                className={\`group relative p-4 rounded-2xl border-2 text-left transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed \${patientId === p.id ? 'bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-400 shadow-lg shadow-blue-500/10' : 'bg-white border-slate-200 hover:border-blue-300 hover:shadow-md'}\`}>
+                <div className="flex items-center gap-3">
+                  <div className={\`w-12 h-12 rounded-xl flex items-center justify-center text-lg font-bold transition-all \${patientId === p.id ? 'bg-gradient-to-br from-blue-500 to-indigo-600 text-white shadow-lg shadow-blue-500/30' : 'bg-slate-100 text-slate-600 group-hover:bg-blue-100'}\`}>
+                    {p.name.split(' ').map(n => n[0]).join('')}
+                  </div>
+                  <div>
+                    <div className={\`font-semibold \${patientId === p.id ? 'text-blue-900' : 'text-slate-900'}\`}>{p.name}</div>
+                    <div className="text-sm text-slate-500">{p.subtitle}</div>
+                  </div>
+                </div>
+                {patientId === p.id && (
+                  <div className="absolute top-3 right-3 w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center">
+                    <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
+                  </div>
+                )}
+              </button>
+            ))}
+          </div>
+        </section>
+
+        {patientId && patient.data && (
+          <div className="grid lg:grid-cols-4 gap-6">
+            {/* Sidebar */}
+            <aside className="lg:col-span-1 space-y-4">
+              {/* Patient Card */}
+              <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+                <div className="text-center">
+                  <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center text-2xl font-bold text-white mx-auto mb-4 shadow-lg shadow-blue-500/30">
+                    {patient.data.displayName?.split(' ').map((n: string) => n[0]).join('').slice(0, 2)}
+                  </div>
+                  <h2 className="text-xl font-bold text-slate-900">{patient.data.displayName}</h2>
+                  <p className="text-sm text-slate-500 mt-1">
+                    {patient.data.gender ? patient.data.gender.charAt(0).toUpperCase() + patient.data.gender.slice(1) : ''}
+                    {patient.data.age !== null ? \`, \${patient.data.age} years\` : ''}
+                  </p>
+                </div>
+                <div className="mt-4 pt-4 border-t border-slate-100 space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-slate-500">DOB</span>
+                    <span className="text-slate-900 font-medium">{patient.data.birthDate ? new Date(patient.data.birthDate).toLocaleDateString() : '—'}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Navigation Tabs */}
+              <nav className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+                {TABS.map((tab) => (
+                  <button key={tab.id} onClick={() => setActiveTab(tab.id)}
+                    className={\`w-full px-4 py-3.5 text-left text-sm font-medium flex items-center justify-between transition-all \${activeTab === tab.id ? 'bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-700 border-l-4 border-blue-500' : 'text-slate-600 hover:bg-slate-50 border-l-4 border-transparent'}\`}>
+                    <span className="capitalize">{tab.label}</span>
+                    <span className={\`text-xs px-2 py-0.5 rounded-full \${activeTab === tab.id ? 'bg-blue-100 text-blue-700' : 'bg-slate-100 text-slate-500'}\`}>{tab.count}</span>
+                  </button>
+                ))}
+              </nav>
+            </aside>
+
+            {/* Main Content */}
+            <main className="lg:col-span-3">
+              <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+                <h3 className="text-lg font-bold text-slate-900 capitalize mb-6">{activeTab} Data</h3>
+
+                {activeTab === 'patient' && (
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="p-4 bg-slate-50 rounded-xl">
+                        <div className="text-sm text-slate-500">Full Name</div>
+                        <div className="font-semibold text-slate-900">{patient.data.displayName}</div>
+                      </div>
+                      <div className="p-4 bg-slate-50 rounded-xl">
+                        <div className="text-sm text-slate-500">Birth Date</div>
+                        <div className="font-semibold text-slate-900">{patient.data.birthDate || '—'}</div>
+                      </div>
+                      <div className="p-4 bg-slate-50 rounded-xl">
+                        <div className="text-sm text-slate-500">Gender</div>
+                        <div className="font-semibold text-slate-900 capitalize">{patient.data.gender || '—'}</div>
+                      </div>
+                      <div className="p-4 bg-slate-50 rounded-xl">
+                        <div className="text-sm text-slate-500">Age</div>
+                        <div className="font-semibold text-slate-900">{patient.data.age !== null ? \`\${patient.data.age} years\` : '—'}</div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === 'clinical' && (
+                  <div className="space-y-6">
+                    {/* Vitals */}
+                    <div>
+                      <h4 className="font-semibold text-slate-900 mb-3 flex items-center gap-2">
+                        <span className="w-8 h-8 bg-rose-100 rounded-lg flex items-center justify-center">❤️</span>
+                        Vital Signs
+                      </h4>
+                      {vitals.loading ? (
+                        <div className="animate-pulse space-y-2">{[1,2,3].map(i => <div key={i} className="h-12 bg-slate-100 rounded-lg"></div>)}</div>
+                      ) : (
+                        <div className="grid grid-cols-2 gap-3">
+                          {vitals.data?.slice(0, 6).map((v: any, i: number) => (
+                            <div key={i} className="p-3 bg-rose-50 rounded-xl border border-rose-100">
+                              <div className="text-sm text-rose-600">{getValue(v, 'code')}</div>
+                              <div className="font-bold text-rose-900">{v.valueQuantity ? \`\${v.valueQuantity.value} \${v.valueQuantity.unit || ''}\` : '—'}</div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                      {vitals.data?.length === 0 && <p className="text-sm text-slate-500">No vitals recorded</p>}
+                    </div>
+
+                    {/* Conditions */}
+                    <div>
+                      <h4 className="font-semibold text-slate-900 mb-3 flex items-center gap-2">
+                        <span className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">🩺</span>
+                        Conditions
+                      </h4>
+                      {conditions.loading ? (
+                        <div className="animate-pulse space-y-2">{[1,2].map(i => <div key={i} className="h-12 bg-slate-100 rounded-lg"></div>)}</div>
+                      ) : (
+                        <div className="space-y-2">
+                          {conditions.data?.map((c: any, i: number) => (
+                            <div key={i} className="p-3 bg-purple-50 rounded-xl border border-purple-100">
+                              <div className="font-medium text-purple-900">{getValue(c, 'code')}</div>
+                              {c.clinicalStatus?.coding?.[0]?.code && (
+                                <span className="text-xs text-purple-600 capitalize">{c.clinicalStatus.coding[0].code}</span>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                      {conditions.data?.length === 0 && <p className="text-sm text-slate-500">No conditions recorded</p>}
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === 'medications' && (
+                  <div className="space-y-6">
+                    {/* Medications */}
+                    <div>
+                      <h4 className="font-semibold text-slate-900 mb-3 flex items-center gap-2">
+                        <span className="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">💊</span>
+                        Active Medications
+                      </h4>
+                      {medications.loading ? (
+                        <div className="animate-pulse space-y-2">{[1,2,3].map(i => <div key={i} className="h-16 bg-slate-100 rounded-lg"></div>)}</div>
+                      ) : (
+                        <div className="space-y-2">
+                          {medications.data?.map((m: any, i: number) => (
+                            <div key={i} className="p-4 bg-emerald-50 rounded-xl border border-emerald-100">
+                              <div className="font-medium text-emerald-900">{m.medicationCodeableConcept?.text || m.medicationCodeableConcept?.coding?.[0]?.display || 'Unknown'}</div>
+                              {m.dosageInstruction?.[0]?.text && (
+                                <div className="text-sm text-emerald-700 mt-1">{m.dosageInstruction[0].text}</div>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                      {medications.data?.length === 0 && <p className="text-sm text-slate-500">No active medications</p>}
+                    </div>
+
+                    {/* Allergies */}
+                    <div>
+                      <h4 className="font-semibold text-slate-900 mb-3 flex items-center gap-2">
+                        <span className="w-8 h-8 bg-amber-100 rounded-lg flex items-center justify-center">⚠️</span>
+                        Allergies
+                      </h4>
+                      {allergies.loading ? (
+                        <div className="animate-pulse space-y-2">{[1,2].map(i => <div key={i} className="h-12 bg-slate-100 rounded-lg"></div>)}</div>
+                      ) : (
+                        <div className="space-y-2">
+                          {allergies.data?.map((a: any, i: number) => (
+                            <div key={i} className={\`p-3 rounded-xl border \${a.criticality === 'high' ? 'bg-red-50 border-red-200' : 'bg-amber-50 border-amber-200'}\`}>
+                              <div className="flex items-center gap-2">
+                                <span className={\`px-2 py-0.5 rounded text-xs font-medium \${a.criticality === 'high' ? 'bg-red-100 text-red-800' : 'bg-amber-100 text-amber-800'}\`}>{a.criticality || 'unknown'}</span>
+                                <span className="font-medium text-slate-900">{getValue(a, 'code')}</span>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                      {allergies.data?.length === 0 && <p className="text-sm text-slate-500">No known allergies</p>}
+                    </div>
+                  </div>
+                )}
+
+                {!['patient', 'clinical', 'medications'].includes(activeTab) && (
+                  <div className="text-center py-12">
+                    <div className="w-16 h-16 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                      <svg className="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                      </svg>
+                    </div>
+                    <h4 className="font-semibold text-slate-900 capitalize">{activeTab} Section</h4>
+                    <p className="text-sm text-slate-500 mt-1">Data for this section will load from Epic FHIR</p>
+                  </div>
+                )}
+              </div>
+            </main>
+          </div>
+        )}
+
+        {/* Empty State */}
+        {!patientId && isConnected && (
+          <div className="bg-white rounded-2xl border border-slate-200 p-16 text-center shadow-sm">
+            <div className="w-20 h-20 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
+              <svg className="w-10 h-10 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
+            </div>
+            <h3 className="text-xl font-bold text-slate-900">Select a Patient</h3>
+            <p className="text-slate-500 mt-2 max-w-md mx-auto">Choose a sandbox patient above to explore their clinical data across ${apis.length} different FHIR resources.</p>
+          </div>
+        )}
+
+        {!isConnected && (
+          <div className="bg-amber-50 rounded-2xl border border-amber-200 p-8 text-center">
+            <div className="w-16 h-16 bg-amber-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <svg className="w-8 h-8 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+            </div>
+            <h3 className="text-lg font-bold text-amber-900">Epic Not Connected</h3>
+            <p className="text-amber-700 mt-2">Please ensure the main platform is running with Epic OAuth configured.</p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+`;
+}
+
+/**
+ * Get category for an API ID
+ */
+function getCategoryForApi(apiId: string): string {
+  const categoryMap: Record<string, string> = {
+    'patient': 'patient',
+    'related-person': 'patient',
+    'observation-vitals': 'clinical',
+    'observation-labs': 'clinical',
+    'condition': 'clinical',
+    'procedure': 'clinical',
+    'diagnostic-report': 'clinical',
+    'immunization': 'clinical',
+    'medication-request': 'medications',
+    'medication-dispense': 'medications',
+    'allergy-intolerance': 'medications',
+    'appointment': 'scheduling',
+    'encounter': 'scheduling',
+    'schedule': 'scheduling',
+    'slot': 'scheduling',
+    'document-reference': 'documents',
+    'imaging-study': 'documents',
+    'binary': 'documents',
+    'care-plan': 'care',
+    'goal': 'care',
+    'care-team': 'care',
+    'practitioner': 'providers',
+    'practitioner-role': 'providers',
+    'organization': 'providers',
+    'location': 'providers',
+    'coverage': 'billing',
+    'claim': 'billing',
+    'explanation-of-benefit': 'billing',
+  };
+  return categoryMap[apiId] || 'patient';
 }
 
 function getEpicDashboardPage(): string {

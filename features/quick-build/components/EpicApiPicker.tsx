@@ -166,21 +166,39 @@ export function EpicApiPicker({
       />
 
       {/* Modal */}
-      <div className="relative w-full max-w-3xl max-h-[85vh] bg-background rounded-xl shadow-2xl flex flex-col overflow-hidden">
+      <div className="relative w-full max-w-4xl max-h-[90vh] bg-background rounded-xl shadow-2xl flex flex-col overflow-hidden">
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b">
           <div>
             <h2 className="text-xl font-semibold">Add Epic FHIR APIs</h2>
             <p className="text-sm text-muted-foreground">
-              Select additional APIs to include in your app
+              Select APIs to include ({totalSelected}/{EPIC_API_CATALOG.length} selected)
             </p>
           </div>
-          <button
-            onClick={onClose}
-            className="p-2 rounded-lg hover:bg-muted transition-colors"
-          >
-            <X className="h-5 w-5" />
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => {
+                // Select all unselected APIs
+                const unselected = EPIC_API_CATALOG
+                  .filter(api => !selectedApiIds.includes(api.id) && !pendingSelections.has(api.id))
+                  .map(api => api.id);
+                setPendingSelections(prev => {
+                  const next = new Set(prev);
+                  unselected.forEach(id => next.add(id));
+                  return next;
+                });
+              }}
+              className="px-3 py-1.5 text-xs font-medium rounded-lg border hover:bg-muted transition-colors"
+            >
+              Select All
+            </button>
+            <button
+              onClick={onClose}
+              className="p-2 rounded-lg hover:bg-muted transition-colors"
+            >
+              <X className="h-5 w-5" />
+            </button>
+          </div>
         </div>
 
         {/* Search */}

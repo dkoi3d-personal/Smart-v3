@@ -46,7 +46,7 @@ export function RequirementsPanel() {
       id: `msg-init-${Date.now()}`,
       agentId: 'system',
       agentType: 'supervisor',
-      content: '⏳ Initializing secure environment and connecting to Ochsner AI Studio agents...',
+      content: '⏳ Initializing secure environment and connecting to Employers AI Studio agents...',
       timestamp: new Date(),
     };
 
@@ -62,8 +62,8 @@ export function RequirementsPanel() {
     }
 
     try {
-      // Always use fast workflow with Ochsner AI Studio
-      console.log('🚀 Starting fast workflow with Ochsner AI Studio');
+      // Always use fast workflow with Employers AI Studio
+      console.log('🚀 Starting fast workflow with Employers AI Studio');
 
       const response = await fetch('/api/workflow/start-fast', {
         method: 'POST',
@@ -197,7 +197,7 @@ export function RequirementsPanel() {
                 SOC 2 & NIST Compliant Development
               </span>
               <span className="text-[10px] text-muted-foreground">
-                Ochsner AI Studio automatically enforces enterprise security standards
+                Employers AI Studio automatically enforces enterprise security standards
               </span>
             </div>
           </div>
@@ -218,7 +218,7 @@ export function RequirementsPanel() {
             {isExistingProject ? 'Project Requirements' : 'Describe Your Application'}
           </label>
           <Textarea
-            placeholder={isExistingProject ? '' : "Describe your application in detail. For example:\n\n• Claims management dashboard\n• Policy tracking system\n• Premium audit workflow\n• Agent portal with reporting\n\nOchsner AI Studio will automatically implement secure, compliant controls."}
+            placeholder={isExistingProject ? '' : "Describe your application in detail. For example:\n\n• Claims management dashboard\n• Policy tracking system\n• Premium audit workflow\n• Agent portal with reporting\n\nEmployers AI Studio will automatically implement secure, compliant controls."}
             value={input}
             onChange={(e) => setInput(e.target.value)}
             className="flex-1 resize-none text-base leading-relaxed p-4 font-normal"

@@ -98,18 +98,18 @@ export default function Home() {
       <header className="border-b border-white/10 backdrop-blur-sm relative z-10">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            {/* SmartCycleAI Branding */}
+            {/* Employers AI Branding */}
             <div className="flex items-center gap-3 pr-4 border-r border-white/20">
-              <img src="/smartcycle-logo.svg" alt="SmartCycleAI" className="h-10 w-10" />
+              <img src="/smartcycle-logo.svg" alt="Employers AI" className="h-10 w-10" />
               <div className="flex flex-col">
-                <span className="text-base font-bold text-white leading-tight">Smart</span>
-                <span className="text-base font-bold text-white leading-tight">CycleAI</span>
+                <span className="text-base font-bold text-white leading-tight">Employers</span>
+                <span className="text-base font-bold text-white leading-tight">AI</span>
               </div>
             </div>
-            {/* Ochsner AI Studio */}
+            {/* Employers AI Studio */}
             <div className="flex items-center gap-2">
               <HeartPulse className="h-8 w-8 text-emerald-400" />
-              <h1 className="text-2xl font-bold text-white">Ochsner AI Studio</h1>
+              <h1 className="text-2xl font-bold text-white">Employers AI Studio</h1>
             </div>
           </div>
           <div className="flex gap-2">
@@ -139,14 +139,14 @@ export default function Home() {
           Healthcare Apps
           <br />
           <span className="bg-gradient-to-r from-emerald-400 via-blue-400 to-purple-400 bg-clip-text text-transparent animate-gradient-shimmer">
-            Built with SmartCycleAI
+            Built with Employers AI
           </span>
         </h1>
         <p className="text-xl text-white/70 max-w-3xl mx-auto mb-4 leading-relaxed">
           From clinical idea to compliant application in minutes
         </p>
         <p className="text-lg text-white/50 max-w-2xl mx-auto">
-          SmartCycleAI builds <span className="text-emerald-400 font-medium">HIPAA-compliant</span> healthcare
+          Employers AI builds <span className="text-emerald-400 font-medium">HIPAA-compliant</span> healthcare
           applications with security controls, audit logging, and EHR integration.
         </p>
       </section>
@@ -412,7 +412,7 @@ export default function Home() {
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <div className="flex items-center gap-2">
               <ShieldCheck className="h-5 w-5 text-emerald-400" />
-              <span className="font-medium text-white">Ochsner AI Studio</span>
+              <span className="font-medium text-white">Employers AI Studio</span>
               <span className="text-white/50">| Healthcare AI Development Platform</span>
             </div>
             <div className="flex gap-4 text-sm text-white/50">

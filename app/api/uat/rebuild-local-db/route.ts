@@ -10,6 +10,7 @@ import { exec, execSync } from 'child_process';
 import { promisify } from 'util';
 import * as fs from 'fs/promises';
 import * as path from 'path';
+import { getProjectDir } from '@/lib/project-paths';
 
 const execAsync = promisify(exec);
 
@@ -99,19 +100,32 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Project ID required' }, { status: 400 });
     }
 
-    // Get project directory
-    const projectsPath = path.join(process.cwd(), 'data', 'projects.json');
-    const projectsData = await fs.readFile(projectsPath, 'utf-8');
-    const projects = JSON.parse(projectsData);
-    const project = projects.find((p: any) => p.id === projectId || p.projectId === projectId);
+    // Get project directory - try from projects.json first, then fallback to default path
+    let projectDir: string | undefined;
 
-    if (!project) {
-      return NextResponse.json({ error: 'Project not found' }, { status: 404 });
+    try {
+      const projectsPath = path.join(process.cwd(), 'data', 'projects.json');
+      const projectsData = await fs.readFile(projectsPath, 'utf-8');
+      const projects = JSON.parse(projectsData);
+      const project = projects.find((p: any) => p.id === projectId || p.projectId === projectId);
+
+      if (project) {
+        projectDir = project.projectDirectory || project.directory;
+      }
+    } catch {
+      // projects.json not found or invalid
     }
 
-    const projectDir = project.projectDirectory || project.directory;
+    // Fallback to default project path
     if (!projectDir) {
-      return NextResponse.json({ error: 'Project directory not found' }, { status: 404 });
+      projectDir = getProjectDir(projectId);
+    }
+
+    // Verify directory exists
+    try {
+      await fs.access(projectDir);
+    } catch {
+      return NextResponse.json({ error: `Project directory not found: ${projectDir}` }, { status: 404 });
     }
 
     addLog('=== Rebuilding Local Database ===');
@@ -125,19 +139,10 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: false, error: 'No Prisma schema found', logs });
     }
 
-    // Stop preview server
-    addLog('Stopping preview server...');
-    try {
-      await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/preview/stop`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ projectId }),
-      });
-    } catch { /* may not be running */ }
-
-    // Kill dev port processes
+    // Note: Preview server should already be stopped by caller (rebuildApp)
+    // Only kill stale dev port processes if any are lingering
     killDevPortProcesses(addLog);
-    await new Promise(r => setTimeout(r, 2000));
+    await new Promise(r => setTimeout(r, 500));
 
     // Ensure schema is SQLite
     addLog('Ensuring SQLite schema...');

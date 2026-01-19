@@ -1,187 +1,49 @@
 {
   "id": "ochsner-health",
   "name": "Ochsner Health",
-  "description": "Comprehensive healthcare design system based on Ochsner Health - Louisiana's largest nonprofit academic healthcare system. Features deep navy blue primary colors with gold accents, creating a trustworthy, professional, and compassionate healthcare experience.",
+  "description": "Healthcare design system inspired by Ochsner Health - Louisiana's leading nonprofit healthcare provider. Features deep purple primary colors with fresh green accents for a trustworthy, professional healthcare appearance. Includes full dark/light theme support and healthcare-specific UX patterns.",
   "version": "2.0.0",
-  "isDefault": true,
+  "isDefault": false,
   "isBuiltIn": true,
   "createdAt": "2024-12-17T00:00:00.000Z",
-  "updatedAt": "2024-12-26T00:00:00.000Z",
+  "updatedAt": "2024-12-20T00:00:00.000Z",
   "source": {
-    "type": "builtin",
-    "reference": "https://www.ochsner.org",
-    "brandAssets": "https://brandfetch.com/ochsner.org"
-  },
-  "brand": {
-    "name": "Ochsner Health",
-    "tagline": "Louisiana's #1 Health System",
-    "mission": "To Serve, Heal, Lead, Educate, and Innovate",
-    "values": [
-      "Patient-centered",
-      "Compassionate",
-      "Trustworthy",
-      "Innovative",
-      "Inclusive"
-    ],
-    "founded": 1942,
-    "headquarters": "New Orleans, Louisiana",
-    "stats": {
-      "hospitals": 47,
-      "healthCenters": 370,
-      "employees": 36000,
-      "physicians": 4700,
-      "states": 4
-    }
+    "type": "builtin"
   },
   "tokens": {
     "colors": {
-      "primary": {
-        "50": "#e6eef6",
-        "100": "#c0d4e8",
-        "200": "#97b8d8",
-        "300": "#6d9cc8",
-        "400": "#4d86bc",
-        "500": "#2d71b0",
-        "600": "#2664a0",
-        "700": "#1e548b",
-        "800": "#174577",
-        "900": "#0e203a",
-        "950": "#0a1729",
-        "DEFAULT": "#0e203a"
-      },
-      "secondary": {
-        "50": "#f0f4fa",
-        "100": "#dce5f2",
-        "200": "#c4d4e9",
-        "300": "#a4bdd8",
-        "400": "#82a3c4",
-        "500": "#6589af",
-        "600": "#506e96",
-        "700": "#42597a",
-        "800": "#3a4c65",
-        "900": "#142d50",
-        "DEFAULT": "#142d50"
-      },
-      "accent": {
-        "50": "#fef9e7",
-        "100": "#fcefc2",
-        "200": "#fae398",
-        "300": "#f7d46d",
-        "400": "#f4c54d",
-        "500": "#e0a42e",
-        "600": "#c88f23",
-        "700": "#a6741d",
-        "800": "#885e1b",
-        "900": "#714d1a",
-        "DEFAULT": "#e0a42e"
-      },
-      "success": {
-        "50": "#ecfdf5",
-        "100": "#d1fae5",
-        "200": "#a7f3d0",
-        "300": "#6ee7b7",
-        "400": "#34d399",
-        "500": "#10b981",
-        "600": "#059669",
-        "700": "#047857",
-        "800": "#065f46",
-        "900": "#064e3b",
-        "DEFAULT": "#10b981"
-      },
-      "warning": {
-        "50": "#fffbeb",
-        "100": "#fef3c7",
-        "200": "#fde68a",
-        "300": "#fcd34d",
-        "400": "#fbbf24",
-        "500": "#f59e0b",
-        "600": "#d97706",
-        "700": "#b45309",
-        "800": "#92400e",
-        "900": "#78350f",
-        "DEFAULT": "#f59e0b"
-      },
-      "error": {
-        "50": "#fef2f2",
-        "100": "#fee2e2",
-        "200": "#fecaca",
-        "300": "#fca5a5",
-        "400": "#f87171",
-        "500": "#ef4444",
-        "600": "#dc2626",
-        "700": "#b91c1c",
-        "800": "#991b1b",
-        "900": "#7f1d1d",
-        "DEFAULT": "#dc2626"
-      },
-      "info": {
-        "50": "#eff6ff",
-        "100": "#dbeafe",
-        "200": "#bfdbfe",
-        "300": "#93c5fd",
-        "400": "#60a5fa",
-        "500": "#3b82f6",
-        "600": "#2563eb",
-        "700": "#1d4ed8",
-        "800": "#1e40af",
-        "900": "#1e3a8a",
-        "DEFAULT": "#0e203a"
-      },
-      "neutral": {
-        "50": "#fafafa",
-        "100": "#f5f5f5",
-        "200": "#e5e5e5",
-        "300": "#d4d4d4",
-        "400": "#a3a3a3",
-        "500": "#737373",
-        "600": "#525252",
-        "700": "#404040",
-        "800": "#262626",
-        "900": "#171717",
-        "950": "#0a0a0a"
-      },
       "background": "#ffffff",
-      "foreground": "#0e203a",
+      "foreground": "#1a1a2e",
       "card": "#ffffff",
-      "cardForeground": "#0e203a",
+      "cardForeground": "#1a1a2e",
       "popover": "#ffffff",
-      "popoverForeground": "#0e203a",
+      "popoverForeground": "#1a1a2e",
+      "primary": "#461d7c",
       "primaryForeground": "#ffffff",
-      "secondaryForeground": "#ffffff",
-      "muted": "#f5f7fa",
-      "mutedForeground": "#64748b",
-      "accentForeground": "#0e203a",
+      "secondary": "#f4f0f8",
+      "secondaryForeground": "#461d7c",
+      "muted": "#f4f4f8",
+      "mutedForeground": "#64648c",
+      "accent": "#c7e59f",
+      "accentForeground": "#1a1a2e",
       "destructive": "#dc2626",
       "destructiveForeground": "#ffffff",
-      "border": "#e2e8f0",
-      "input": "#e2e8f0",
-      "ring": "#0e203a",
-      "chart1": "#0e203a",
-      "chart2": "#e0a42e",
-      "chart3": "#142d50",
-      "chart4": "#2d71b0",
-      "chart5": "#10b981"
-    },
-    "darkMode": {
-      "background": "#0a1729",
-      "foreground": "#f8fafc",
-      "card": "#0e203a",
-      "cardForeground": "#f8fafc",
-      "popover": "#0e203a",
-      "popoverForeground": "#f8fafc",
-      "primary": "#4d86bc",
-      "primaryForeground": "#0e203a",
-      "secondary": "#142d50",
-      "secondaryForeground": "#f8fafc",
-      "muted": "#1e3a5f",
-      "mutedForeground": "#94a3b8",
-      "accent": "#e0a42e",
-      "accentForeground": "#0e203a",
-      "destructive": "#f87171",
-      "destructiveForeground": "#0e203a",
-      "border": "#1e3a5f",
-      "input": "#1e3a5f",
-      "ring": "#4d86bc"
+      "border": "#e5e5ed",
+      "input": "#e5e5ed",
+      "ring": "#461d7c",
+      "chart1": "#461d7c",
+      "chart2": "#c7e59f",
+      "chart3": "#8b5cf6",
+      "chart4": "#4d2787",
+      "chart5": "#a3e635",
+      "success": "#16a34a",
+      "successForeground": "#ffffff",
+      "warning": "#f59e0b",
+      "warningForeground": "#1a1a2e",
+      "error": "#dc2626",
+      "errorForeground": "#ffffff",
+      "info": "#461d7c",
+      "infoForeground": "#ffffff"
     },
     "spacing": {
       "unit": 4,
@@ -196,466 +58,118 @@
         8,
         10,
         12,
-        14,
         16,
         20,
         24,
-        28,
         32,
-        36,
         40,
-        44,
         48,
-        52,
-        56,
-        60,
-        64,
-        72,
-        80,
-        96
-      ],
-      "semantic": {
-        "none": "0",
-        "xs": "0.25rem",
-        "sm": "0.5rem",
-        "md": "1rem",
-        "lg": "1.5rem",
-        "xl": "2rem",
-        "2xl": "3rem",
-        "3xl": "4rem",
-        "4xl": "6rem"
-      }
+        64
+      ]
     },
     "typography": {
       "fontFamily": {
-        "heading": "\"Montserrat\", \"Segoe UI\", system-ui, -apple-system, sans-serif",
-        "body": "\"Roboto\", \"Segoe UI\", system-ui, -apple-system, sans-serif",
-        "mono": "\"Roboto Mono\", \"SF Mono\", \"Consolas\", monospace",
-        "medical": "\"Roboto\", system-ui, sans-serif"
+        "sans": "\"Montserrat\", \"Roboto\", \"Segoe UI\", system-ui, sans-serif",
+        "mono": "\"Roboto Mono\", \"Consolas\", monospace"
       },
       "fontSize": {
         "xs": {
           "size": "0.75rem",
-          "lineHeight": "1rem",
-          "letterSpacing": "0.025em"
+          "lineHeight": "1rem"
         },
         "sm": {
           "size": "0.875rem",
-          "lineHeight": "1.25rem",
-          "letterSpacing": "0.015em"
+          "lineHeight": "1.25rem"
         },
         "base": {
           "size": "1rem",
-          "lineHeight": "1.5rem",
-          "letterSpacing": "0"
+          "lineHeight": "1.5rem"
         },
         "lg": {
           "size": "1.125rem",
-          "lineHeight": "1.75rem",
-          "letterSpacing": "-0.01em"
+          "lineHeight": "1.75rem"
         },
         "xl": {
           "size": "1.25rem",
-          "lineHeight": "1.75rem",
-          "letterSpacing": "-0.015em"
+          "lineHeight": "1.75rem"
         },
         "2xl": {
           "size": "1.5rem",
-          "lineHeight": "2rem",
-          "letterSpacing": "-0.02em"
+          "lineHeight": "2rem"
         },
         "3xl": {
           "size": "1.875rem",
-          "lineHeight": "2.25rem",
-          "letterSpacing": "-0.025em"
+          "lineHeight": "2.25rem"
         },
         "4xl": {
           "size": "2.25rem",
-          "lineHeight": "2.5rem",
-          "letterSpacing": "-0.03em"
+          "lineHeight": "2.5rem"
         },
         "5xl": {
           "size": "3rem",
-          "lineHeight": "1.1",
-          "letterSpacing": "-0.035em"
-        },
-        "6xl": {
-          "size": "3.75rem",
-          "lineHeight": "1",
-          "letterSpacing": "-0.04em"
-        },
-        "7xl": {
-          "size": "4.5rem",
-          "lineHeight": "1",
-          "letterSpacing": "-0.04em"
+          "lineHeight": "1"
         }
       },
       "fontWeight": {
-        "light": 300,
         "normal": 400,
         "medium": 500,
         "semibold": 600,
-        "bold": 700,
-        "extrabold": 800
-      },
-      "headings": {
-        "h1": {
-          "fontSize": "3rem",
-          "fontWeight": 700,
-          "lineHeight": 1.1,
-          "fontFamily": "heading",
-          "marginBottom": "1.5rem"
-        },
-        "h2": {
-          "fontSize": "2.25rem",
-          "fontWeight": 600,
-          "lineHeight": 1.2,
-          "fontFamily": "heading",
-          "marginBottom": "1.25rem"
-        },
-        "h3": {
-          "fontSize": "1.875rem",
-          "fontWeight": 600,
-          "lineHeight": 1.25,
-          "fontFamily": "heading",
-          "marginBottom": "1rem"
-        },
-        "h4": {
-          "fontSize": "1.5rem",
-          "fontWeight": 600,
-          "lineHeight": 1.3,
-          "fontFamily": "heading",
-          "marginBottom": "0.75rem"
-        },
-        "h5": {
-          "fontSize": "1.25rem",
-          "fontWeight": 600,
-          "lineHeight": 1.4,
-          "fontFamily": "heading",
-          "marginBottom": "0.5rem"
-        },
-        "h6": {
-          "fontSize": "1.125rem",
-          "fontWeight": 600,
-          "lineHeight": 1.4,
-          "fontFamily": "heading",
-          "marginBottom": "0.5rem"
-        }
+        "bold": 700
       }
     },
     "radii": {
       "none": "0",
       "sm": "0.25rem",
-      "md": "0.375rem",
-      "lg": "0.5rem",
-      "xl": "0.75rem",
-      "2xl": "1rem",
-      "3xl": "1.5rem",
+      "md": "0.5rem",
+      "lg": "0.75rem",
+      "xl": "1rem",
+      "2xl": "1.5rem",
       "full": "9999px"
     },
     "shadows": {
-      "sm": "0 1px 2px 0 rgb(14 32 58 / 0.05)",
-      "md": "0 4px 6px -1px rgb(14 32 58 / 0.1), 0 2px 4px -2px rgb(14 32 58 / 0.1)",
-      "lg": "0 10px 15px -3px rgb(14 32 58 / 0.1), 0 4px 6px -4px rgb(14 32 58 / 0.1)",
-      "xl": "0 20px 25px -5px rgb(14 32 58 / 0.1), 0 8px 10px -6px rgb(14 32 58 / 0.1)",
-      "2xl": "0 25px 50px -12px rgb(14 32 58 / 0.25)",
-      "inner": "inset 0 2px 4px 0 rgb(14 32 58 / 0.05)",
-      "card": "0 2px 8px -2px rgb(14 32 58 / 0.08), 0 4px 16px -4px rgb(14 32 58 / 0.12)",
-      "cardHover": "0 8px 24px -4px rgb(14 32 58 / 0.12), 0 12px 32px -8px rgb(14 32 58 / 0.16)",
-      "button": "0 1px 3px 0 rgb(14 32 58 / 0.1), 0 1px 2px -1px rgb(14 32 58 / 0.1)",
-      "buttonHover": "0 4px 6px -1px rgb(14 32 58 / 0.1), 0 2px 4px -2px rgb(14 32 58 / 0.1)"
+      "sm": "0 1px 2px 0 rgb(70 29 124 / 0.05)",
+      "md": "0 4px 6px -1px rgb(70 29 124 / 0.1), 0 2px 4px -2px rgb(70 29 124 / 0.1)",
+      "lg": "0 10px 15px -3px rgb(70 29 124 / 0.1), 0 4px 6px -4px rgb(70 29 124 / 0.1)",
+      "xl": "0 20px 25px -5px rgb(70 29 124 / 0.1), 0 8px 10px -6px rgb(70 29 124 / 0.1)"
     },
     "transitions": {
       "duration": {
-        "instant": "0ms",
         "fast": "150ms",
         "normal": "200ms",
-        "slow": "300ms",
-        "slower": "500ms"
+        "slow": "300ms"
       },
       "easing": {
         "default": "cubic-bezier(0.4, 0, 0.2, 1)",
-        "linear": "linear",
         "in": "cubic-bezier(0.4, 0, 1, 1)",
         "out": "cubic-bezier(0, 0, 0.2, 1)",
-        "inOut": "cubic-bezier(0.4, 0, 0.2, 1)",
-        "bounce": "cubic-bezier(0.68, -0.55, 0.265, 1.55)"
+        "inOut": "cubic-bezier(0.4, 0, 0.2, 1)"
       }
-    },
-    "breakpoints": {
-      "sm": "640px",
-      "md": "768px",
-      "lg": "1024px",
-      "xl": "1280px",
-      "2xl": "1536px"
-    },
-    "zIndex": {
-      "dropdown": 1000,
-      "sticky": 1020,
-      "fixed": 1030,
-      "modalBackdrop": 1040,
-      "modal": 1050,
-      "popover": 1060,
-      "tooltip": 1070,
-      "toast": 1080
     }
   },
   "components": {
     "button": {
       "name": "Button",
-      "description": "Primary action buttons with Ochsner navy blue branding. Gold accents for special CTAs.",
+      "description": "Primary action buttons with Ochsner purple branding. Use for CTAs and important actions.",
       "variants": [
         "default",
         "secondary",
         "outline",
         "ghost",
         "destructive",
-        "link",
-        "gold"
+        "link"
       ],
       "sizes": [
-        "xs",
         "sm",
         "md",
         "lg",
-        "xl"
+        "icon"
       ],
       "states": [
         "default",
         "hover",
         "active",
         "disabled",
-        "focus",
-        "loading"
-      ],
-      "props": {
-        "variant": {
-          "type": "string",
-          "default": "default",
-          "options": [
-            "default",
-            "secondary",
-            "outline",
-            "ghost",
-            "destructive",
-            "link",
-            "gold"
-          ]
-        },
-        "size": {
-          "type": "string",
-          "default": "md",
-          "options": [
-            "xs",
-            "sm",
-            "md",
-            "lg",
-            "xl"
-          ]
-        },
-        "disabled": {
-          "type": "boolean",
-          "default": false
-        },
-        "loading": {
-          "type": "boolean",
-          "default": false
-        },
-        "fullWidth": {
-          "type": "boolean",
-          "default": false
-        },
-        "leftIcon": {
-          "type": "ReactNode"
-        },
-        "rightIcon": {
-          "type": "ReactNode"
-        }
-      },
-      "styles": {
-        "default": {
-          "background": "#0e203a",
-          "color": "#ffffff",
-          "border": "none",
-          "hoverBackground": "#142d50",
-          "activeBackground": "#0a1729",
-          "focusRing": "2px solid #e0a42e"
-        },
-        "secondary": {
-          "background": "#f5f7fa",
-          "color": "#0e203a",
-          "border": "1px solid #e2e8f0",
-          "hoverBackground": "#e2e8f0",
-          "activeBackground": "#cbd5e1"
-        },
-        "outline": {
-          "background": "transparent",
-          "color": "#0e203a",
-          "border": "1px solid #0e203a",
-          "hoverBackground": "#0e203a",
-          "hoverColor": "#ffffff"
-        },
-        "gold": {
-          "background": "#e0a42e",
-          "color": "#0e203a",
-          "border": "none",
-          "hoverBackground": "#c88f23",
-          "activeBackground": "#a6741d"
-        },
-        "ghost": {
-          "background": "transparent",
-          "color": "#0e203a",
-          "hoverBackground": "#f5f7fa"
-        },
-        "destructive": {
-          "background": "#dc2626",
-          "color": "#ffffff",
-          "hoverBackground": "#b91c1c"
-        },
-        "sizes": {
-          "xs": {
-            "height": "28px",
-            "padding": "0 8px",
-            "fontSize": "12px",
-            "borderRadius": "4px"
-          },
-          "sm": {
-            "height": "32px",
-            "padding": "0 12px",
-            "fontSize": "13px",
-            "borderRadius": "6px"
-          },
-          "md": {
-            "height": "40px",
-            "padding": "0 16px",
-            "fontSize": "14px",
-            "borderRadius": "6px"
-          },
-          "lg": {
-            "height": "48px",
-            "padding": "0 24px",
-            "fontSize": "16px",
-            "borderRadius": "8px"
-          },
-          "xl": {
-            "height": "56px",
-            "padding": "0 32px",
-            "fontSize": "18px",
-            "borderRadius": "8px"
-          }
-        }
-      },
-      "usage": "## Button Usage\n\n### Primary Actions\nUse the default navy blue button for primary CTAs like booking appointments.\n\n```tsx\n<Button>Schedule Appointment</Button>\n<Button variant=\"gold\">Urgent Care</Button>\n```\n\n### Secondary Actions\n```tsx\n<Button variant=\"secondary\">Learn More</Button>\n<Button variant=\"outline\">View Details</Button>\n<Button variant=\"ghost\">Cancel</Button>\n```\n\n### With Icons\n```tsx\n<Button leftIcon={<Calendar />}>Book Now</Button>\n<Button rightIcon={<ArrowRight />}>Continue</Button>\n```\n\n### Loading State\n```tsx\n<Button loading>Processing...</Button>\n```",
-      "doAndDont": {
-        "do": [
-          "Use primary navy buttons for main CTAs like 'Schedule Appointment'",
-          "Use gold buttons for urgent/emergency actions",
-          "Ensure minimum touch target of 44x44px for mobile",
-          "Use descriptive, action-oriented labels",
-          "Maintain 4.5:1 contrast ratio for accessibility"
-        ],
-        "dont": [
-          "Don't use multiple primary buttons in the same section",
-          "Don't use red for non-destructive actions",
-          "Don't use all-caps text",
-          "Don't disable buttons without explaining why",
-          "Don't use icon-only buttons without aria-label"
-        ]
-      },
-      "accessibility": {
-        "focusVisible": true,
-        "minTouchTarget": "44px",
-        "contrastRatio": "4.5:1",
-        "keyboardNav": true,
-        "ariaRequired": [
-          "disabled states must have aria-disabled",
-          "loading states should announce"
-        ]
-      }
-    },
-    "card": {
-      "name": "Card",
-      "description": "Content containers for grouping related healthcare information. Clean white backgrounds with subtle shadows.",
-      "variants": [
-        "default",
-        "outlined",
-        "elevated",
-        "interactive",
-        "urgent",
-        "success"
-      ],
-      "states": [
-        "default",
-        "hover",
-        "selected",
-        "disabled"
-      ],
-      "props": {
-        "variant": {
-          "type": "string",
-          "default": "default"
-        },
-        "padding": {
-          "type": "string",
-          "default": "md",
-          "options": [
-            "none",
-            "sm",
-            "md",
-            "lg"
-          ]
-        },
-        "hoverable": {
-          "type": "boolean",
-          "default": false
-        },
-        "selected": {
-          "type": "boolean",
-          "default": false
-        }
-      },
-      "styles": {
-        "default": {
-          "background": "#ffffff",
-          "border": "1px solid #e2e8f0",
-          "borderRadius": "12px",
-          "shadow": "0 2px 8px -2px rgb(14 32 58 / 0.08)"
-        },
-        "elevated": {
-          "shadow": "0 4px 16px -4px rgb(14 32 58 / 0.12)"
-        },
-        "interactive": {
-          "cursor": "pointer",
-          "hoverShadow": "0 8px 24px -4px rgb(14 32 58 / 0.12)",
-          "hoverTransform": "translateY(-2px)"
-        },
-        "urgent": {
-          "borderLeft": "4px solid #dc2626",
-          "background": "#fef2f2"
-        },
-        "success": {
-          "borderLeft": "4px solid #10b981",
-          "background": "#ecfdf5"
-        }
-      },
-      "usage": "## Card Usage\n\n### Basic Card\n```tsx\n<Card>\n  <CardHeader>\n    <CardTitle>Patient Summary</CardTitle>\n    <CardDescription>Overview of recent visits</CardDescription>\n  </CardHeader>\n  <CardContent>\n    {/* Content */}\n  </CardContent>\n  <CardFooter>\n    <Button>View Full Record</Button>\n  </CardFooter>\n</Card>\n```\n\n### Urgent Alert Card\n```tsx\n<Card variant=\"urgent\">\n  <CardHeader>\n    <CardTitle className=\"text-red-600\">Action Required</CardTitle>\n  </CardHeader>\n  <CardContent>\n    <p>Your prescription needs renewal.</p>\n  </CardContent>\n</Card>\n```\n\n### Interactive Provider Card\n```tsx\n<Card variant=\"interactive\" hoverable>\n  <CardContent className=\"flex items-center gap-4\">\n    <Avatar src=\"/doctor.jpg\" />\n    <div>\n      <h3>Dr. Sarah Smith</h3>\n      <p>Internal Medicine</p>\n    </div>\n  </CardContent>\n</Card>\n```"
-    },
-    "badge": {
-      "name": "Badge",
-      "description": "Status indicators and labels for patient status, appointment types, and categorization.",
-      "variants": [
-        "default",
-        "secondary",
-        "success",
-        "warning",
-        "destructive",
-        "outline",
-        "gold"
-      ],
-      "sizes": [
-        "sm",
-        "md",
-        "lg"
+        "focus"
       ],
       "props": {
         "variant": {
@@ -665,68 +179,105 @@
         "size": {
           "type": "string",
           "default": "md"
+        },
+        "disabled": {
+          "type": "boolean",
+          "default": "false"
         }
       },
-      "healthcarePresets": {
-        "appointmentConfirmed": {
-          "variant": "success",
-          "label": "Confirmed"
+      "usage": "## Button Usage\n\nPrimary buttons use Ochsner's signature purple (#461d7c).\nIn dark mode, buttons use a lighter purple (#8b5cf6) for visibility.\n\n```tsx\n// Primary action - deep purple\n<Button variant=\"default\">Schedule Appointment</Button>\n\n// Secondary action - lighter background\n<Button variant=\"secondary\">Learn More</Button>\n\n// Outline for less emphasis\n<Button variant=\"outline\">Cancel</Button>\n\n// Healthcare-specific sizes\n<Button size=\"lg\" className=\"min-h-[48px]\">\n  Book Appointment\n</Button>\n```\n\n### Healthcare Button Guidelines\n- Minimum touch target: 48x48px for accessibility\n- Clear, action-oriented labels\n- Loading state for async actions\n- Icons enhance recognition (Calendar, Phone, etc.)",
+      "doAndDont": {
+        "do": [
+          "Use primary purple buttons for main CTAs like \"Book Appointment\"",
+          "Use secondary buttons for supporting actions",
+          "Ensure 4.5:1 contrast ratio minimum",
+          "Use descriptive labels that indicate the action",
+          "Make buttons at least 48x48px for touch targets"
+        ],
+        "dont": [
+          "Don't use multiple primary buttons in one section",
+          "Don't use red for non-destructive actions",
+          "Don't use all caps for button text",
+          "Don't make buttons too small (min 48px height)",
+          "Don't use vague labels like \"Click Here\""
+        ]
+      }
+    },
+    "card": {
+      "name": "Card",
+      "description": "Content container for healthcare information. White in light mode, dark purple in dark mode.",
+      "variants": [
+        "default",
+        "outlined",
+        "elevated",
+        "interactive"
+      ],
+      "states": [
+        "default",
+        "hover",
+        "selected"
+      ],
+      "props": {
+        "variant": {
+          "type": "string",
+          "default": "default"
         },
-        "appointmentPending": {
-          "variant": "warning",
-          "label": "Pending"
-        },
-        "appointmentCancelled": {
-          "variant": "destructive",
-          "label": "Cancelled"
-        },
-        "newPatient": {
-          "variant": "gold",
-          "label": "New Patient"
-        },
-        "urgent": {
-          "variant": "destructive",
-          "label": "Urgent"
-        },
-        "routine": {
-          "variant": "secondary",
-          "label": "Routine"
-        },
-        "followUp": {
-          "variant": "outline",
-          "label": "Follow-up"
-        },
-        "telehealth": {
-          "variant": "default",
-          "label": "Telehealth"
-        },
-        "inPerson": {
-          "variant": "secondary",
-          "label": "In Person"
+        "padding": {
+          "type": "string",
+          "default": "md"
         }
       },
-      "usage": "## Badge Usage\n\n### Appointment Status\n```tsx\n<Badge variant=\"success\">Confirmed</Badge>\n<Badge variant=\"warning\">Pending</Badge>\n<Badge variant=\"destructive\">Cancelled</Badge>\n```\n\n### Patient Categories\n```tsx\n<Badge variant=\"gold\">New Patient</Badge>\n<Badge variant=\"outline\">Follow-up</Badge>\n<Badge variant=\"default\">Telehealth</Badge>\n```\n\n### Urgency Levels\n```tsx\n<Badge variant=\"destructive\">Urgent</Badge>\n<Badge variant=\"warning\">Priority</Badge>\n<Badge variant=\"secondary\">Routine</Badge>\n```"
+      "usage": "## Card Usage\n\nCards adapt to light/dark theme automatically.\n\n```tsx\n// Light: white bg, subtle shadow\n// Dark: dark purple bg (#1a1429)\n<Card>\n  <CardHeader>\n    <CardTitle>Patient Information</CardTitle>\n    <CardDescription>View and manage your health records</CardDescription>\n  </CardHeader>\n  <CardContent>\n    {/* Content */}\n  </CardContent>\n</Card>\n\n// Interactive card with hover\n<Card className=\"hover:border-primary/50 transition-colors cursor-pointer\">\n  {/* Clickable content */}\n</Card>\n```",
+      "doAndDont": {
+        "do": [
+          "Use cards to group related patient information",
+          "Include clear headings and descriptions",
+          "Use adequate padding (p-6) for readability",
+          "Add hover states for interactive cards"
+        ],
+        "dont": [
+          "Don't nest cards within cards",
+          "Don't overcrowd with information",
+          "Don't use cards for single data points",
+          "Don't forget dark mode styling"
+        ]
+      }
+    },
+    "badge": {
+      "name": "Badge",
+      "description": "Status indicators and labels for healthcare states.",
+      "variants": [
+        "default",
+        "secondary",
+        "success",
+        "warning",
+        "destructive",
+        "outline"
+      ],
+      "states": [
+        "default"
+      ],
+      "props": {
+        "variant": {
+          "type": "string",
+          "default": "default"
+        }
+      },
+      "usage": "## Badge Usage - Healthcare Status\n\n```tsx\n// Appointment status\n<Badge variant=\"success\">Confirmed</Badge>\n<Badge variant=\"warning\">Pending</Badge>\n<Badge variant=\"destructive\">Cancelled</Badge>\n\n// Health status indicators\n<Badge className=\"bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100\">\n  Normal\n</Badge>\n<Badge className=\"bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-100\">\n  Requires Attention\n</Badge>\n<Badge className=\"bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-100\">\n  Critical\n</Badge>\n```\n\n### Healthcare Status Colors\n- **Green**: Normal, confirmed, healthy\n- **Yellow/Orange**: Pending, attention needed, borderline\n- **Red**: Critical, cancelled, urgent\n- **Purple**: Informational, new, in progress"
     },
     "input": {
       "name": "Input",
-      "description": "Form inputs with navy focus rings. Essential for patient data collection and search.",
+      "description": "Form inputs for patient data collection. HIPAA-conscious design.",
       "variants": [
         "default",
         "error",
-        "success",
-        "search"
-      ],
-      "sizes": [
-        "sm",
-        "md",
-        "lg"
+        "success"
       ],
       "states": [
         "default",
         "focus",
         "disabled",
-        "error",
-        "success"
+        "error"
       ],
       "props": {
         "type": {
@@ -738,181 +289,62 @@
         },
         "disabled": {
           "type": "boolean",
-          "default": false
-        },
-        "error": {
-          "type": "string"
-        },
-        "success": {
-          "type": "boolean",
-          "default": false
-        },
-        "leftIcon": {
-          "type": "ReactNode"
-        },
-        "rightIcon": {
-          "type": "ReactNode"
+          "default": "false"
         }
       },
-      "usage": "## Input Usage\n\n### Basic Input with Label\n```tsx\n<div className=\"space-y-2\">\n  <Label htmlFor=\"email\">Email Address *</Label>\n  <Input\n    id=\"email\"\n    type=\"email\"\n    placeholder=\"patient@email.com\"\n    required\n  />\n</div>\n```\n\n### Search Input\n```tsx\n<Input\n  variant=\"search\"\n  placeholder=\"Search doctors, conditions, locations...\"\n  leftIcon={<Search />}\n/>\n```\n\n### With Validation\n```tsx\n<Input\n  error=\"Please enter a valid date of birth\"\n  aria-invalid=\"true\"\n/>\n```\n\n### Healthcare Form Patterns\n```tsx\n{/* Date of Birth */}\n<Input type=\"date\" max={new Date().toISOString().split('T')[0]} />\n\n{/* Phone Number */}\n<Input type=\"tel\" pattern=\"[0-9]{3}-[0-9]{3}-[0-9]{4}\" />\n\n{/* Medical Record Number */}\n<Input pattern=\"[A-Z]{2}[0-9]{8}\" />\n```",
-      "accessibility": {
-        "requirements": [
-          "Always pair with Label component",
-          "Use aria-describedby for error messages",
-          "Mark required fields with aria-required",
-          "Provide autocomplete hints where applicable"
-        ]
-      }
+      "usage": "## Input Usage - Healthcare Forms\n\n```tsx\n// Standard input with label (REQUIRED pattern)\n<div className=\"space-y-2\">\n  <Label htmlFor=\"dob\">Date of Birth <span className=\"text-destructive\">*</span></Label>\n  <Input\n    id=\"dob\"\n    type=\"date\"\n    aria-required=\"true\"\n  />\n</div>\n\n// Secure/sensitive field indicator\n<div className=\"space-y-2\">\n  <Label htmlFor=\"ssn\" className=\"flex items-center gap-2\">\n    Social Security Number\n    <Lock className=\"h-3 w-3 text-muted-foreground\" />\n  </Label>\n  <Input\n    id=\"ssn\"\n    type=\"password\"\n    autoComplete=\"off\"\n    className=\"font-mono\"\n  />\n  <p className=\"text-xs text-muted-foreground\">\n    Protected health information - encrypted in transit\n  </p>\n</div>\n\n// Error state\n<div className=\"space-y-2\">\n  <Label htmlFor=\"phone\">Phone Number</Label>\n  <Input\n    id=\"phone\"\n    className=\"border-destructive focus:ring-destructive\"\n    aria-invalid=\"true\"\n    aria-describedby=\"phone-error\"\n  />\n  <p id=\"phone-error\" className=\"text-sm text-destructive\">\n    Please enter a valid phone number\n  </p>\n</div>\n```\n\n### Healthcare Form Guidelines\n- ALWAYS use labels (not just placeholders)\n- Mark required fields with asterisk\n- Show validation inline\n- Indicate secure/encrypted fields\n- Support autofill where appropriate"
     },
     "alert": {
       "name": "Alert",
-      "description": "Important messages and notifications for patient communications, health alerts, and system messages.",
+      "description": "Important messages for patient communications.",
       "variants": [
         "default",
-        "info",
         "success",
         "warning",
         "destructive",
-        "urgent"
+        "info"
+      ],
+      "states": [
+        "default"
       ],
       "props": {
         "variant": {
           "type": "string",
           "default": "default"
-        },
-        "title": {
-          "type": "string"
-        },
-        "dismissible": {
+        }
+      },
+      "usage": "## Alert Usage - Patient Communications\n\n```tsx\n// Appointment reminder\n<Alert className=\"border-primary bg-primary/5\">\n  <Calendar className=\"h-4 w-4\" />\n  <AlertTitle>Appointment Reminder</AlertTitle>\n  <AlertDescription>\n    Your appointment with Dr. Smith is tomorrow at 2:00 PM.\n    <Button variant=\"link\" className=\"p-0 h-auto ml-1\">\n      Add to calendar\n    </Button>\n  </AlertDescription>\n</Alert>\n\n// Health warning\n<Alert variant=\"warning\">\n  <AlertTriangle className=\"h-4 w-4\" />\n  <AlertTitle>Action Required</AlertTitle>\n  <AlertDescription>\n    Your lab results require review. Please schedule a follow-up.\n  </AlertDescription>\n</Alert>\n\n// Success confirmation\n<Alert variant=\"success\" className=\"bg-green-50 border-green-200 dark:bg-green-950 dark:border-green-800\">\n  <CheckCircle className=\"h-4 w-4 text-green-600\" />\n  <AlertTitle>Appointment Confirmed</AlertTitle>\n  <AlertDescription>\n    Confirmation sent to your email and phone.\n  </AlertDescription>\n</Alert>\n```"
+    },
+    "table": {
+      "name": "Table",
+      "description": "Data tables for medical records, lab results, and appointments.",
+      "variants": [
+        "default",
+        "striped",
+        "bordered"
+      ],
+      "states": [
+        "default",
+        "loading"
+      ],
+      "props": {
+        "striped": {
           "type": "boolean",
-          "default": false
-        },
-        "icon": {
-          "type": "ReactNode"
+          "default": "false"
         }
       },
-      "healthcarePresets": {
-        "appointmentReminder": {
-          "variant": "info",
-          "icon": "Calendar",
-          "title": "Appointment Reminder"
-        },
-        "medicationReminder": {
-          "variant": "warning",
-          "icon": "Pill",
-          "title": "Medication Reminder"
-        },
-        "testResults": {
-          "variant": "success",
-          "icon": "FileText",
-          "title": "Test Results Available"
-        },
-        "urgentNotice": {
-          "variant": "destructive",
-          "icon": "AlertTriangle",
-          "title": "Urgent Notice"
-        },
-        "insuranceUpdate": {
-          "variant": "warning",
-          "icon": "Shield",
-          "title": "Insurance Update Required"
-        }
-      },
-      "usage": "## Alert Usage\n\n### Appointment Reminder\n```tsx\n<Alert variant=\"info\">\n  <Calendar className=\"h-4 w-4\" />\n  <AlertTitle>Appointment Tomorrow</AlertTitle>\n  <AlertDescription>\n    You have an appointment with Dr. Smith tomorrow at 2:00 PM.\n    <Button variant=\"link\" className=\"p-0 h-auto\">Add to Calendar</Button>\n  </AlertDescription>\n</Alert>\n```\n\n### Test Results Ready\n```tsx\n<Alert variant=\"success\">\n  <CheckCircle className=\"h-4 w-4\" />\n  <AlertTitle>Test Results Available</AlertTitle>\n  <AlertDescription>\n    Your lab results from December 20 are now available.\n    <Button variant=\"link\">View Results</Button>\n  </AlertDescription>\n</Alert>\n```\n\n### Urgent Health Notice\n```tsx\n<Alert variant=\"destructive\">\n  <AlertTriangle className=\"h-4 w-4\" />\n  <AlertTitle>Urgent: Action Required</AlertTitle>\n  <AlertDescription>\n    Please contact your provider immediately regarding your recent test results.\n    <Button variant=\"destructive\" size=\"sm\">Call Now</Button>\n  </AlertDescription>\n</Alert>\n```"
-    },
-    "avatar": {
-      "name": "Avatar",
-      "description": "Profile images for patients, providers, and staff with fallback initials.",
-      "sizes": [
-        "xs",
-        "sm",
-        "md",
-        "lg",
-        "xl",
-        "2xl"
-      ],
-      "variants": [
-        "default",
-        "rounded",
-        "status"
-      ],
-      "props": {
-        "src": {
-          "type": "string"
-        },
-        "alt": {
-          "type": "string",
-          "required": true
-        },
-        "fallback": {
-          "type": "string"
-        },
-        "size": {
-          "type": "string",
-          "default": "md"
-        },
-        "status": {
-          "type": "string",
-          "options": [
-            "online",
-            "offline",
-            "busy",
-            "away"
-          ]
-        }
-      },
-      "styles": {
-        "sizes": {
-          "xs": "24px",
-          "sm": "32px",
-          "md": "40px",
-          "lg": "48px",
-          "xl": "64px",
-          "2xl": "96px"
-        }
-      },
-      "usage": "## Avatar Usage\n\n### Provider Avatar\n```tsx\n<Avatar size=\"lg\">\n  <AvatarImage src=\"/doctors/smith.jpg\" alt=\"Dr. Sarah Smith\" />\n  <AvatarFallback className=\"bg-primary text-primary-foreground\">\n    SS\n  </AvatarFallback>\n</Avatar>\n```\n\n### With Online Status\n```tsx\n<Avatar status=\"online\">\n  <AvatarImage src=\"/provider.jpg\" alt=\"Provider\" />\n  <AvatarFallback>DR</AvatarFallback>\n</Avatar>\n```\n\n### Provider Card with Avatar\n```tsx\n<div className=\"flex items-center gap-4\">\n  <Avatar size=\"xl\">\n    <AvatarImage src=\"/doctors/jones.jpg\" alt=\"Dr. Jones\" />\n    <AvatarFallback>JO</AvatarFallback>\n  </Avatar>\n  <div>\n    <h3 className=\"font-semibold\">Dr. Michael Jones, MD</h3>\n    <p className=\"text-muted-foreground\">Cardiology</p>\n    <Badge variant=\"success\">Accepting Patients</Badge>\n  </div>\n</div>\n```"
-    },
-    "tabs": {
-      "name": "Tabs",
-      "description": "Navigation tabs for organizing patient portal sections and health information categories.",
-      "variants": [
-        "default",
-        "pills",
-        "underline",
-        "boxed"
-      ],
-      "props": {
-        "defaultValue": {
-          "type": "string"
-        },
-        "value": {
-          "type": "string"
-        },
-        "onValueChange": {
-          "type": "function"
-        },
-        "orientation": {
-          "type": "string",
-          "default": "horizontal"
-        }
-      },
-      "usage": "## Tabs Usage\n\n### Patient Portal Navigation\n```tsx\n<Tabs defaultValue=\"overview\">\n  <TabsList>\n    <TabsTrigger value=\"overview\">Overview</TabsTrigger>\n    <TabsTrigger value=\"appointments\">Appointments</TabsTrigger>\n    <TabsTrigger value=\"records\">Medical Records</TabsTrigger>\n    <TabsTrigger value=\"messages\">Messages</TabsTrigger>\n    <TabsTrigger value=\"billing\">Billing</TabsTrigger>\n  </TabsList>\n  \n  <TabsContent value=\"overview\">\n    <PatientDashboard />\n  </TabsContent>\n  <TabsContent value=\"appointments\">\n    <AppointmentsList />\n  </TabsContent>\n  {/* ... other content */}\n</Tabs>\n```\n\n### Pills Variant for Filtering\n```tsx\n<Tabs variant=\"pills\" defaultValue=\"all\">\n  <TabsList>\n    <TabsTrigger value=\"all\">All Appointments</TabsTrigger>\n    <TabsTrigger value=\"upcoming\">Upcoming</TabsTrigger>\n    <TabsTrigger value=\"past\">Past</TabsTrigger>\n  </TabsList>\n</Tabs>\n```"
+      "usage": "## Table Usage - Medical Data\n\n```tsx\n// Lab results table\n<Table>\n  <TableHeader>\n    <TableRow>\n      <TableHead>Test</TableHead>\n      <TableHead>Result</TableHead>\n      <TableHead>Reference Range</TableHead>\n      <TableHead>Status</TableHead>\n    </TableRow>\n  </TableHeader>\n  <TableBody>\n    <TableRow>\n      <TableCell className=\"font-medium\">Glucose</TableCell>\n      <TableCell>95 mg/dL</TableCell>\n      <TableCell className=\"text-muted-foreground\">70-100 mg/dL</TableCell>\n      <TableCell>\n        <Badge variant=\"success\">Normal</Badge>\n      </TableCell>\n    </TableRow>\n    <TableRow>\n      <TableCell className=\"font-medium\">Cholesterol</TableCell>\n      <TableCell className=\"text-yellow-600 dark:text-yellow-400 font-medium\">\n        215 mg/dL\n      </TableCell>\n      <TableCell className=\"text-muted-foreground\">&lt;200 mg/dL</TableCell>\n      <TableCell>\n        <Badge variant=\"warning\">Borderline</Badge>\n      </TableCell>\n    </TableRow>\n  </TableBody>\n</Table>\n```\n\n### Table Accessibility\n- Use semantic table elements\n- Include scope attributes for headers\n- Highlight abnormal values\n- Support keyboard navigation"
     },
     "dialog": {
       "name": "Dialog",
-      "description": "Modal dialogs for confirmations, forms, and important interactions.",
+      "description": "Modal dialogs for confirmations and detailed information.",
       "variants": [
         "default",
-        "alert",
-        "form"
+        "alert"
       ],
-      "sizes": [
-        "sm",
-        "md",
-        "lg",
-        "xl",
-        "full"
+      "states": [
+        "open",
+        "closed"
       ],
       "props": {
         "open": {
@@ -920,71 +352,135 @@
         },
         "onOpenChange": {
           "type": "function"
-        },
-        "size": {
-          "type": "string",
-          "default": "md"
         }
       },
-      "usage": "## Dialog Usage\n\n### Appointment Confirmation\n```tsx\n<Dialog>\n  <DialogTrigger asChild>\n    <Button>Schedule Appointment</Button>\n  </DialogTrigger>\n  <DialogContent>\n    <DialogHeader>\n      <DialogTitle>Confirm Appointment</DialogTitle>\n      <DialogDescription>\n        You're about to schedule an appointment with Dr. Smith.\n      </DialogDescription>\n    </DialogHeader>\n    <div className=\"py-4\">\n      <p><strong>Date:</strong> January 15, 2025</p>\n      <p><strong>Time:</strong> 2:00 PM</p>\n      <p><strong>Location:</strong> Ochsner Medical Center</p>\n    </div>\n    <DialogFooter>\n      <Button variant=\"outline\">Cancel</Button>\n      <Button>Confirm Appointment</Button>\n    </DialogFooter>\n  </DialogContent>\n</Dialog>\n```\n\n### Cancel Appointment Confirmation\n```tsx\n<AlertDialog>\n  <AlertDialogTrigger asChild>\n    <Button variant=\"destructive\">Cancel Appointment</Button>\n  </AlertDialogTrigger>\n  <AlertDialogContent>\n    <AlertDialogHeader>\n      <AlertDialogTitle>Cancel Appointment?</AlertDialogTitle>\n      <AlertDialogDescription>\n        Are you sure you want to cancel your appointment with Dr. Smith on January 15? This action cannot be undone.\n      </AlertDialogDescription>\n    </AlertDialogHeader>\n    <AlertDialogFooter>\n      <AlertDialogCancel>Keep Appointment</AlertDialogCancel>\n      <AlertDialogAction className=\"bg-destructive\">\n        Yes, Cancel\n      </AlertDialogAction>\n    </AlertDialogFooter>\n  </AlertDialogContent>\n</AlertDialog>\n```"
+      "usage": "## Dialog Usage - Healthcare Confirmations\n\n```tsx\n// Appointment confirmation dialog\n<Dialog>\n  <DialogTrigger asChild>\n    <Button>Cancel Appointment</Button>\n  </DialogTrigger>\n  <DialogContent>\n    <DialogHeader>\n      <DialogTitle>Cancel Appointment?</DialogTitle>\n      <DialogDescription>\n        Are you sure you want to cancel your appointment with Dr. Smith\n        on January 15, 2025 at 2:00 PM?\n      </DialogDescription>\n    </DialogHeader>\n    <DialogFooter className=\"gap-2\">\n      <Button variant=\"outline\">Keep Appointment</Button>\n      <Button variant=\"destructive\">Yes, Cancel</Button>\n    </DialogFooter>\n  </DialogContent>\n</Dialog>\n\n// Medication details dialog\n<Dialog>\n  <DialogContent className=\"max-w-2xl\">\n    <DialogHeader>\n      <DialogTitle className=\"flex items-center gap-2\">\n        <Pill className=\"h-5 w-5 text-primary\" />\n        Medication Details\n      </DialogTitle>\n    </DialogHeader>\n    <div className=\"space-y-4\">\n      {/* Medication info */}\n    </div>\n  </DialogContent>\n</Dialog>\n```"
     },
-    "table": {
-      "name": "Table",
-      "description": "Data tables for displaying patient records, appointments, and test results.",
+    "skeleton": {
+      "name": "Skeleton",
+      "description": "Loading placeholders for async healthcare data.",
       "variants": [
         "default",
-        "striped",
-        "bordered",
-        "compact"
+        "card",
+        "table"
+      ],
+      "states": [
+        "loading"
+      ],
+      "props": {},
+      "usage": "## Skeleton Usage - Loading States\n\n```tsx\n// Patient card skeleton\n<Card>\n  <CardHeader className=\"flex flex-row items-center gap-4\">\n    <Skeleton className=\"h-16 w-16 rounded-full\" />\n    <div className=\"space-y-2\">\n      <Skeleton className=\"h-4 w-32\" />\n      <Skeleton className=\"h-3 w-24\" />\n    </div>\n  </CardHeader>\n  <CardContent className=\"space-y-3\">\n    <Skeleton className=\"h-3 w-full\" />\n    <Skeleton className=\"h-3 w-4/5\" />\n    <Skeleton className=\"h-10 w-full mt-4\" />\n  </CardContent>\n</Card>\n\n// Table skeleton\n<Table>\n  <TableBody>\n    {[...Array(5)].map((_, i) => (\n      <TableRow key={i}>\n        <TableCell><Skeleton className=\"h-4 w-24\" /></TableCell>\n        <TableCell><Skeleton className=\"h-4 w-16\" /></TableCell>\n        <TableCell><Skeleton className=\"h-4 w-20\" /></TableCell>\n        <TableCell><Skeleton className=\"h-6 w-16 rounded-full\" /></TableCell>\n      </TableRow>\n    ))}\n  </TableBody>\n</Table>\n```\n\n### Loading UX Guidelines\n- Always show loading states for async data\n- Match skeleton dimensions to actual content\n- Use subtle animation (pulse)\n- Consider skeleton for 200ms+ delays"
+    },
+    "progress": {
+      "name": "Progress",
+      "description": "Progress indicators for health goals and form completion.",
+      "variants": [
+        "default",
+        "success",
+        "warning"
+      ],
+      "states": [
+        "default",
+        "indeterminate"
       ],
       "props": {
-        "variant": {
-          "type": "string",
-          "default": "default"
+        "value": {
+          "type": "number",
+          "default": "0"
         },
-        "sortable": {
-          "type": "boolean",
-          "default": false
-        },
-        "selectable": {
-          "type": "boolean",
-          "default": false
+        "max": {
+          "type": "number",
+          "default": "100"
         }
       },
-      "usage": "## Table Usage\n\n### Appointments Table\n```tsx\n<Table>\n  <TableHeader>\n    <TableRow>\n      <TableHead>Date</TableHead>\n      <TableHead>Provider</TableHead>\n      <TableHead>Type</TableHead>\n      <TableHead>Location</TableHead>\n      <TableHead>Status</TableHead>\n      <TableHead></TableHead>\n    </TableRow>\n  </TableHeader>\n  <TableBody>\n    <TableRow>\n      <TableCell>Jan 15, 2025</TableCell>\n      <TableCell>\n        <div className=\"flex items-center gap-2\">\n          <Avatar size=\"sm\"><AvatarFallback>SS</AvatarFallback></Avatar>\n          Dr. Sarah Smith\n        </div>\n      </TableCell>\n      <TableCell>Follow-up</TableCell>\n      <TableCell>Ochsner Medical Center</TableCell>\n      <TableCell><Badge variant=\"success\">Confirmed</Badge></TableCell>\n      <TableCell>\n        <Button variant=\"ghost\" size=\"sm\">Details</Button>\n      </TableCell>\n    </TableRow>\n  </TableBody>\n</Table>\n```\n\n### Test Results Table\n```tsx\n<Table variant=\"striped\">\n  <TableHeader>\n    <TableRow>\n      <TableHead>Test</TableHead>\n      <TableHead>Result</TableHead>\n      <TableHead>Reference Range</TableHead>\n      <TableHead>Status</TableHead>\n      <TableHead>Date</TableHead>\n    </TableRow>\n  </TableHeader>\n  <TableBody>\n    <TableRow>\n      <TableCell>Glucose, Fasting</TableCell>\n      <TableCell className=\"font-mono\">95 mg/dL</TableCell>\n      <TableCell className=\"text-muted-foreground\">70-100 mg/dL</TableCell>\n      <TableCell><Badge variant=\"success\">Normal</Badge></TableCell>\n      <TableCell>Dec 20, 2024</TableCell>\n    </TableRow>\n  </TableBody>\n</Table>\n```"
+      "usage": "## Progress Usage - Health Goals\n\n```tsx\n// Daily step goal\n<div className=\"space-y-2\">\n  <div className=\"flex justify-between text-sm\">\n    <span>Daily Steps</span>\n    <span className=\"font-medium\">7,500 / 10,000</span>\n  </div>\n  <Progress value={75} className=\"h-2\" />\n</div>\n\n// Health score with color coding\n<div className=\"space-y-2\">\n  <div className=\"flex justify-between text-sm\">\n    <span>Health Score</span>\n    <span className=\"font-medium text-green-600\">85/100</span>\n  </div>\n  <Progress\n    value={85}\n    className=\"h-3 bg-gray-100 dark:bg-gray-800\"\n    indicatorClassName=\"bg-green-500\"\n  />\n</div>\n\n// Form completion progress\n<div className=\"flex items-center gap-4\">\n  <Progress value={60} className=\"flex-1 h-2\" />\n  <span className=\"text-sm text-muted-foreground\">60% complete</span>\n</div>\n```"
     },
-    "select": {
-      "name": "Select",
-      "description": "Dropdown select menus for forms and filtering.",
+    "toast": {
+      "name": "Toast",
+      "description": "Transient notifications for actions and updates.",
       "variants": [
         "default",
-        "error"
+        "success",
+        "error",
+        "warning"
+      ],
+      "states": [
+        "visible",
+        "hidden"
+      ],
+      "props": {
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "duration": {
+          "type": "number",
+          "default": "5000"
+        }
+      },
+      "usage": "## Toast Usage - Feedback Notifications\n\n```tsx\n// Success toast\ntoast({\n  title: \"Appointment Scheduled\",\n  description: \"Your appointment has been confirmed for Jan 15 at 2:00 PM.\",\n  variant: \"success\",\n});\n\n// Action with undo\ntoast({\n  title: \"Appointment Cancelled\",\n  description: \"Your appointment has been cancelled.\",\n  action: (\n    <Button variant=\"outline\" size=\"sm\" onClick={handleUndo}>\n      Undo\n    </Button>\n  ),\n});\n\n// Error toast\ntoast({\n  title: \"Unable to Save\",\n  description: \"Please check your connection and try again.\",\n  variant: \"destructive\",\n});\n```\n\n### Toast Guidelines\n- Keep messages brief and clear\n- Use for transient feedback only\n- Provide undo for destructive actions\n- Auto-dismiss after 5 seconds\n- Allow manual dismiss"
+    },
+    "avatar": {
+      "name": "Avatar",
+      "description": "User and provider profile images.",
+      "variants": [
+        "default",
+        "rounded"
       ],
       "sizes": [
         "sm",
         "md",
-        "lg"
+        "lg",
+        "xl"
       ],
-      "usage": "## Select Usage\n\n### Department Selection\n```tsx\n<Select>\n  <SelectTrigger>\n    <SelectValue placeholder=\"Select department\" />\n  </SelectTrigger>\n  <SelectContent>\n    <SelectItem value=\"primary\">Primary Care</SelectItem>\n    <SelectItem value=\"cardiology\">Cardiology</SelectItem>\n    <SelectItem value=\"orthopedics\">Orthopedics</SelectItem>\n    <SelectItem value=\"neurology\">Neurology</SelectItem>\n    <SelectItem value=\"oncology\">Oncology</SelectItem>\n    <SelectItem value=\"pediatrics\">Pediatrics</SelectItem>\n  </SelectContent>\n</Select>\n```\n\n### Location Filter\n```tsx\n<Select>\n  <SelectTrigger>\n    <SelectValue placeholder=\"Choose location\" />\n  </SelectTrigger>\n  <SelectContent>\n    <SelectGroup>\n      <SelectLabel>New Orleans</SelectLabel>\n      <SelectItem value=\"omc\">Ochsner Medical Center</SelectItem>\n      <SelectItem value=\"obc\">Ochsner Baptist</SelectItem>\n    </SelectGroup>\n    <SelectGroup>\n      <SelectLabel>Baton Rouge</SelectLabel>\n      <SelectItem value=\"obr\">Ochsner Baton Rouge</SelectItem>\n    </SelectGroup>\n  </SelectContent>\n</Select>\n```"
+      "states": [
+        "default",
+        "loading"
+      ],
+      "props": {
+        "src": {
+          "type": "string"
+        },
+        "alt": {
+          "type": "string"
+        },
+        "fallback": {
+          "type": "string"
+        }
+      },
+      "usage": "## Avatar Usage\n\n```tsx\n// Provider avatar with status\n<div className=\"relative\">\n  <Avatar className=\"h-12 w-12\">\n    <AvatarImage src=\"/doctors/smith.jpg\" alt=\"Dr. Sarah Smith\" />\n    <AvatarFallback className=\"bg-primary text-primary-foreground\">\n      SS\n    </AvatarFallback>\n  </Avatar>\n  <span className=\"absolute bottom-0 right-0 h-3 w-3 rounded-full bg-green-500 border-2 border-background\" />\n</div>\n\n// Avatar sizes\n<Avatar className=\"h-8 w-8\">{/* sm */}</Avatar>\n<Avatar className=\"h-12 w-12\">{/* md */}</Avatar>\n<Avatar className=\"h-16 w-16\">{/* lg */}</Avatar>\n<Avatar className=\"h-24 w-24\">{/* xl */}</Avatar>\n```"
     },
-    "progress": {
-      "name": "Progress",
-      "description": "Progress indicators for health goals, form completion, and loading states.",
+    "tabs": {
+      "name": "Tabs",
+      "description": "Navigation tabs for organizing health information sections.",
       "variants": [
         "default",
-        "success",
-        "warning",
-        "indeterminate"
+        "pills",
+        "underline"
       ],
-      "usage": "## Progress Usage\n\n### Health Goal Progress\n```tsx\n<div className=\"space-y-2\">\n  <div className=\"flex justify-between text-sm\">\n    <span>Daily Steps Goal</span>\n    <span>7,500 / 10,000</span>\n  </div>\n  <Progress value={75} className=\"h-2\" />\n</div>\n```\n\n### Form Completion\n```tsx\n<div className=\"space-y-1\">\n  <p className=\"text-sm\">Profile Completion</p>\n  <Progress value={60} />\n  <p className=\"text-xs text-muted-foreground\">3 of 5 sections complete</p>\n</div>\n```\n\n### Loading State\n```tsx\n<Progress variant=\"indeterminate\" />\n```"
+      "states": [
+        "default",
+        "active",
+        "disabled"
+      ],
+      "props": {
+        "defaultValue": {
+          "type": "string"
+        }
+      },
+      "usage": "## Tabs Usage - Section Navigation\n\n```tsx\n<Tabs defaultValue=\"overview\" className=\"w-full\">\n  <TabsList className=\"grid w-full grid-cols-4\">\n    <TabsTrigger value=\"overview\">\n      <Home className=\"h-4 w-4 mr-2\" />\n      Overview\n    </TabsTrigger>\n    <TabsTrigger value=\"appointments\">\n      <Calendar className=\"h-4 w-4 mr-2\" />\n      Appointments\n    </TabsTrigger>\n    <TabsTrigger value=\"records\">\n      <FileText className=\"h-4 w-4 mr-2\" />\n      Records\n    </TabsTrigger>\n    <TabsTrigger value=\"billing\">\n      <CreditCard className=\"h-4 w-4 mr-2\" />\n      Billing\n    </TabsTrigger>\n  </TabsList>\n  <TabsContent value=\"overview\">\n    {/* Dashboard content */}\n  </TabsContent>\n</Tabs>\n```"
     },
     "calendar": {
       "name": "Calendar",
-      "description": "Date selection for appointment scheduling with available time slots.",
+      "description": "Date picker for appointment scheduling.",
       "variants": [
         "default",
-        "range",
-        "multiple"
+        "range"
+      ],
+      "states": [
+        "default",
+        "disabled"
       ],
       "props": {
         "mode": {
@@ -993,251 +489,81 @@
         },
         "selected": {
           "type": "Date"
-        },
-        "onSelect": {
-          "type": "function"
-        },
-        "disabled": {
-          "type": "function"
-        },
-        "modifiers": {
-          "type": "object"
         }
       },
-      "usage": "## Calendar Usage\n\n### Appointment Date Selection\n```tsx\n<Calendar\n  mode=\"single\"\n  selected={selectedDate}\n  onSelect={setSelectedDate}\n  disabled={(date) => \n    date < new Date() || \n    date.getDay() === 0 ||\n    date.getDay() === 6\n  }\n  modifiers={{\n    available: availableDates,\n    busy: busyDates\n  }}\n  modifiersClassNames={{\n    available: 'bg-green-50 text-green-800',\n    busy: 'bg-gray-100 text-gray-400'\n  }}\n/>\n```"
-    },
-    "skeleton": {
-      "name": "Skeleton",
-      "description": "Loading placeholder for content that's being fetched.",
-      "variants": [
-        "default",
-        "circular",
-        "text",
-        "card"
-      ],
-      "usage": "## Skeleton Usage\n\n### Loading Patient Card\n```tsx\n<Card>\n  <CardHeader className=\"flex flex-row items-center gap-4\">\n    <Skeleton className=\"h-16 w-16 rounded-full\" />\n    <div className=\"space-y-2\">\n      <Skeleton className=\"h-4 w-32\" />\n      <Skeleton className=\"h-3 w-24\" />\n    </div>\n  </CardHeader>\n  <CardContent className=\"space-y-3\">\n    <Skeleton className=\"h-4 w-full\" />\n    <Skeleton className=\"h-4 w-3/4\" />\n  </CardContent>\n</Card>\n```\n\n### Loading Appointments List\n```tsx\n{isLoading ? (\n  <div className=\"space-y-4\">\n    {[1, 2, 3].map((i) => (\n      <div key={i} className=\"flex items-center gap-4\">\n        <Skeleton className=\"h-12 w-12 rounded\" />\n        <div className=\"flex-1 space-y-2\">\n          <Skeleton className=\"h-4 w-1/2\" />\n          <Skeleton className=\"h-3 w-1/3\" />\n        </div>\n        <Skeleton className=\"h-8 w-20\" />\n      </div>\n    ))}\n  </div>\n) : (\n  <AppointmentsList appointments={appointments} />\n)}\n```"
-    },
-    "toast": {
-      "name": "Toast",
-      "description": "Notification toasts for user feedback and system messages.",
-      "variants": [
-        "default",
-        "success",
-        "warning",
-        "destructive"
-      ],
-      "positions": [
-        "top-right",
-        "top-center",
-        "bottom-right",
-        "bottom-center"
-      ],
-      "usage": "## Toast Usage\n\n### Success Toast\n```tsx\ntoast({\n  title: \"Appointment Confirmed\",\n  description: \"Your appointment has been scheduled for January 15 at 2:00 PM.\",\n  variant: \"success\",\n});\n```\n\n### Error Toast\n```tsx\ntoast({\n  title: \"Unable to Schedule\",\n  description: \"This time slot is no longer available. Please select another time.\",\n  variant: \"destructive\",\n});\n```\n\n### With Action\n```tsx\ntoast({\n  title: \"Message Sent\",\n  description: \"Your message has been sent to Dr. Smith.\",\n  action: (\n    <ToastAction altText=\"View message\">View</ToastAction>\n  ),\n});\n```"
-    },
-    "navigationMenu": {
-      "name": "Navigation Menu",
-      "description": "Main navigation for the patient portal and healthcare applications.",
-      "usage": "## Navigation Menu Usage\n\n### Main Header Navigation\n```tsx\n<NavigationMenu>\n  <NavigationMenuList>\n    <NavigationMenuItem>\n      <NavigationMenuTrigger>Find Care</NavigationMenuTrigger>\n      <NavigationMenuContent>\n        <ul className=\"grid gap-3 p-6 md:w-[400px] lg:w-[500px]\">\n          <li>\n            <NavigationMenuLink asChild>\n              <a href=\"/find-doctor\">\n                <div className=\"font-medium\">Find a Doctor</div>\n                <p className=\"text-sm text-muted-foreground\">\n                  Search our network of physicians and specialists\n                </p>\n              </a>\n            </NavigationMenuLink>\n          </li>\n          <li>\n            <NavigationMenuLink asChild>\n              <a href=\"/locations\">\n                <div className=\"font-medium\">Locations</div>\n                <p className=\"text-sm text-muted-foreground\">\n                  Find an Ochsner location near you\n                </p>\n              </a>\n            </NavigationMenuLink>\n          </li>\n          <li>\n            <NavigationMenuLink asChild>\n              <a href=\"/specialties\">\n                <div className=\"font-medium\">Specialties</div>\n                <p className=\"text-sm text-muted-foreground\">\n                  Explore our medical specialties and services\n                </p>\n              </a>\n            </NavigationMenuLink>\n          </li>\n        </ul>\n      </NavigationMenuContent>\n    </NavigationMenuItem>\n    \n    <NavigationMenuItem>\n      <NavigationMenuLink href=\"/myochsner\">\n        MyOchsner\n      </NavigationMenuLink>\n    </NavigationMenuItem>\n    \n    <NavigationMenuItem>\n      <Button variant=\"gold\">Schedule Appointment</Button>\n    </NavigationMenuItem>\n  </NavigationMenuList>\n</NavigationMenu>\n```"
+      "usage": "## Calendar Usage - Appointment Scheduling\n\n```tsx\n// Single date selection\n<Calendar\n  mode=\"single\"\n  selected={selectedDate}\n  onSelect={setSelectedDate}\n  disabled={(date) =>\n    date < new Date() || // Past dates\n    date.getDay() === 0 || // Sundays\n    date.getDay() === 6    // Saturdays\n  }\n  className=\"rounded-md border\"\n/>\n\n// With available slots indicator\n<Calendar\n  mode=\"single\"\n  selected={selectedDate}\n  onSelect={setSelectedDate}\n  modifiers={{\n    available: availableDates,\n    limited: limitedDates,\n  }}\n  modifiersStyles={{\n    available: { backgroundColor: '#c7e59f40' },\n    limited: { backgroundColor: '#f59e0b20' },\n  }}\n/>\n```"
     }
   },
-  "patterns": {
-    "appointmentScheduling": {
-      "name": "Appointment Scheduling Flow",
-      "description": "Complete appointment booking experience from provider selection to confirmation.",
-      "steps": [
-        "Select specialty or provider",
-        "Choose location",
-        "Pick date and available time",
-        "Confirm patient information",
-        "Review and confirm"
-      ],
-      "components": [
-        "Select",
-        "Calendar",
-        "Card",
-        "Button",
-        "Dialog",
-        "Progress"
-      ],
-      "code": "// See examples section for full implementation"
-    },
-    "patientDashboard": {
-      "name": "Patient Dashboard",
-      "description": "Overview of patient's health information, upcoming appointments, and quick actions.",
-      "sections": [
-        "Welcome header with patient name",
-        "Quick actions (Schedule, Messages, Records)",
-        "Upcoming appointments",
-        "Recent test results",
-        "Health reminders",
-        "Care team"
-      ],
-      "components": [
-        "Card",
-        "Avatar",
-        "Badge",
-        "Button",
-        "Alert",
-        "Tabs"
-      ]
-    },
-    "providerSearch": {
-      "name": "Provider Search",
-      "description": "Find a doctor with filtering and provider cards.",
-      "features": [
-        "Search by name or specialty",
-        "Filter by location, availability, insurance",
-        "Provider cards with ratings",
-        "Quick booking action"
-      ]
-    },
-    "medicalRecords": {
-      "name": "Medical Records View",
-      "description": "Organized display of patient health records.",
-      "categories": [
-        "Visit summaries",
-        "Lab results",
-        "Imaging",
-        "Medications",
-        "Immunizations",
-        "Allergies",
-        "Problem list"
-      ]
-    },
-    "messaging": {
-      "name": "Secure Messaging",
-      "description": "HIPAA-compliant messaging between patients and care team.",
-      "features": [
-        "Message threads",
-        "Attachments",
-        "Read receipts",
-        "Priority flags"
-      ]
-    }
-  },
-  "guidelines": "# Ochsner Health Design System Guidelines\n\n## Brand Overview\n\nOchsner Health is Louisiana's largest nonprofit academic healthcare system, serving patients across Louisiana, Mississippi, Alabama, and the Gulf South. This design system embodies Ochsner's commitment to compassionate, innovative, and accessible healthcare.\n\n## Core Values Reflected in Design\n\n### Trustworthy\n- Deep navy blue conveys stability and expertise\n- Clean, uncluttered layouts\n- Consistent patterns build familiarity\n\n### Compassionate\n- Warm gold accents humanize the experience\n- Clear, jargon-free language\n- Accessible design for all abilities\n\n### Innovative\n- Modern, forward-looking aesthetic\n- Smooth animations and transitions\n- Progressive enhancement\n\n## Color Philosophy\n\n### Primary Navy (#0e203a)\n- Main brand color representing trust and expertise\n- Use for primary CTAs, navigation, and key UI elements\n- Conveys professionalism and reliability\n\n### Gold Accent (#e0a42e)\n- Represents warmth, care, and urgency\n- Use for important callouts, urgent actions, and highlights\n- Creates visual hierarchy and draws attention\n\n### Supporting Palette\n- **Success Green (#10b981)**: Confirmations, positive status, health indicators\n- **Warning Amber (#f59e0b)**: Pending actions, reminders, attention needed\n- **Error Red (#dc2626)**: Errors, cancellations, urgent alerts\n- **Info Blue (#0e203a)**: Informational notices (same as primary)\n\n## Typography\n\n### Montserrat (Headings)\n- Modern geometric sans-serif\n- Use Semibold (600) or Bold (700) for headings\n- Conveys modernity and approachability\n\n### Roboto (Body)\n- Highly readable at all sizes\n- Excellent for medical information display\n- Use Regular (400) for body, Medium (500) for emphasis\n\n## Healthcare UX Principles\n\n### 1. Clarity Above All\n- Medical information must be immediately understandable\n- Use plain language over medical jargon\n- Provide context for health metrics and results\n\n### 2. Accessibility First\n- WCAG 2.1 AA compliance minimum\n- 4.5:1 contrast ratio for all text\n- Full keyboard navigation support\n- Screen reader optimized\n- Touch targets minimum 44x44px\n\n### 3. Build Trust\n- Secure indicators for sensitive areas\n- Clear privacy notices\n- Consistent, predictable patterns\n- Professional, clean aesthetic\n\n### 4. Patient-Centered\n- Easy appointment scheduling\n- Clear health information display\n- Mobile-first responsive design\n- Quick access to urgent features\n\n### 5. Reduce Cognitive Load\n- Progressive disclosure\n- Sensible defaults\n- Clear error recovery\n- Contextual help\n\n## Do's and Don'ts\n\n### Do\n- Use navy blue for primary actions and navigation\n- Use gold for urgent or special CTAs\n- Maintain clean, spacious layouts\n- Provide clear feedback for all actions\n- Use icons alongside text for clarity\n- Group related information in cards\n\n### Don't\n- Don't use bright neon colors\n- Don't overcrowd screens\n- Don't use small fonts for health data\n- Don't hide critical actions\n- Don't use medical jargon without explanation\n- Don't make assumptions about user ability\n\n## Responsive Breakpoints\n\n- **Mobile**: < 640px - Single column, stacked layout\n- **Tablet**: 640px - 1024px - Two column where appropriate\n- **Desktop**: > 1024px - Full layout with sidebars\n\n## Animation Guidelines\n\n- Use 200ms for micro-interactions\n- Use 300ms for page transitions\n- Ease-out for entering elements\n- Ease-in for exiting elements\n- Respect prefers-reduced-motion",
+  "guidelines": "# Ochsner Health Design System Guidelines\n\n## Brand Overview\n\nOchsner Health is Louisiana's leading nonprofit healthcare provider, delivering expert care across 47 hospitals and 370+ health centers. This design system reflects Ochsner's commitment to trustworthy, professional, and compassionate healthcare.\n\n## Theme Support (REQUIRED)\n\n### Light Theme (Default)\n- Background: White (#ffffff)\n- Cards: White with subtle purple-tinted shadows\n- Primary: Deep Purple (#461d7c)\n- Text: Dark navy (#1a1a2e)\n\n### Dark Theme\n- Background: Deep purple-black (#0f0a1a)\n- Cards: Dark purple (#1a1429)\n- Primary: Light purple (#8b5cf6) for visibility\n- Text: Light gray (#f8f8fc)\n\n### Implementation\n```css\n:root {\n  --background: 0 0% 100%;\n  --foreground: 240 24% 14%;\n  --primary: 265 63% 30%;\n  --card: 0 0% 100%;\n  --border: 240 10% 91%;\n}\n\n.dark {\n  --background: 265 40% 8%;\n  --foreground: 240 20% 98%;\n  --primary: 263 85% 66%;\n  --card: 265 35% 13%;\n  --border: 265 25% 30%;\n}\n```\n\n## Color Philosophy\n\n### Primary Purple (#461d7c)\n- Represents trust, wisdom, and healthcare expertise\n- Use for primary CTAs, active states, navigation\n- In dark mode, use lighter variant (#8b5cf6)\n\n### Accent Green (#c7e59f)\n- Represents health, growth, and positive outcomes\n- Use for success states, health indicators, progress\n- Consistent across both themes\n\n### Status Colors\n- **Success Green** (#16a34a): Normal results, confirmations\n- **Warning Amber** (#f59e0b): Attention needed, borderline\n- **Error Red** (#dc2626): Critical, cancelled, errors\n- **Info Purple** (#461d7c): Informational, in-progress\n\n## Typography\n\n### Montserrat (Headings)\n- Weights: Semibold (600), Bold (700)\n- Use for page titles, card headers, buttons\n\n### Roboto (Body)\n- Weights: Regular (400), Medium (500)\n- Excellent readability for medical information\n- Use for paragraphs, labels, descriptions\n\n### Healthcare Typography Rules\n- Minimum 16px for body text\n- Minimum 14px for secondary text\n- Line height 1.5 for readability\n- Never use all caps for medical terms\n\n## Accessibility (WCAG 2.2 AA Required)\n\n### Color Contrast\n- Text: 4.5:1 minimum (7:1 preferred)\n- Large text: 3:1 minimum\n- UI components: 3:1 minimum\n\n### Touch Targets\n- Minimum 48x48px for all interactive elements\n- 8px minimum spacing between targets\n\n### Screen Reader Support\n- Semantic HTML structure\n- ARIA labels for icons and actions\n- Focus management in modals\n- Skip links for navigation\n\n### Elderly Users\n- Large font size options\n- High contrast mode support\n- Clear error messages\n- Simple navigation patterns\n\n## Healthcare UX Patterns\n\n### Patient Dashboard\n- Card-based layout for health summaries\n- Quick action buttons prominently placed\n- Status badges with clear color coding\n- Recent activity timeline\n\n### Appointment Scheduling\n- Calendar with available dates highlighted\n- Provider cards with photos\n- Time slot selection with clear feedback\n- Multi-step confirmation flow\n\n### Medical Records\n- Tabbed navigation by record type\n- Expandable sections for details\n- Clear date/time formatting\n- Download and print options\n\n### Lab Results\n- Table format with reference ranges\n- Color-coded status indicators\n- Trend charts for historical data\n- Provider notes section\n\n### Forms & Data Entry\n- One question per screen for mobile\n- Progress indicator for multi-step\n- Inline validation with clear errors\n- Autosave for long forms\n\n## HIPAA & Security Considerations\n\n### Visual Security Indicators\n- Lock icons for sensitive data\n- \"Secure\" badges on forms\n- Session timeout warnings\n- Encryption indicators\n\n### Privacy Patterns\n- Masked SSN/sensitive data by default\n- \"Show/Hide\" toggles for PHI\n- Audit log awareness messaging\n- Clear data retention notices\n\n## Do's and Don'ts\n\n### Do\n- Use purple for primary actions\n- Use green for health-positive states\n- Maintain clean, uncluttered layouts\n- Provide clear feedback for all actions\n- Support both light and dark themes\n- Test with screen readers\n- Use loading states for async operations\n\n### Don't\n- Use bright/neon colors\n- Overcrowd screens with information\n- Use small fonts for health data\n- Hide critical actions in menus\n- Forget dark mode styling\n- Use color alone to convey meaning\n- Skip loading/error states",
   "examples": [
+    {
+      "id": "ochsner-theme-setup",
+      "title": "Theme Configuration (globals.css)",
+      "description": "CSS variables for light and dark theme support",
+      "language": "css",
+      "code": "/* Ochsner Health Theme - globals.css */\n@tailwind base;\n@tailwind components;\n@tailwind utilities;\n\n@layer base {\n  :root {\n    /* Light Theme */\n    --background: 0 0% 100%;\n    --foreground: 240 24% 14%;\n\n    --card: 0 0% 100%;\n    --card-foreground: 240 24% 14%;\n\n    --popover: 0 0% 100%;\n    --popover-foreground: 240 24% 14%;\n\n    --primary: 265 63% 30%;\n    --primary-foreground: 0 0% 100%;\n\n    --secondary: 260 30% 96%;\n    --secondary-foreground: 265 63% 30%;\n\n    --muted: 240 10% 96%;\n    --muted-foreground: 240 10% 50%;\n\n    --accent: 83 60% 76%;\n    --accent-foreground: 240 24% 14%;\n\n    --destructive: 0 84% 60%;\n    --destructive-foreground: 0 0% 100%;\n\n    --border: 240 10% 91%;\n    --input: 240 10% 91%;\n    --ring: 265 63% 30%;\n\n    --radius: 0.5rem;\n  }\n\n  .dark {\n    /* Dark Theme */\n    --background: 265 40% 8%;\n    --foreground: 240 20% 98%;\n\n    --card: 265 35% 13%;\n    --card-foreground: 240 20% 98%;\n\n    --popover: 265 35% 13%;\n    --popover-foreground: 240 20% 98%;\n\n    --primary: 263 85% 66%;\n    --primary-foreground: 0 0% 100%;\n\n    --secondary: 265 25% 20%;\n    --secondary-foreground: 240 20% 98%;\n\n    --muted: 265 25% 20%;\n    --muted-foreground: 240 10% 70%;\n\n    --accent: 83 60% 76%;\n    --accent-foreground: 240 24% 14%;\n\n    --destructive: 0 70% 50%;\n    --destructive-foreground: 0 0% 100%;\n\n    --border: 265 25% 25%;\n    --input: 265 25% 25%;\n    --ring: 263 85% 66%;\n  }\n}\n\n@layer base {\n  * {\n    @apply border-border;\n  }\n  body {\n    @apply bg-background text-foreground;\n    font-feature-settings: \"rlig\" 1, \"calt\" 1;\n  }\n}",
+      "tags": [
+        "theme",
+        "css",
+        "dark-mode",
+        "light-mode",
+        "variables"
+      ]
+    },
+    {
+      "id": "ochsner-theme-toggle",
+      "title": "Theme Toggle Component",
+      "description": "Sun/moon toggle for switching between light and dark themes",
+      "language": "tsx",
+      "code": "'use client';\n\nimport { Moon, Sun } from 'lucide-react';\nimport { useTheme } from 'next-themes';\nimport { Button } from '@/components/ui/button';\n\nexport function ThemeToggle() {\n  const { theme, setTheme } = useTheme();\n\n  return (\n    <Button\n      variant=\"ghost\"\n      size=\"icon\"\n      onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}\n      className=\"h-9 w-9\"\n    >\n      <Sun className=\"h-4 w-4 rotate-0 scale-100 transition-transform dark:-rotate-90 dark:scale-0\" />\n      <Moon className=\"absolute h-4 w-4 rotate-90 scale-0 transition-transform dark:rotate-0 dark:scale-100\" />\n      <span className=\"sr-only\">Toggle theme</span>\n    </Button>\n  );\n}\n\n// In layout.tsx, wrap with ThemeProvider:\n// import { ThemeProvider } from 'next-themes';\n// <ThemeProvider attribute=\"class\" defaultTheme=\"system\" enableSystem>\n//   {children}\n// </ThemeProvider>",
+      "tags": [
+        "theme",
+        "toggle",
+        "dark-mode",
+        "component"
+      ]
+    },
     {
       "id": "ochsner-patient-dashboard",
       "title": "Patient Dashboard",
-      "description": "Complete patient portal dashboard with upcoming appointments, health summary, and quick actions",
+      "description": "Main patient dashboard with health overview cards",
       "language": "tsx",
-      "code": "import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';\nimport { Badge } from '@/components/ui/badge';\nimport { Button } from '@/components/ui/button';\nimport { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';\nimport { Alert, AlertDescription } from '@/components/ui/alert';\nimport { Calendar, MessageSquare, FileText, Clock, Heart, Activity, Bell } from 'lucide-react';\n\nexport function PatientDashboard() {\n  return (\n    <div className=\"max-w-7xl mx-auto p-6 space-y-6\">\n      {/* Welcome Header */}\n      <div className=\"flex items-center justify-between\">\n        <div>\n          <h1 className=\"text-3xl font-bold text-[#0e203a]\">Welcome back, John</h1>\n          <p className=\"text-muted-foreground\">Here's your health overview</p>\n        </div>\n        <Button className=\"bg-[#e0a42e] hover:bg-[#c88f23] text-[#0e203a]\">\n          <Calendar className=\"h-4 w-4 mr-2\" />\n          Schedule Appointment\n        </Button>\n      </div>\n\n      {/* Health Alert */}\n      <Alert className=\"bg-blue-50 border-[#0e203a]\">\n        <Bell className=\"h-4 w-4 text-[#0e203a]\" />\n        <AlertDescription>\n          <span className=\"font-medium\">Reminder:</span> Your annual wellness visit is due. \n          <Button variant=\"link\" className=\"p-0 h-auto text-[#0e203a]\">Schedule now</Button>\n        </AlertDescription>\n      </Alert>\n\n      {/* Quick Actions */}\n      <div className=\"grid grid-cols-1 md:grid-cols-4 gap-4\">\n        <Button variant=\"outline\" className=\"h-auto py-4 flex-col gap-2 border-[#0e203a] text-[#0e203a] hover:bg-[#0e203a] hover:text-white\">\n          <Calendar className=\"h-6 w-6\" />\n          <span>Schedule</span>\n        </Button>\n        <Button variant=\"outline\" className=\"h-auto py-4 flex-col gap-2 border-[#0e203a] text-[#0e203a] hover:bg-[#0e203a] hover:text-white\">\n          <MessageSquare className=\"h-6 w-6\" />\n          <span>Messages</span>\n        </Button>\n        <Button variant=\"outline\" className=\"h-auto py-4 flex-col gap-2 border-[#0e203a] text-[#0e203a] hover:bg-[#0e203a] hover:text-white\">\n          <FileText className=\"h-6 w-6\" />\n          <span>Test Results</span>\n        </Button>\n        <Button variant=\"outline\" className=\"h-auto py-4 flex-col gap-2 border-[#0e203a] text-[#0e203a] hover:bg-[#0e203a] hover:text-white\">\n          <Heart className=\"h-6 w-6\" />\n          <span>Health Records</span>\n        </Button>\n      </div>\n\n      <div className=\"grid grid-cols-1 lg:grid-cols-3 gap-6\">\n        {/* Upcoming Appointments */}\n        <Card className=\"lg:col-span-2\">\n          <CardHeader>\n            <CardTitle className=\"text-[#0e203a]\">Upcoming Appointments</CardTitle>\n          </CardHeader>\n          <CardContent className=\"space-y-4\">\n            <div className=\"flex items-center gap-4 p-4 bg-[#f5f7fa] rounded-lg\">\n              <div className=\"text-center bg-[#0e203a] text-white rounded-lg p-3 min-w-[60px]\">\n                <div className=\"text-xs\">JAN</div>\n                <div className=\"text-2xl font-bold\">15</div>\n              </div>\n              <div className=\"flex-1\">\n                <div className=\"flex items-center gap-2\">\n                  <Avatar size=\"sm\">\n                    <AvatarFallback className=\"bg-[#0e203a] text-white\">SS</AvatarFallback>\n                  </Avatar>\n                  <span className=\"font-medium\">Dr. Sarah Smith</span>\n                </div>\n                <p className=\"text-sm text-muted-foreground\">Internal Medicine • 2:00 PM</p>\n                <p className=\"text-sm text-muted-foreground\">Ochsner Medical Center</p>\n              </div>\n              <div className=\"flex flex-col gap-2\">\n                <Badge variant=\"outline\" className=\"border-green-500 text-green-600\">Confirmed</Badge>\n                <Button variant=\"outline\" size=\"sm\">Manage</Button>\n              </div>\n            </div>\n          </CardContent>\n        </Card>\n\n        {/* Care Team */}\n        <Card>\n          <CardHeader>\n            <CardTitle className=\"text-[#0e203a]\">Your Care Team</CardTitle>\n          </CardHeader>\n          <CardContent className=\"space-y-3\">\n            <div className=\"flex items-center gap-3\">\n              <Avatar>\n                <AvatarFallback className=\"bg-[#0e203a] text-white\">SS</AvatarFallback>\n              </Avatar>\n              <div>\n                <p className=\"font-medium\">Dr. Sarah Smith</p>\n                <p className=\"text-xs text-muted-foreground\">Primary Care</p>\n              </div>\n              <Button variant=\"ghost\" size=\"sm\" className=\"ml-auto\">\n                <MessageSquare className=\"h-4 w-4\" />\n              </Button>\n            </div>\n            <div className=\"flex items-center gap-3\">\n              <Avatar>\n                <AvatarFallback className=\"bg-[#142d50] text-white\">MJ</AvatarFallback>\n              </Avatar>\n              <div>\n                <p className=\"font-medium\">Dr. Michael Jones</p>\n                <p className=\"text-xs text-muted-foreground\">Cardiology</p>\n              </div>\n              <Button variant=\"ghost\" size=\"sm\" className=\"ml-auto\">\n                <MessageSquare className=\"h-4 w-4\" />\n              </Button>\n            </div>\n          </CardContent>\n        </Card>\n      </div>\n    </div>\n  );\n}",
+      "code": "import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';\nimport { Badge } from '@/components/ui/badge';\nimport { Button } from '@/components/ui/button';\nimport { Progress } from '@/components/ui/progress';\nimport { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';\nimport {\n  Calendar, Activity, FileText, Heart,\n  TrendingUp, Clock, ChevronRight\n} from 'lucide-react';\n\nexport function PatientDashboard() {\n  return (\n    <div className=\"space-y-6 p-6\">\n      {/* Welcome Header */}\n      <div className=\"flex items-center justify-between\">\n        <div>\n          <h1 className=\"text-2xl font-semibold\">Welcome back, John</h1>\n          <p className=\"text-muted-foreground\">Here's your health summary</p>\n        </div>\n        <Button>\n          <Calendar className=\"h-4 w-4 mr-2\" />\n          Schedule Appointment\n        </Button>\n      </div>\n\n      {/* Health Score */}\n      <Card>\n        <CardContent className=\"pt-6\">\n          <div className=\"flex items-center justify-between mb-4\">\n            <div className=\"flex items-center gap-3\">\n              <div className=\"h-12 w-12 rounded-full bg-green-100 dark:bg-green-900 flex items-center justify-center\">\n                <Heart className=\"h-6 w-6 text-green-600 dark:text-green-400\" />\n              </div>\n              <div>\n                <p className=\"text-sm text-muted-foreground\">Health Score</p>\n                <p className=\"text-2xl font-bold text-green-600 dark:text-green-400\">85/100</p>\n              </div>\n            </div>\n            <Badge className=\"bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100\">\n              <TrendingUp className=\"h-3 w-3 mr-1\" />\n              +5 this month\n            </Badge>\n          </div>\n          <Progress value={85} className=\"h-2\" />\n        </CardContent>\n      </Card>\n\n      {/* Quick Stats Grid */}\n      <div className=\"grid grid-cols-1 md:grid-cols-3 gap-4\">\n        <Card className=\"hover:border-primary/50 transition-colors cursor-pointer\">\n          <CardContent className=\"pt-6\">\n            <div className=\"flex items-center gap-3\">\n              <Calendar className=\"h-5 w-5 text-primary\" />\n              <div>\n                <p className=\"text-sm text-muted-foreground\">Next Appointment</p>\n                <p className=\"font-medium\">Jan 15, 2025 • 2:00 PM</p>\n                <p className=\"text-sm text-muted-foreground\">Dr. Sarah Smith</p>\n              </div>\n            </div>\n          </CardContent>\n        </Card>\n\n        <Card className=\"hover:border-primary/50 transition-colors cursor-pointer\">\n          <CardContent className=\"pt-6\">\n            <div className=\"flex items-center gap-3\">\n              <FileText className=\"h-5 w-5 text-primary\" />\n              <div>\n                <p className=\"text-sm text-muted-foreground\">Recent Results</p>\n                <p className=\"font-medium\">Blood Work - Dec 20</p>\n                <Badge variant=\"success\" className=\"mt-1\">All Normal</Badge>\n              </div>\n            </div>\n          </CardContent>\n        </Card>\n\n        <Card className=\"hover:border-primary/50 transition-colors cursor-pointer\">\n          <CardContent className=\"pt-6\">\n            <div className=\"flex items-center gap-3\">\n              <Activity className=\"h-5 w-5 text-primary\" />\n              <div>\n                <p className=\"text-sm text-muted-foreground\">Daily Steps</p>\n                <p className=\"font-medium\">7,500 / 10,000</p>\n                <Progress value={75} className=\"h-1 mt-2 w-24\" />\n              </div>\n            </div>\n          </CardContent>\n        </Card>\n      </div>\n\n      {/* Upcoming Appointments */}\n      <Card>\n        <CardHeader className=\"flex flex-row items-center justify-between\">\n          <CardTitle className=\"text-lg\">Upcoming Appointments</CardTitle>\n          <Button variant=\"ghost\" size=\"sm\">\n            View All <ChevronRight className=\"h-4 w-4 ml-1\" />\n          </Button>\n        </CardHeader>\n        <CardContent className=\"space-y-4\">\n          {[\n            { doctor: 'Dr. Sarah Smith', specialty: 'Primary Care', date: 'Jan 15', time: '2:00 PM' },\n            { doctor: 'Dr. Michael Chen', specialty: 'Cardiology', date: 'Jan 22', time: '10:30 AM' },\n          ].map((apt, i) => (\n            <div key={i} className=\"flex items-center justify-between p-3 rounded-lg bg-muted/50\">\n              <div className=\"flex items-center gap-3\">\n                <Avatar>\n                  <AvatarFallback className=\"bg-primary text-primary-foreground\">\n                    {apt.doctor.split(' ').map(n => n[0]).join('')}\n                  </AvatarFallback>\n                </Avatar>\n                <div>\n                  <p className=\"font-medium\">{apt.doctor}</p>\n                  <p className=\"text-sm text-muted-foreground\">{apt.specialty}</p>\n                </div>\n              </div>\n              <div className=\"text-right\">\n                <p className=\"font-medium\">{apt.date}</p>\n                <p className=\"text-sm text-muted-foreground\">{apt.time}</p>\n              </div>\n            </div>\n          ))}\n        </CardContent>\n      </Card>\n    </div>\n  );\n}",
       "tags": [
         "dashboard",
         "patient",
         "healthcare",
-        "appointments",
-        "overview"
+        "cards",
+        "progress"
       ]
     },
     {
-      "id": "ochsner-appointment-scheduler",
-      "title": "Appointment Scheduler",
-      "description": "Multi-step appointment scheduling flow with provider selection, date picking, and confirmation",
+      "id": "ochsner-lab-results",
+      "title": "Lab Results Table",
+      "description": "Table displaying lab results with status indicators",
       "language": "tsx",
-      "code": "import { useState } from 'react';\nimport { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';\nimport { Button } from '@/components/ui/button';\nimport { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';\nimport { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';\nimport { Badge } from '@/components/ui/badge';\nimport { Calendar, Clock, MapPin, Star, ChevronRight, Check } from 'lucide-react';\n\nconst steps = ['Specialty', 'Provider', 'Date & Time', 'Confirm'];\n\nexport function AppointmentScheduler() {\n  const [step, setStep] = useState(0);\n  const [specialty, setSpecialty] = useState('');\n  const [provider, setProvider] = useState(null);\n  const [date, setDate] = useState('');\n  const [time, setTime] = useState('');\n\n  return (\n    <div className=\"max-w-2xl mx-auto p-6\">\n      {/* Progress Steps */}\n      <div className=\"flex items-center justify-between mb-8\">\n        {steps.map((s, i) => (\n          <div key={s} className=\"flex items-center\">\n            <div className={`\n              w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium\n              ${i < step ? 'bg-[#10b981] text-white' : \n                i === step ? 'bg-[#0e203a] text-white' : \n                'bg-gray-200 text-gray-500'}\n            `}>\n              {i < step ? <Check className=\"h-4 w-4\" /> : i + 1}\n            </div>\n            <span className={`ml-2 text-sm ${i === step ? 'font-medium text-[#0e203a]' : 'text-muted-foreground'}`}>\n              {s}\n            </span>\n            {i < steps.length - 1 && (\n              <ChevronRight className=\"h-4 w-4 mx-4 text-muted-foreground\" />\n            )}\n          </div>\n        ))}\n      </div>\n\n      {/* Step Content */}\n      <Card>\n        <CardHeader>\n          <CardTitle className=\"text-[#0e203a]\">\n            {step === 0 && 'Select a Specialty'}\n            {step === 1 && 'Choose Your Provider'}\n            {step === 2 && 'Pick a Date & Time'}\n            {step === 3 && 'Confirm Appointment'}\n          </CardTitle>\n        </CardHeader>\n        <CardContent>\n          {step === 0 && (\n            <Select value={specialty} onValueChange={setSpecialty}>\n              <SelectTrigger className=\"w-full\">\n                <SelectValue placeholder=\"Select specialty\" />\n              </SelectTrigger>\n              <SelectContent>\n                <SelectItem value=\"primary\">Primary Care</SelectItem>\n                <SelectItem value=\"cardiology\">Cardiology</SelectItem>\n                <SelectItem value=\"orthopedics\">Orthopedics</SelectItem>\n                <SelectItem value=\"dermatology\">Dermatology</SelectItem>\n                <SelectItem value=\"neurology\">Neurology</SelectItem>\n              </SelectContent>\n            </Select>\n          )}\n\n          {step === 1 && (\n            <div className=\"space-y-4\">\n              {[1, 2, 3].map((i) => (\n                <div\n                  key={i}\n                  onClick={() => setProvider(i)}\n                  className={`\n                    p-4 rounded-lg border cursor-pointer transition-all\n                    ${provider === i ? 'border-[#0e203a] bg-[#f5f7fa]' : 'border-gray-200 hover:border-[#0e203a]'}\n                  `}\n                >\n                  <div className=\"flex items-center gap-4\">\n                    <Avatar className=\"h-16 w-16\">\n                      <AvatarFallback className=\"bg-[#0e203a] text-white text-lg\">DR</AvatarFallback>\n                    </Avatar>\n                    <div className=\"flex-1\">\n                      <h3 className=\"font-semibold\">Dr. Sarah Smith, MD</h3>\n                      <p className=\"text-sm text-muted-foreground\">Internal Medicine</p>\n                      <div className=\"flex items-center gap-1 mt-1\">\n                        <Star className=\"h-4 w-4 fill-[#e0a42e] text-[#e0a42e]\" />\n                        <span className=\"text-sm font-medium\">4.9</span>\n                        <span className=\"text-sm text-muted-foreground\">(127 reviews)</span>\n                      </div>\n                    </div>\n                    <Badge variant=\"outline\" className=\"border-green-500 text-green-600\">\n                      Available Today\n                    </Badge>\n                  </div>\n                </div>\n              ))}\n            </div>\n          )}\n\n          {step === 2 && (\n            <div className=\"space-y-6\">\n              <div className=\"grid grid-cols-7 gap-2\">\n                {['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map(day => (\n                  <div key={day} className=\"text-center text-sm font-medium text-muted-foreground py-2\">\n                    {day}\n                  </div>\n                ))}\n                {Array.from({ length: 31 }, (_, i) => i + 1).map(day => (\n                  <button\n                    key={day}\n                    onClick={() => setDate(`2025-01-${day}`)}\n                    disabled={day < 15 || [4, 5, 11, 12, 18, 19, 25, 26].includes(day)}\n                    className={`\n                      p-2 rounded-lg text-sm transition-colors\n                      ${date === `2025-01-${day}` ? 'bg-[#0e203a] text-white' : \n                        day < 15 ? 'text-gray-300 cursor-not-allowed' :\n                        [4, 5, 11, 12, 18, 19, 25, 26].includes(day) ? 'text-gray-300 cursor-not-allowed' :\n                        'hover:bg-[#f5f7fa]'}\n                    `}\n                  >\n                    {day}\n                  </button>\n                ))}\n              </div>\n              \n              {date && (\n                <div>\n                  <h4 className=\"font-medium mb-3\">Available Times</h4>\n                  <div className=\"grid grid-cols-4 gap-2\">\n                    {['9:00 AM', '10:00 AM', '11:00 AM', '2:00 PM', '3:00 PM', '4:00 PM'].map(t => (\n                      <button\n                        key={t}\n                        onClick={() => setTime(t)}\n                        className={`\n                          py-2 px-3 rounded-lg text-sm border transition-colors\n                          ${time === t ? 'bg-[#0e203a] text-white border-[#0e203a]' : 'border-gray-200 hover:border-[#0e203a]'}\n                        `}\n                      >\n                        {t}\n                      </button>\n                    ))}\n                  </div>\n                </div>\n              )}\n            </div>\n          )}\n\n          {step === 3 && (\n            <div className=\"space-y-4\">\n              <div className=\"bg-[#f5f7fa] rounded-lg p-4 space-y-3\">\n                <div className=\"flex items-center gap-3\">\n                  <Calendar className=\"h-5 w-5 text-[#0e203a]\" />\n                  <span>January 15, 2025</span>\n                </div>\n                <div className=\"flex items-center gap-3\">\n                  <Clock className=\"h-5 w-5 text-[#0e203a]\" />\n                  <span>2:00 PM</span>\n                </div>\n                <div className=\"flex items-center gap-3\">\n                  <MapPin className=\"h-5 w-5 text-[#0e203a]\" />\n                  <span>Ochsner Medical Center, New Orleans</span>\n                </div>\n              </div>\n              <div className=\"flex items-center gap-4 p-4 border rounded-lg\">\n                <Avatar className=\"h-12 w-12\">\n                  <AvatarFallback className=\"bg-[#0e203a] text-white\">SS</AvatarFallback>\n                </Avatar>\n                <div>\n                  <h4 className=\"font-medium\">Dr. Sarah Smith, MD</h4>\n                  <p className=\"text-sm text-muted-foreground\">Internal Medicine</p>\n                </div>\n              </div>\n            </div>\n          )}\n        </CardContent>\n        <CardFooter className=\"flex justify-between\">\n          <Button \n            variant=\"outline\" \n            onClick={() => setStep(step - 1)}\n            disabled={step === 0}\n          >\n            Back\n          </Button>\n          <Button \n            className=\"bg-[#0e203a] hover:bg-[#142d50]\"\n            onClick={() => step < 3 ? setStep(step + 1) : null}\n            disabled={\n              (step === 0 && !specialty) ||\n              (step === 1 && !provider) ||\n              (step === 2 && (!date || !time))\n            }\n          >\n            {step === 3 ? 'Confirm Appointment' : 'Continue'}\n          </Button>\n        </CardFooter>\n      </Card>\n    </div>\n  );\n}",
+      "code": "import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';\nimport { Badge } from '@/components/ui/badge';\nimport { Button } from '@/components/ui/button';\nimport {\n  Table, TableBody, TableCell, TableHead,\n  TableHeader, TableRow\n} from '@/components/ui/table';\nimport { Download, Printer, FileText } from 'lucide-react';\n\ninterface LabResult {\n  test: string;\n  result: string;\n  unit: string;\n  range: string;\n  status: 'normal' | 'high' | 'low' | 'critical';\n}\n\nconst results: LabResult[] = [\n  { test: 'Glucose, Fasting', result: '95', unit: 'mg/dL', range: '70-100', status: 'normal' },\n  { test: 'Hemoglobin A1c', result: '5.4', unit: '%', range: '<5.7', status: 'normal' },\n  { test: 'Total Cholesterol', result: '215', unit: 'mg/dL', range: '<200', status: 'high' },\n  { test: 'HDL Cholesterol', result: '55', unit: 'mg/dL', range: '>40', status: 'normal' },\n  { test: 'LDL Cholesterol', result: '140', unit: 'mg/dL', range: '<100', status: 'high' },\n  { test: 'Triglycerides', result: '120', unit: 'mg/dL', range: '<150', status: 'normal' },\n];\n\nfunction getStatusBadge(status: LabResult['status']) {\n  switch (status) {\n    case 'normal':\n      return <Badge className=\"bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100\">Normal</Badge>;\n    case 'high':\n      return <Badge className=\"bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-100\">High</Badge>;\n    case 'low':\n      return <Badge className=\"bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-100\">Low</Badge>;\n    case 'critical':\n      return <Badge variant=\"destructive\">Critical</Badge>;\n  }\n}\n\nexport function LabResults() {\n  return (\n    <Card>\n      <CardHeader className=\"flex flex-row items-center justify-between\">\n        <div>\n          <CardTitle className=\"flex items-center gap-2\">\n            <FileText className=\"h-5 w-5 text-primary\" />\n            Lab Results\n          </CardTitle>\n          <p className=\"text-sm text-muted-foreground mt-1\">\n            Collected: December 20, 2024 • Ochsner Medical Center\n          </p>\n        </div>\n        <div className=\"flex gap-2\">\n          <Button variant=\"outline\" size=\"sm\">\n            <Printer className=\"h-4 w-4 mr-2\" />\n            Print\n          </Button>\n          <Button variant=\"outline\" size=\"sm\">\n            <Download className=\"h-4 w-4 mr-2\" />\n            Download PDF\n          </Button>\n        </div>\n      </CardHeader>\n      <CardContent>\n        <Table>\n          <TableHeader>\n            <TableRow>\n              <TableHead>Test</TableHead>\n              <TableHead className=\"text-right\">Result</TableHead>\n              <TableHead className=\"text-right\">Reference Range</TableHead>\n              <TableHead className=\"text-center\">Status</TableHead>\n            </TableRow>\n          </TableHeader>\n          <TableBody>\n            {results.map((result) => (\n              <TableRow key={result.test}>\n                <TableCell className=\"font-medium\">{result.test}</TableCell>\n                <TableCell className=\"text-right\">\n                  <span className={\n                    result.status === 'high' || result.status === 'low'\n                      ? 'font-semibold text-yellow-600 dark:text-yellow-400'\n                      : result.status === 'critical'\n                      ? 'font-bold text-red-600 dark:text-red-400'\n                      : ''\n                  }>\n                    {result.result}\n                  </span>\n                  <span className=\"text-muted-foreground ml-1\">{result.unit}</span>\n                </TableCell>\n                <TableCell className=\"text-right text-muted-foreground\">\n                  {result.range} {result.unit}\n                </TableCell>\n                <TableCell className=\"text-center\">\n                  {getStatusBadge(result.status)}\n                </TableCell>\n              </TableRow>\n            ))}\n          </TableBody>\n        </Table>\n\n        <div className=\"mt-4 p-4 rounded-lg bg-yellow-50 dark:bg-yellow-950 border border-yellow-200 dark:border-yellow-800\">\n          <p className=\"text-sm font-medium text-yellow-800 dark:text-yellow-200\">\n            Provider Note\n          </p>\n          <p className=\"text-sm text-yellow-700 dark:text-yellow-300 mt-1\">\n            Cholesterol levels are slightly elevated. Consider dietary modifications\n            and schedule follow-up in 3 months.\n          </p>\n        </div>\n      </CardContent>\n    </Card>\n  );\n}",
+      "tags": [
+        "table",
+        "lab-results",
+        "healthcare",
+        "status",
+        "badge"
+      ]
+    },
+    {
+      "id": "ochsner-appointment-booking",
+      "title": "Appointment Booking Flow",
+      "description": "Multi-step appointment booking with provider selection",
+      "language": "tsx",
+      "code": "'use client';\n\nimport { useState } from 'react';\nimport { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';\nimport { Button } from '@/components/ui/button';\nimport { Badge } from '@/components/ui/badge';\nimport { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';\nimport { Calendar } from '@/components/ui/calendar';\nimport { Progress } from '@/components/ui/progress';\nimport {\n  Calendar as CalendarIcon, Clock, MapPin,\n  Star, ChevronRight, ChevronLeft, Check\n} from 'lucide-react';\n\nconst providers = [\n  { id: 1, name: 'Dr. Sarah Smith', specialty: 'Primary Care', rating: 4.9, reviews: 127, available: true },\n  { id: 2, name: 'Dr. Michael Chen', specialty: 'Primary Care', rating: 4.8, reviews: 89, available: true },\n  { id: 3, name: 'Dr. Emily Johnson', specialty: 'Primary Care', rating: 4.7, reviews: 156, available: false },\n];\n\nconst timeSlots = ['9:00 AM', '9:30 AM', '10:00 AM', '10:30 AM', '2:00 PM', '2:30 PM', '3:00 PM'];\n\nexport function AppointmentBooking() {\n  const [step, setStep] = useState(1);\n  const [selectedProvider, setSelectedProvider] = useState<number | null>(null);\n  const [selectedDate, setSelectedDate] = useState<Date | undefined>();\n  const [selectedTime, setSelectedTime] = useState<string | null>(null);\n\n  const progress = (step / 3) * 100;\n\n  return (\n    <Card className=\"max-w-2xl mx-auto\">\n      <CardHeader>\n        <div className=\"flex items-center justify-between mb-2\">\n          <CardTitle>Schedule Appointment</CardTitle>\n          <span className=\"text-sm text-muted-foreground\">Step {step} of 3</span>\n        </div>\n        <Progress value={progress} className=\"h-2\" />\n      </CardHeader>\n\n      <CardContent>\n        {/* Step 1: Select Provider */}\n        {step === 1 && (\n          <div className=\"space-y-4\">\n            <h3 className=\"font-medium\">Select a Provider</h3>\n            {providers.map((provider) => (\n              <div\n                key={provider.id}\n                onClick={() => provider.available && setSelectedProvider(provider.id)}\n                className={`p-4 rounded-lg border-2 transition-colors cursor-pointer ${\n                  selectedProvider === provider.id\n                    ? 'border-primary bg-primary/5'\n                    : provider.available\n                    ? 'border-border hover:border-primary/50'\n                    : 'border-border opacity-50 cursor-not-allowed'\n                }`}\n              >\n                <div className=\"flex items-center gap-4\">\n                  <Avatar className=\"h-12 w-12\">\n                    <AvatarFallback className=\"bg-primary text-primary-foreground\">\n                      {provider.name.split(' ').slice(1).map(n => n[0]).join('')}\n                    </AvatarFallback>\n                  </Avatar>\n                  <div className=\"flex-1\">\n                    <p className=\"font-medium\">{provider.name}</p>\n                    <p className=\"text-sm text-muted-foreground\">{provider.specialty}</p>\n                    <div className=\"flex items-center gap-2 mt-1\">\n                      <Star className=\"h-3 w-3 fill-yellow-400 text-yellow-400\" />\n                      <span className=\"text-sm\">{provider.rating}</span>\n                      <span className=\"text-sm text-muted-foreground\">({provider.reviews} reviews)</span>\n                    </div>\n                  </div>\n                  {!provider.available && (\n                    <Badge variant=\"secondary\">Unavailable</Badge>\n                  )}\n                  {selectedProvider === provider.id && (\n                    <Check className=\"h-5 w-5 text-primary\" />\n                  )}\n                </div>\n              </div>\n            ))}\n          </div>\n        )}\n\n        {/* Step 2: Select Date & Time */}\n        {step === 2 && (\n          <div className=\"space-y-6\">\n            <div>\n              <h3 className=\"font-medium mb-3\">Select Date</h3>\n              <Calendar\n                mode=\"single\"\n                selected={selectedDate}\n                onSelect={setSelectedDate}\n                disabled={(date) => date < new Date() || date.getDay() === 0}\n                className=\"rounded-md border mx-auto\"\n              />\n            </div>\n\n            {selectedDate && (\n              <div>\n                <h3 className=\"font-medium mb-3\">Available Times</h3>\n                <div className=\"grid grid-cols-4 gap-2\">\n                  {timeSlots.map((time) => (\n                    <Button\n                      key={time}\n                      variant={selectedTime === time ? 'default' : 'outline'}\n                      size=\"sm\"\n                      onClick={() => setSelectedTime(time)}\n                      className=\"h-10\"\n                    >\n                      {time}\n                    </Button>\n                  ))}\n                </div>\n              </div>\n            )}\n          </div>\n        )}\n\n        {/* Step 3: Confirmation */}\n        {step === 3 && (\n          <div className=\"space-y-6\">\n            <div className=\"text-center py-4\">\n              <div className=\"h-16 w-16 rounded-full bg-green-100 dark:bg-green-900 flex items-center justify-center mx-auto mb-4\">\n                <Check className=\"h-8 w-8 text-green-600 dark:text-green-400\" />\n              </div>\n              <h3 className=\"text-xl font-semibold\">Confirm Your Appointment</h3>\n            </div>\n\n            <div className=\"p-4 rounded-lg bg-muted/50 space-y-3\">\n              <div className=\"flex items-center gap-3\">\n                <Avatar>\n                  <AvatarFallback className=\"bg-primary text-primary-foreground\">SS</AvatarFallback>\n                </Avatar>\n                <div>\n                  <p className=\"font-medium\">Dr. Sarah Smith</p>\n                  <p className=\"text-sm text-muted-foreground\">Primary Care</p>\n                </div>\n              </div>\n\n              <div className=\"flex items-center gap-3 text-sm\">\n                <CalendarIcon className=\"h-4 w-4 text-primary\" />\n                <span>{selectedDate?.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}</span>\n              </div>\n\n              <div className=\"flex items-center gap-3 text-sm\">\n                <Clock className=\"h-4 w-4 text-primary\" />\n                <span>{selectedTime}</span>\n              </div>\n\n              <div className=\"flex items-center gap-3 text-sm\">\n                <MapPin className=\"h-4 w-4 text-primary\" />\n                <span>Ochsner Medical Center - Main Campus</span>\n              </div>\n            </div>\n          </div>\n        )}\n      </CardContent>\n\n      <CardFooter className=\"flex justify-between\">\n        {step > 1 ? (\n          <Button variant=\"outline\" onClick={() => setStep(step - 1)}>\n            <ChevronLeft className=\"h-4 w-4 mr-2\" />\n            Back\n          </Button>\n        ) : (\n          <div />\n        )}\n\n        {step < 3 ? (\n          <Button\n            onClick={() => setStep(step + 1)}\n            disabled={\n              (step === 1 && !selectedProvider) ||\n              (step === 2 && (!selectedDate || !selectedTime))\n            }\n          >\n            Continue\n            <ChevronRight className=\"h-4 w-4 ml-2\" />\n          </Button>\n        ) : (\n          <Button className=\"bg-green-600 hover:bg-green-700\">\n            <Check className=\"h-4 w-4 mr-2\" />\n            Confirm Appointment\n          </Button>\n        )}\n      </CardFooter>\n    </Card>\n  );\n}",
       "tags": [
         "appointment",
-        "scheduling",
+        "booking",
         "wizard",
-        "form",
+        "calendar",
         "healthcare"
       ]
-    },
-    {
-      "id": "ochsner-provider-card",
-      "title": "Provider Card",
-      "description": "Doctor/provider profile card with ratings, specialties, and booking action",
-      "language": "tsx",
-      "code": "import { Card, CardContent } from '@/components/ui/card';\nimport { Badge } from '@/components/ui/badge';\nimport { Button } from '@/components/ui/button';\nimport { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';\nimport { Star, MapPin, Clock, Calendar, Heart } from 'lucide-react';\n\nexport function ProviderCard() {\n  return (\n    <Card className=\"w-full max-w-sm overflow-hidden hover:shadow-lg transition-shadow\">\n      {/* Gold accent bar */}\n      <div className=\"h-1 bg-[#e0a42e]\" />\n      \n      <CardContent className=\"pt-6\">\n        <div className=\"flex flex-col items-center text-center\">\n          {/* Avatar */}\n          <div className=\"relative\">\n            <Avatar className=\"h-24 w-24 border-4 border-white shadow-lg\">\n              <AvatarImage src=\"/doctors/smith.jpg\" alt=\"Dr. Sarah Smith\" />\n              <AvatarFallback className=\"bg-[#0e203a] text-white text-2xl font-semibold\">\n                SS\n              </AvatarFallback>\n            </Avatar>\n            <button className=\"absolute -right-1 -bottom-1 p-1.5 bg-white rounded-full shadow-md hover:bg-gray-50\">\n              <Heart className=\"h-4 w-4 text-[#0e203a]\" />\n            </button>\n          </div>\n\n          {/* Provider Info */}\n          <h3 className=\"mt-4 text-lg font-semibold text-[#0e203a]\">Dr. Sarah Smith, MD</h3>\n          <p className=\"text-muted-foreground\">Internal Medicine</p>\n\n          {/* Rating */}\n          <div className=\"flex items-center gap-1 mt-2\">\n            <Star className=\"h-4 w-4 fill-[#e0a42e] text-[#e0a42e]\" />\n            <span className=\"font-semibold\">4.9</span>\n            <span className=\"text-sm text-muted-foreground\">(127 reviews)</span>\n          </div>\n\n          {/* Badges */}\n          <div className=\"flex flex-wrap gap-2 mt-4 justify-center\">\n            <Badge variant=\"secondary\" className=\"bg-[#f5f7fa] text-[#0e203a]\">\n              Primary Care\n            </Badge>\n            <Badge variant=\"outline\" className=\"border-green-500 text-green-600\">\n              Accepting New Patients\n            </Badge>\n          </div>\n\n          {/* Details */}\n          <div className=\"w-full mt-4 space-y-2 text-sm text-left\">\n            <div className=\"flex items-center gap-2 text-muted-foreground\">\n              <MapPin className=\"h-4 w-4 text-[#0e203a]\" />\n              <span>Ochsner Medical Center, New Orleans</span>\n            </div>\n            <div className=\"flex items-center gap-2 text-muted-foreground\">\n              <Clock className=\"h-4 w-4 text-[#0e203a]\" />\n              <span>Next available: Today at 2:00 PM</span>\n            </div>\n          </div>\n\n          {/* Actions */}\n          <div className=\"w-full mt-6 flex gap-2\">\n            <Button className=\"flex-1 bg-[#0e203a] hover:bg-[#142d50]\">\n              <Calendar className=\"h-4 w-4 mr-2\" />\n              Book\n            </Button>\n            <Button variant=\"outline\" className=\"flex-1 border-[#0e203a] text-[#0e203a] hover:bg-[#0e203a] hover:text-white\">\n              View Profile\n            </Button>\n          </div>\n        </div>\n      </CardContent>\n    </Card>\n  );\n}",
-      "tags": [
-        "card",
-        "provider",
-        "doctor",
-        "profile",
-        "booking"
-      ]
-    },
-    {
-      "id": "ochsner-test-results",
-      "title": "Test Results Display",
-      "description": "Lab test results with reference ranges and status indicators",
-      "language": "tsx",
-      "code": "import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';\nimport { Badge } from '@/components/ui/badge';\nimport { Button } from '@/components/ui/button';\nimport { Alert, AlertDescription } from '@/components/ui/alert';\nimport { FileText, Download, ChevronRight, AlertCircle, CheckCircle, TrendingUp, TrendingDown } from 'lucide-react';\n\nexport function TestResults() {\n  const results = [\n    { name: 'Glucose, Fasting', value: 95, unit: 'mg/dL', range: '70-100', status: 'normal', trend: 'stable' },\n    { name: 'Hemoglobin A1c', value: 5.4, unit: '%', range: '<5.7', status: 'normal', trend: 'down' },\n    { name: 'Cholesterol, Total', value: 215, unit: 'mg/dL', range: '<200', status: 'high', trend: 'up' },\n    { name: 'HDL Cholesterol', value: 55, unit: 'mg/dL', range: '>40', status: 'normal', trend: 'stable' },\n    { name: 'LDL Cholesterol', value: 135, unit: 'mg/dL', range: '<100', status: 'high', trend: 'up' },\n  ];\n\n  const getStatusBadge = (status: string) => {\n    switch (status) {\n      case 'normal':\n        return <Badge variant=\"outline\" className=\"border-green-500 text-green-600\">Normal</Badge>;\n      case 'high':\n        return <Badge variant=\"outline\" className=\"border-red-500 text-red-600\">High</Badge>;\n      case 'low':\n        return <Badge variant=\"outline\" className=\"border-yellow-500 text-yellow-600\">Low</Badge>;\n      default:\n        return null;\n    }\n  };\n\n  const getTrendIcon = (trend: string) => {\n    switch (trend) {\n      case 'up':\n        return <TrendingUp className=\"h-4 w-4 text-red-500\" />;\n      case 'down':\n        return <TrendingDown className=\"h-4 w-4 text-green-500\" />;\n      default:\n        return null;\n    }\n  };\n\n  return (\n    <div className=\"max-w-3xl mx-auto p-6 space-y-6\">\n      {/* Header */}\n      <div className=\"flex items-center justify-between\">\n        <div>\n          <h1 className=\"text-2xl font-bold text-[#0e203a]\">Lab Results</h1>\n          <p className=\"text-muted-foreground\">Comprehensive Metabolic Panel • December 20, 2024</p>\n        </div>\n        <Button variant=\"outline\" className=\"gap-2\">\n          <Download className=\"h-4 w-4\" />\n          Download PDF\n        </Button>\n      </div>\n\n      {/* Alert for abnormal results */}\n      <Alert className=\"border-[#e0a42e] bg-amber-50\">\n        <AlertCircle className=\"h-4 w-4 text-[#e0a42e]\" />\n        <AlertDescription>\n          <span className=\"font-medium\">2 results require attention.</span> Your cholesterol levels are above the recommended range. \n          <Button variant=\"link\" className=\"p-0 h-auto text-[#0e203a]\">Message your doctor</Button>\n        </AlertDescription>\n      </Alert>\n\n      {/* Results Table */}\n      <Card>\n        <CardHeader>\n          <CardTitle className=\"text-[#0e203a] flex items-center gap-2\">\n            <FileText className=\"h-5 w-5\" />\n            Test Results\n          </CardTitle>\n        </CardHeader>\n        <CardContent>\n          <div className=\"space-y-1\">\n            {/* Header Row */}\n            <div className=\"grid grid-cols-12 gap-4 px-4 py-2 text-sm font-medium text-muted-foreground border-b\">\n              <div className=\"col-span-4\">Test</div>\n              <div className=\"col-span-2 text-right\">Result</div>\n              <div className=\"col-span-2\">Trend</div>\n              <div className=\"col-span-2\">Reference</div>\n              <div className=\"col-span-2\">Status</div>\n            </div>\n\n            {/* Result Rows */}\n            {results.map((result, index) => (\n              <div \n                key={index}\n                className={`\n                  grid grid-cols-12 gap-4 px-4 py-3 rounded-lg\n                  ${result.status !== 'normal' ? 'bg-red-50' : 'hover:bg-gray-50'}\n                `}\n              >\n                <div className=\"col-span-4 font-medium\">{result.name}</div>\n                <div className=\"col-span-2 text-right font-mono\">\n                  <span className={result.status !== 'normal' ? 'text-red-600 font-semibold' : ''}>\n                    {result.value}\n                  </span>\n                  <span className=\"text-muted-foreground ml-1\">{result.unit}</span>\n                </div>\n                <div className=\"col-span-2 flex items-center gap-1\">\n                  {getTrendIcon(result.trend)}\n                  <span className=\"text-sm text-muted-foreground capitalize\">{result.trend}</span>\n                </div>\n                <div className=\"col-span-2 text-muted-foreground\">{result.range}</div>\n                <div className=\"col-span-2\">{getStatusBadge(result.status)}</div>\n              </div>\n            ))}\n          </div>\n        </CardContent>\n      </Card>\n\n      {/* Provider Note */}\n      <Card>\n        <CardHeader>\n          <CardTitle className=\"text-[#0e203a]\">Provider Notes</CardTitle>\n        </CardHeader>\n        <CardContent>\n          <p className=\"text-muted-foreground\">\n            Your glucose and A1c levels look great! Your cholesterol is slightly elevated. \n            I recommend continuing your current diet and exercise routine. Let's recheck in 3 months. \n            Consider reducing saturated fat intake.\n          </p>\n          <div className=\"flex items-center gap-3 mt-4 pt-4 border-t\">\n            <div className=\"h-10 w-10 rounded-full bg-[#0e203a] flex items-center justify-center text-white font-medium\">\n              SS\n            </div>\n            <div>\n              <p className=\"font-medium\">Dr. Sarah Smith, MD</p>\n              <p className=\"text-sm text-muted-foreground\">Internal Medicine</p>\n            </div>\n            <Button variant=\"outline\" className=\"ml-auto gap-2\">\n              Send Message <ChevronRight className=\"h-4 w-4\" />\n            </Button>\n          </div>\n        </CardContent>\n      </Card>\n    </div>\n  );\n}",
-      "tags": [
-        "lab",
-        "results",
-        "medical",
-        "test",
-        "healthcare"
-      ]
-    },
-    {
-      "id": "ochsner-login-page",
-      "title": "MyOchsner Login",
-      "description": "Patient portal login page with branding and security messaging",
-      "language": "tsx",
-      "code": "import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';\nimport { Button } from '@/components/ui/button';\nimport { Input } from '@/components/ui/input';\nimport { Label } from '@/components/ui/label';\nimport { Checkbox } from '@/components/ui/checkbox';\nimport { Shield, Lock, User } from 'lucide-react';\n\nexport function MyOchsnerLogin() {\n  return (\n    <div className=\"min-h-screen bg-gradient-to-b from-[#0e203a] to-[#142d50] flex items-center justify-center p-6\">\n      <div className=\"w-full max-w-md\">\n        {/* Logo */}\n        <div className=\"text-center mb-8\">\n          <div className=\"inline-flex items-center gap-3 text-white\">\n            <div className=\"h-12 w-12 bg-[#e0a42e] rounded-lg flex items-center justify-center\">\n              <span className=\"text-[#0e203a] font-bold text-xl\">O</span>\n            </div>\n            <div className=\"text-left\">\n              <h1 className=\"text-2xl font-bold\">MyOchsner</h1>\n              <p className=\"text-white/70 text-sm\">Patient Portal</p>\n            </div>\n          </div>\n        </div>\n\n        {/* Login Card */}\n        <Card className=\"shadow-2xl\">\n          <CardHeader className=\"text-center\">\n            <CardTitle className=\"text-[#0e203a]\">Welcome Back</CardTitle>\n            <CardDescription>Sign in to access your health information</CardDescription>\n          </CardHeader>\n          <CardContent className=\"space-y-4\">\n            <div className=\"space-y-2\">\n              <Label htmlFor=\"username\">Username or Email</Label>\n              <div className=\"relative\">\n                <User className=\"absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground\" />\n                <Input id=\"username\" placeholder=\"Enter your username\" className=\"pl-10\" />\n              </div>\n            </div>\n            <div className=\"space-y-2\">\n              <div className=\"flex items-center justify-between\">\n                <Label htmlFor=\"password\">Password</Label>\n                <Button variant=\"link\" className=\"p-0 h-auto text-sm text-[#0e203a]\">\n                  Forgot password?\n                </Button>\n              </div>\n              <div className=\"relative\">\n                <Lock className=\"absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground\" />\n                <Input id=\"password\" type=\"password\" placeholder=\"Enter your password\" className=\"pl-10\" />\n              </div>\n            </div>\n            <div className=\"flex items-center space-x-2\">\n              <Checkbox id=\"remember\" />\n              <label htmlFor=\"remember\" className=\"text-sm text-muted-foreground\">\n                Remember me on this device\n              </label>\n            </div>\n          </CardContent>\n          <CardFooter className=\"flex flex-col gap-4\">\n            <Button className=\"w-full bg-[#0e203a] hover:bg-[#142d50]\">\n              Sign In\n            </Button>\n            <div className=\"text-center text-sm\">\n              <span className=\"text-muted-foreground\">Don't have an account? </span>\n              <Button variant=\"link\" className=\"p-0 h-auto text-[#0e203a]\">\n                Sign Up\n              </Button>\n            </div>\n          </CardFooter>\n        </Card>\n\n        {/* Security Notice */}\n        <div className=\"mt-6 flex items-center justify-center gap-2 text-white/70 text-sm\">\n          <Shield className=\"h-4 w-4\" />\n          <span>Secure, HIPAA-compliant patient portal</span>\n        </div>\n\n        {/* Footer Links */}\n        <div className=\"mt-4 flex justify-center gap-4 text-sm\">\n          <Button variant=\"link\" className=\"text-white/70 hover:text-white p-0 h-auto\">\n            Privacy Policy\n          </Button>\n          <span className=\"text-white/30\">•</span>\n          <Button variant=\"link\" className=\"text-white/70 hover:text-white p-0 h-auto\">\n            Terms of Use\n          </Button>\n          <span className=\"text-white/30\">•</span>\n          <Button variant=\"link\" className=\"text-white/70 hover:text-white p-0 h-auto\">\n            Contact Support\n          </Button>\n        </div>\n      </div>\n    </div>\n  );\n}",
-      "tags": [
-        "login",
-        "auth",
-        "portal",
-        "patient",
-        "form"
-      ]
-    },
-    {
-      "id": "ochsner-header-navigation",
-      "title": "Header Navigation",
-      "description": "Main site header with mega menu navigation and urgent care CTA",
-      "language": "tsx",
-      "code": "import { Button } from '@/components/ui/button';\nimport { Input } from '@/components/ui/input';\nimport { Search, Phone, MapPin, User, Menu, ChevronDown } from 'lucide-react';\n\nexport function OchsnerHeader() {\n  return (\n    <header className=\"w-full\">\n      {/* Top Bar */}\n      <div className=\"bg-[#0e203a] text-white\">\n        <div className=\"max-w-7xl mx-auto px-6 py-2 flex items-center justify-between text-sm\">\n          <div className=\"flex items-center gap-6\">\n            <a href=\"#\" className=\"flex items-center gap-2 hover:text-[#e0a42e]\">\n              <Phone className=\"h-4 w-4\" />\n              <span>504-842-3000</span>\n            </a>\n            <a href=\"#\" className=\"flex items-center gap-2 hover:text-[#e0a42e]\">\n              <MapPin className=\"h-4 w-4\" />\n              <span>Find a Location</span>\n            </a>\n          </div>\n          <div className=\"flex items-center gap-4\">\n            <a href=\"#\" className=\"hover:text-[#e0a42e]\">Careers</a>\n            <a href=\"#\" className=\"hover:text-[#e0a42e]\">For Providers</a>\n            <Button variant=\"ghost\" size=\"sm\" className=\"text-white hover:text-[#e0a42e] hover:bg-transparent gap-2\">\n              <User className=\"h-4 w-4\" />\n              MyOchsner\n            </Button>\n          </div>\n        </div>\n      </div>\n\n      {/* Main Navigation */}\n      <div className=\"bg-white border-b shadow-sm\">\n        <div className=\"max-w-7xl mx-auto px-6 py-4\">\n          <div className=\"flex items-center justify-between\">\n            {/* Logo */}\n            <a href=\"/\" className=\"flex items-center gap-3\">\n              <div className=\"h-10 w-10 bg-[#e0a42e] rounded-lg flex items-center justify-center\">\n                <span className=\"text-[#0e203a] font-bold text-lg\">O</span>\n              </div>\n              <span className=\"text-xl font-bold text-[#0e203a]\">Ochsner Health</span>\n            </a>\n\n            {/* Navigation Links */}\n            <nav className=\"hidden lg:flex items-center gap-1\">\n              <Button variant=\"ghost\" className=\"text-[#0e203a] gap-1\">\n                Find Care <ChevronDown className=\"h-4 w-4\" />\n              </Button>\n              <Button variant=\"ghost\" className=\"text-[#0e203a] gap-1\">\n                Patients & Visitors <ChevronDown className=\"h-4 w-4\" />\n              </Button>\n              <Button variant=\"ghost\" className=\"text-[#0e203a] gap-1\">\n                Specialties <ChevronDown className=\"h-4 w-4\" />\n              </Button>\n              <Button variant=\"ghost\" className=\"text-[#0e203a] gap-1\">\n                Research <ChevronDown className=\"h-4 w-4\" />\n              </Button>\n            </nav>\n\n            {/* Actions */}\n            <div className=\"flex items-center gap-3\">\n              {/* Search */}\n              <div className=\"relative hidden md:block\">\n                <Search className=\"absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground\" />\n                <Input \n                  placeholder=\"Search...\" \n                  className=\"pl-10 w-64 bg-gray-50 border-gray-200\"\n                />\n              </div>\n\n              {/* Urgent Care CTA */}\n              <Button className=\"bg-[#e0a42e] hover:bg-[#c88f23] text-[#0e203a] font-semibold\">\n                <Phone className=\"h-4 w-4 mr-2\" />\n                Urgent Care\n              </Button>\n\n              {/* Schedule Button */}\n              <Button className=\"bg-[#0e203a] hover:bg-[#142d50]\">\n                Schedule Appointment\n              </Button>\n\n              {/* Mobile Menu */}\n              <Button variant=\"ghost\" size=\"icon\" className=\"lg:hidden\">\n                <Menu className=\"h-6 w-6\" />\n              </Button>\n            </div>\n          </div>\n        </div>\n      </div>\n    </header>\n  );\n}",
-      "tags": [
-        "header",
-        "navigation",
-        "menu",
-        "layout"
-      ]
     }
-  ],
-  "accessibility": {
-    "standards": [
-      "WCAG 2.1 AA",
-      "Section 508",
-      "ADA Compliant"
-    ],
-    "colorContrast": {
-      "primaryOnWhite": "14.8:1",
-      "whiteOnPrimary": "14.8:1",
-      "goldOnPrimary": "4.6:1",
-      "textOnBackground": "15.4:1"
-    },
-    "requirements": [
-      "All interactive elements must be keyboard accessible",
-      "Focus indicators must be visible (2px solid gold ring)",
-      "Touch targets minimum 44x44px",
-      "Images must have alt text",
-      "Form inputs must have associated labels",
-      "Error messages must be announced to screen readers",
-      "Color must not be the only indicator of state",
-      "Text must be resizable to 200% without loss of content"
-    ],
-    "testing": [
-      "Screen reader testing with NVDA and VoiceOver",
-      "Keyboard-only navigation testing",
-      "Color contrast verification",
-      "Focus order verification",
-      "Mobile accessibility testing"
-    ]
-  },
-  "resources": {
-    "brandWebsite": "https://www.ochsner.org",
-    "brandAssets": "https://brandfetch.com/ochsner.org",
-    "designAgency": "Visual Fuel Design",
-    "fonts": {
-      "montserrat": "https://fonts.google.com/specimen/Montserrat",
-      "roboto": "https://fonts.google.com/specimen/Roboto"
-    }
-  }
+  ]
 }

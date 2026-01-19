@@ -9,6 +9,9 @@ import { promisify } from 'util';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 
+// Allow up to 5 minutes for rebuilds (npm install + prisma + next build)
+export const maxDuration = 300;
+
 const execAsync = promisify(exec);
 
 interface BuildVerificationResult {
@@ -465,7 +468,7 @@ async function killStaleProcessesOnPreviewPorts(): Promise<void> {
 
 export async function POST(request: NextRequest) {
   try {
-    const { projectId, forceRebuild, skipRebuild } = await request.json();
+    const { projectId, forceRebuild, skipRebuild, forceDevMode = true } = await request.json();
 
     if (!projectId) {
       return NextResponse.json(
@@ -493,7 +496,24 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // FIRST: Stop ALL running dev servers to prevent port conflicts
+    // Check if a server is already running for this project
+    const existingServer = devServerManager.getDevServer(projectId);
+    if (existingServer && existingServer.status === 'ready') {
+      console.log(`[Preview] Server already running for ${projectId} on port ${existingServer.port}`);
+
+      // Update activity timestamp
+      devServerManager.updateActivity(projectId);
+
+      // Return existing server info
+      return NextResponse.json({
+        success: true,
+        port: existingServer.port,
+        url: `http://localhost:${existingServer.port}`,
+        reused: true,
+      });
+    }
+
+    // Stop ALL running dev servers to prevent port conflicts
     // This ensures only one project preview runs at a time
     console.log(`[Preview] Stopping all existing servers before starting ${projectId}`);
     await devServerManager.stopAll();
@@ -600,11 +620,13 @@ export async function POST(request: NextRequest) {
 
     try {
       // Start the dev server
+      // forceDevMode=true enables hot reload (default for UAT)
       const { port, url } = await devServerManager.startDevServer(
         projectId,
         projectDir,
         emitLog,
-        emitStatus
+        emitStatus,
+        forceDevMode
       );
 
       // Emit ready event if WebSocket available

@@ -64,6 +64,7 @@
     "pdf2json": "^4.0.0",
     "pdfjs-dist": "^5.4.449",
     "pg": "^8.16.3",
+    "playwright": "^1.57.0",
     "proper-lockfile": "^4.1.2",
     "quantum-circuit": "^0.9.242",
     "react": "19.2.0",

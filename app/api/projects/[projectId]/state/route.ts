@@ -32,13 +32,49 @@ export async function GET(
     const { projectId } = await params;
     const projectDir = await resolveProjectPath(projectId);
 
-    const state = await loadFullProjectState(projectDir);
+    let state = await loadFullProjectState(projectDir);
 
+    // Return empty default state for new projects instead of 404
     if (!state) {
-      return NextResponse.json(
-        { error: 'Project state not found' },
-        { status: 404 }
-      );
+      state = {
+        projectId,
+        status: 'idle',
+        progress: 0,
+        buildMetrics: {
+          filesGenerated: 0,
+          linesOfCode: 0,
+          components: 0,
+          apiRoutes: 0,
+          schemaModels: 0,
+        },
+        testingMetrics: {
+          totalTests: 0,
+          passed: 0,
+          failed: 0,
+          skipped: 0,
+          duration: 0,
+          coverage: 0,
+          passRate: 0,
+          storiesTested: 0,
+          storiesPassed: 0,
+          testFiles: [],
+          seenTaskIds: [],
+        },
+        securityMetrics: {
+          vulnerabilities: { critical: 0, high: 0, medium: 0, low: 0 },
+          hipaaCompliance: 0,
+          securityScore: 0,
+          findings: [],
+        },
+        doraMetrics: {
+          deploymentFrequency: 0,
+          leadTime: 0,
+          mttr: 0,
+          changeFailureRate: 0,
+        },
+        tasks: [],
+        epics: [],
+      };
     }
 
     // Recalculate test metrics from story files (more accurate than event-based)

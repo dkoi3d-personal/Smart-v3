@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import {
@@ -33,6 +34,8 @@ import {
   Eye,
   Copy,
   Play,
+  Link2,
+  RefreshCw,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { DesignSystem, DesignSystemListItem } from '@/lib/design-systems/types';
@@ -51,6 +54,15 @@ export default function DesignSystemsSettingsPage() {
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'preview' | 'tokens' | 'components' | 'guidelines' | 'examples'>('preview');
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Figma import state
+  const [figmaDialogOpen, setFigmaDialogOpen] = useState(false);
+  const [figmaUrl, setFigmaUrl] = useState('');
+  const [figmaName, setFigmaName] = useState('');
+  const [figmaSetDefault, setFigmaSetDefault] = useState(false);
+  const [figmaImporting, setFigmaImporting] = useState(false);
+  const [figmaError, setFigmaError] = useState<string | null>(null);
+  const [syncing, setSyncing] = useState(false);
 
   // Load design systems list
   useEffect(() => {
@@ -174,6 +186,69 @@ export default function DesignSystemsSettingsPage() {
     }
   };
 
+  const handleFigmaImport = async () => {
+    if (!figmaUrl.trim()) {
+      setFigmaError('Please enter a Figma URL');
+      return;
+    }
+
+    setFigmaImporting(true);
+    setFigmaError(null);
+
+    try {
+      const response = await fetch('/api/design-systems/import-figma', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          figmaUrl: figmaUrl.trim(),
+          name: figmaName.trim() || undefined,
+          setAsDefault: figmaSetDefault,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Import failed');
+      }
+
+      setFigmaDialogOpen(false);
+      setFigmaUrl('');
+      setFigmaName('');
+      setFigmaSetDefault(false);
+      await loadDesignSystems();
+      setSelectedId(data.designSystem.id);
+    } catch (error: any) {
+      setFigmaError(error.message);
+    } finally {
+      setFigmaImporting(false);
+    }
+  };
+
+  const handleSync = async () => {
+    if (!selectedSystem?.figmaSource) return;
+
+    setSyncing(true);
+    try {
+      const response = await fetch(`/api/design-systems/${selectedSystem.id}/sync`, {
+        method: 'POST',
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Sync failed');
+      }
+
+      await loadSystemDetails(selectedSystem.id);
+    } catch (error: any) {
+      console.error('Sync failed:', error);
+      alert(`Sync failed: ${error.message}`);
+    } finally {
+      setSyncing(false);
+    }
+  };
+
   const copyPromptToClipboard = async () => {
     if (!selectedSystem) return;
 
@@ -205,28 +280,35 @@ export default function DesignSystemsSettingsPage() {
                 </p>
               </div>
             </div>
-            <Button variant="outline" onClick={() => setUploadDialogOpen(true)}>
-              <Upload className="h-4 w-4 mr-2" />
-              Upload
-            </Button>
+            <div className="flex gap-2 flex-wrap">
+              <Button variant="outline" size="sm" className="text-xs sm:text-sm" onClick={() => setFigmaDialogOpen(true)}>
+                <Link2 className="h-4 w-4 sm:mr-2" />
+                <span className="hidden sm:inline">Import from Figma</span>
+                <span className="sm:hidden">Figma</span>
+              </Button>
+              <Button variant="outline" size="sm" className="text-xs sm:text-sm" onClick={() => setUploadDialogOpen(true)}>
+                <Upload className="h-4 w-4 sm:mr-2" />
+                <span className="hidden sm:inline">Upload</span>
+              </Button>
+            </div>
           </div>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="max-w-6xl mx-auto p-4">
+      <main className="max-w-6xl mx-auto p-2 sm:p-4">
         {loading ? (
           <div className="flex items-center justify-center py-12">
             <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
           </div>
         ) : (
-          <div className="grid gap-4 md:grid-cols-3">
+          <div className="grid gap-4 lg:grid-cols-3">
             {/* Design System List */}
             <div className="space-y-2">
               <h3 className="text-sm font-medium text-muted-foreground mb-3">
                 Available Design Systems ({designSystems.length})
               </h3>
-              <ScrollArea className="h-[calc(100vh-200px)]">
+              <ScrollArea className="h-[200px] sm:h-[calc(100vh-200px)]">
                 <div className="space-y-2 pr-4">
                   {designSystems.map((ds) => (
                     <Card
@@ -256,6 +338,11 @@ export default function DesignSystemsSettingsPage() {
                                   Built-in
                                 </Badge>
                               )}
+                              {ds.figmaSourceUrl && (
+                                <Badge variant="outline" className="text-[10px] px-1 py-0 border-purple-500/30 text-purple-400">
+                                  Figma
+                                </Badge>
+                              )}
                             </div>
                           </div>
                         </div>
@@ -267,7 +354,7 @@ export default function DesignSystemsSettingsPage() {
             </div>
 
             {/* Editor Panel */}
-            <div className="md:col-span-2">
+            <div className="lg:col-span-2">
               {loadingDetails ? (
                 <Card>
                   <CardContent className="py-12 flex items-center justify-center">
@@ -287,9 +374,39 @@ export default function DesignSystemsSettingsPage() {
                             </Badge>
                           )}
                         </CardTitle>
-                        <CardDescription>{selectedSystem.description}</CardDescription>
+                        <CardDescription>
+                          {selectedSystem.description}
+                          {selectedSystem.figmaSource && (
+                            <div className="flex items-center gap-2 mt-1 text-xs">
+                              <Link2 className="h-3 w-3 text-purple-400" />
+                              <span className="text-muted-foreground">
+                                Synced from Figma
+                                {selectedSystem.figmaSource.lastSyncedAt && (
+                                  <> · Last sync: {new Date(selectedSystem.figmaSource.lastSyncedAt).toLocaleDateString()}</>
+                                )}
+                              </span>
+                            </div>
+                          )}
+                        </CardDescription>
                       </div>
-                      <div className="flex gap-2">
+                      <div className="flex gap-1 sm:gap-2 flex-wrap justify-end">
+                        {selectedSystem.figmaSource && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={handleSync}
+                            disabled={syncing}
+                            title="Sync from Figma"
+                            className="text-xs"
+                          >
+                            {syncing ? (
+                              <Loader2 className="h-4 w-4 animate-spin" />
+                            ) : (
+                              <RefreshCw className="h-4 w-4 sm:mr-1" />
+                            )}
+                            <span className="hidden sm:inline">Sync</span>
+                          </Button>
+                        )}
                         <Button
                           variant="outline"
                           size="sm"
@@ -304,13 +421,14 @@ export default function DesignSystemsSettingsPage() {
                             size="sm"
                             onClick={() => handleSetDefault(selectedSystem.id)}
                             disabled={saving}
+                            className="text-xs"
                           >
                             {saving ? (
                               <Loader2 className="h-4 w-4 animate-spin" />
                             ) : (
-                              <Star className="h-4 w-4 mr-2" />
+                              <Star className="h-4 w-4 sm:mr-1" />
                             )}
-                            Set Default
+                            <span className="hidden sm:inline">Set Default</span>
                           </Button>
                         )}
                         {!selectedSystem.isBuiltIn && (
@@ -328,37 +446,43 @@ export default function DesignSystemsSettingsPage() {
                   </CardHeader>
                   <CardContent>
                     <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as any)}>
-                      <TabsList className="grid w-full grid-cols-5">
-                        <TabsTrigger value="preview" className="gap-1">
-                          <Play className="h-3 w-3" />
-                          Preview
-                        </TabsTrigger>
-                        <TabsTrigger value="tokens">Tokens</TabsTrigger>
-                        <TabsTrigger value="components">Components</TabsTrigger>
-                        <TabsTrigger value="guidelines">Guidelines</TabsTrigger>
-                        <TabsTrigger value="examples">Examples</TabsTrigger>
-                      </TabsList>
+                      <div className="overflow-x-auto -mx-2 px-2">
+                        <TabsList className="inline-flex w-auto min-w-full sm:grid sm:w-full sm:grid-cols-5">
+                          <TabsTrigger value="preview" className="gap-1 text-xs sm:text-sm whitespace-nowrap">
+                            <Play className="h-3 w-3" />
+                            Preview
+                          </TabsTrigger>
+                          <TabsTrigger value="tokens" className="text-xs sm:text-sm whitespace-nowrap">Tokens</TabsTrigger>
+                          <TabsTrigger value="components" className="text-xs sm:text-sm whitespace-nowrap">Components</TabsTrigger>
+                          <TabsTrigger value="guidelines" className="text-xs sm:text-sm whitespace-nowrap">Guidelines</TabsTrigger>
+                          <TabsTrigger value="examples" className="text-xs sm:text-sm whitespace-nowrap">Examples</TabsTrigger>
+                        </TabsList>
+                      </div>
 
                       <TabsContent value="preview" className="mt-4">
                         <ComponentPreview designSystem={selectedSystem} />
                       </TabsContent>
 
                       <TabsContent value="tokens" className="mt-4">
-                        <ScrollArea className="h-[400px]">
+                        <ScrollArea className="h-[300px] sm:h-[400px]">
                           <div className="space-y-6 pr-4">
-                            {/* Colors */}
+                            {/* Semantic Colors */}
                             <div>
-                              <h4 className="font-medium mb-3">Colors</h4>
-                              <div className="grid grid-cols-2 gap-2">
-                                {Object.entries(selectedSystem.tokens.colors).map(([name, value]) => (
+                              <h4 className="font-medium mb-3 text-sm sm:text-base">Semantic Colors</h4>
+                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                {Object.entries(selectedSystem.tokens.colors)
+                                  .filter(([name]) => name !== 'custom' && typeof selectedSystem.tokens.colors[name as keyof typeof selectedSystem.tokens.colors] === 'string')
+                                  .map(([name, value]) => (
                                   <div
                                     key={name}
-                                    className="flex items-center gap-2 p-2 rounded-lg bg-muted/50"
+                                    className="flex items-center gap-2 p-2 rounded-lg bg-neutral-800"
                                   >
-                                    <div
-                                      className="w-6 h-6 rounded border"
-                                      style={{ backgroundColor: value as string }}
-                                    />
+                                    <div className="w-6 h-6 rounded bg-[repeating-conic-gradient(#666_0%_25%,#888_0%_50%)] bg-[length:8px_8px] p-0.5">
+                                      <div
+                                        className="w-full h-full rounded-sm"
+                                        style={{ backgroundColor: value as string }}
+                                      />
+                                    </div>
                                     <div className="flex-1 min-w-0">
                                       <p className="text-xs font-medium truncate">{name}</p>
                                       <p className="text-[10px] text-muted-foreground truncate">
@@ -369,6 +493,36 @@ export default function DesignSystemsSettingsPage() {
                                 ))}
                               </div>
                             </div>
+
+                            {/* Custom/Extracted Colors (from Figma) */}
+                            {selectedSystem.tokens.colors.custom && typeof selectedSystem.tokens.colors.custom === 'object' && (
+                              <div>
+                                <h4 className="font-medium mb-3 text-sm sm:text-base">
+                                  Extracted Colors ({Object.keys(selectedSystem.tokens.colors.custom).length})
+                                </h4>
+                                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                                  {Object.entries(selectedSystem.tokens.colors.custom as Record<string, string>).map(([name, value]) => (
+                                    <div
+                                      key={name}
+                                      className="flex items-center gap-2 p-1.5 rounded-lg bg-neutral-800"
+                                    >
+                                      <div className="w-5 h-5 rounded bg-[repeating-conic-gradient(#666_0%_25%,#888_0%_50%)] bg-[length:6px_6px] p-0.5 flex-shrink-0">
+                                        <div
+                                          className="w-full h-full rounded-sm"
+                                          style={{ backgroundColor: value }}
+                                        />
+                                      </div>
+                                      <div className="flex-1 min-w-0">
+                                        <p className="text-[10px] font-medium truncate" title={name}>{name}</p>
+                                        <p className="text-[9px] text-muted-foreground truncate">
+                                          {value}
+                                        </p>
+                                      </div>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
 
                             {/* Typography */}
                             <div>
@@ -415,45 +569,14 @@ export default function DesignSystemsSettingsPage() {
                       </TabsContent>
 
                       <TabsContent value="components" className="mt-4">
-                        <ScrollArea className="h-[400px]">
-                          <div className="space-y-4 pr-4">
-                            {Object.entries(selectedSystem.components).map(([key, spec]) => (
-                              <Card key={key} className="bg-muted/30">
-                                <CardHeader className="py-3">
-                                  <CardTitle className="text-sm">{spec.name}</CardTitle>
-                                  <CardDescription className="text-xs">
-                                    {spec.description}
-                                  </CardDescription>
-                                </CardHeader>
-                                <CardContent className="py-2">
-                                  <div className="flex flex-wrap gap-1">
-                                    {spec.variants?.map((v) => (
-                                      <Badge key={v} variant="outline" className="text-[10px]">
-                                        {v}
-                                      </Badge>
-                                    ))}
-                                  </div>
-                                  {spec.doAndDont && (spec.doAndDont.do?.length > 0 || spec.doAndDont.dont?.length > 0) && (
-                                    <div className="mt-2 grid grid-cols-2 gap-2 text-xs">
-                                      {spec.doAndDont.do?.[0] && (
-                                        <div className="p-2 rounded bg-emerald-500/10 text-emerald-400">
-                                          <p className="font-medium">Do</p>
-                                          <p className="text-[10px]">{spec.doAndDont.do[0]}</p>
-                                        </div>
-                                      )}
-                                      {spec.doAndDont.dont?.[0] && (
-                                        <div className="p-2 rounded bg-red-500/10 text-red-400">
-                                          <p className="font-medium">Don&apos;t</p>
-                                          <p className="text-[10px]">{spec.doAndDont.dont[0]}</p>
-                                        </div>
-                                      )}
-                                    </div>
-                                  )}
-                                </CardContent>
-                              </Card>
-                            ))}
-                          </div>
-                        </ScrollArea>
+                        <div className="p-3 rounded-lg bg-primary/5 border border-primary/20 mb-4">
+                          <p className="text-sm font-medium text-primary">Component Library</p>
+                          <p className="text-xs text-muted-foreground mt-1">
+                            Use the <strong>Preview</strong> tab to see live components with design tokens applied.
+                            Toggle between light/dark mode using the sun/moon button.
+                          </p>
+                        </div>
+                        <ComponentPreview designSystem={selectedSystem} />
                       </TabsContent>
 
                       <TabsContent value="guidelines" className="mt-4">
@@ -469,33 +592,143 @@ export default function DesignSystemsSettingsPage() {
                       <TabsContent value="examples" className="mt-4">
                         <ScrollArea className="h-[400px]">
                           <div className="space-y-4 pr-4">
-                            {selectedSystem.examples.length === 0 ? (
-                              <p className="text-sm text-muted-foreground text-center py-8">
-                                No code examples defined.
-                              </p>
-                            ) : (
-                              selectedSystem.examples.map((example) => (
-                                <Card key={example.id} className="bg-muted/30">
-                                  <CardHeader className="py-3">
-                                    <CardTitle className="text-sm">{example.title}</CardTitle>
-                                    <CardDescription className="text-xs">
-                                      {example.description}
-                                    </CardDescription>
-                                  </CardHeader>
-                                  <CardContent className="py-2">
-                                    <pre className="text-xs overflow-x-auto bg-background/50 p-3 rounded">
-                                      <code>{example.code}</code>
-                                    </pre>
-                                    <div className="flex gap-1 mt-2">
-                                      {example.tags.map((tag) => (
-                                        <Badge key={tag} variant="outline" className="text-[10px]">
-                                          {tag}
-                                        </Badge>
-                                      ))}
-                                    </div>
-                                  </CardContent>
-                                </Card>
-                              ))
+                            {/* Default examples showing how to use components */}
+                            {[
+                              {
+                                id: 'button-example',
+                                title: 'Button Component',
+                                description: 'Primary action buttons with variants',
+                                code: `import { Button } from '@/components/ui/button';
+
+// Primary button (uses primary token)
+<Button>Save Changes</Button>
+
+// Secondary button
+<Button variant="secondary">Cancel</Button>
+
+// Outline button
+<Button variant="outline">Edit</Button>
+
+// Destructive action
+<Button variant="destructive">Delete</Button>`,
+                                tags: ['button', 'action'],
+                              },
+                              {
+                                id: 'card-example',
+                                title: 'Card Layout',
+                                description: 'Content container with header and actions',
+                                code: `import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+
+<Card>
+  <CardHeader>
+    <CardTitle>Card Title</CardTitle>
+    <CardDescription>Card description text</CardDescription>
+  </CardHeader>
+  <CardContent>
+    <p>Card content goes here</p>
+  </CardContent>
+  <CardFooter className="flex justify-end gap-2">
+    <Button variant="outline">Cancel</Button>
+    <Button>Save</Button>
+  </CardFooter>
+</Card>`,
+                                tags: ['card', 'layout'],
+                              },
+                              {
+                                id: 'form-example',
+                                title: 'Form with Inputs',
+                                description: 'Form fields with labels and validation',
+                                code: `import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Button } from '@/components/ui/button';
+
+<form className="space-y-4">
+  <div className="space-y-2">
+    <Label htmlFor="email">Email</Label>
+    <Input id="email" type="email" placeholder="you@example.com" />
+  </div>
+  <div className="space-y-2">
+    <Label htmlFor="password">Password</Label>
+    <Input id="password" type="password" />
+  </div>
+  <Button type="submit" className="w-full">Sign In</Button>
+</form>`,
+                                tags: ['form', 'input'],
+                              },
+                              {
+                                id: 'badge-example',
+                                title: 'Status Badges',
+                                description: 'Status indicators and labels',
+                                code: `import { Badge } from '@/components/ui/badge';
+
+// Default badge
+<Badge>New</Badge>
+
+// Status badges with custom colors
+<Badge className="bg-emerald-500/15 text-emerald-500 border-emerald-500/25">
+  Active
+</Badge>
+
+<Badge className="bg-amber-500/15 text-amber-500 border-amber-500/25">
+  Pending
+</Badge>
+
+<Badge variant="destructive">Error</Badge>`,
+                                tags: ['badge', 'status'],
+                              },
+                            ].map((example) => (
+                              <Card key={example.id} className="bg-muted/30">
+                                <CardHeader className="py-3">
+                                  <CardTitle className="text-sm">{example.title}</CardTitle>
+                                  <CardDescription className="text-xs">
+                                    {example.description}
+                                  </CardDescription>
+                                </CardHeader>
+                                <CardContent className="py-2">
+                                  <pre className="text-xs overflow-x-auto bg-background/50 p-3 rounded">
+                                    <code>{example.code}</code>
+                                  </pre>
+                                  <div className="flex gap-1 mt-2">
+                                    {example.tags.map((tag) => (
+                                      <Badge key={tag} variant="outline" className="text-[10px]">
+                                        {tag}
+                                      </Badge>
+                                    ))}
+                                  </div>
+                                </CardContent>
+                              </Card>
+                            ))}
+
+                            {/* Show custom examples from design system if any */}
+                            {selectedSystem.examples.length > 0 && (
+                              <>
+                                <div className="border-t pt-4 mt-4">
+                                  <p className="text-sm font-medium mb-3">Custom Examples</p>
+                                </div>
+                                {selectedSystem.examples.map((example) => (
+                                  <Card key={example.id} className="bg-muted/30">
+                                    <CardHeader className="py-3">
+                                      <CardTitle className="text-sm">{example.title}</CardTitle>
+                                      <CardDescription className="text-xs">
+                                        {example.description}
+                                      </CardDescription>
+                                    </CardHeader>
+                                    <CardContent className="py-2">
+                                      <pre className="text-xs overflow-x-auto bg-background/50 p-3 rounded">
+                                        <code>{example.code}</code>
+                                      </pre>
+                                      <div className="flex gap-1 mt-2">
+                                        {example.tags.map((tag) => (
+                                          <Badge key={tag} variant="outline" className="text-[10px]">
+                                            {tag}
+                                          </Badge>
+                                        ))}
+                                      </div>
+                                    </CardContent>
+                                  </Card>
+                                ))}
+                              </>
                             )}
                           </div>
                         </ScrollArea>
@@ -589,6 +822,112 @@ export default function DesignSystemsSettingsPage() {
           <DialogFooter>
             <Button variant="outline" onClick={() => setUploadDialogOpen(false)}>
               Cancel
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Figma Import Dialog */}
+      <Dialog open={figmaDialogOpen} onOpenChange={setFigmaDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Import from Figma</DialogTitle>
+            <DialogDescription>
+              Import design tokens from a Figma file or frame. Paste the URL from your browser.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4">
+            {/* Figma URL input */}
+            <div className="space-y-2">
+              <Label htmlFor="figma-url">Figma URL</Label>
+              <Input
+                id="figma-url"
+                placeholder="https://www.figma.com/design/..."
+                value={figmaUrl}
+                onChange={(e) => setFigmaUrl(e.target.value)}
+                disabled={figmaImporting}
+              />
+              <p className="text-xs text-muted-foreground">
+                Paste the URL of a Figma file or specific frame
+              </p>
+            </div>
+
+            {/* Optional name */}
+            <div className="space-y-2">
+              <Label htmlFor="figma-name">Name (optional)</Label>
+              <Input
+                id="figma-name"
+                placeholder="My Design System"
+                value={figmaName}
+                onChange={(e) => setFigmaName(e.target.value)}
+                disabled={figmaImporting}
+              />
+              <p className="text-xs text-muted-foreground">
+                Leave empty to use the Figma file/frame name
+              </p>
+            </div>
+
+            {/* Set as default checkbox */}
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="figma-default"
+                checked={figmaSetDefault}
+                onCheckedChange={(checked) => setFigmaSetDefault(checked === true)}
+                disabled={figmaImporting}
+              />
+              <Label htmlFor="figma-default" className="text-sm font-normal cursor-pointer">
+                Set as default design system
+              </Label>
+            </div>
+
+            {/* Info box */}
+            <div className="p-3 rounded-lg bg-muted/50 text-xs text-muted-foreground">
+              <p className="font-medium mb-1">What gets imported:</p>
+              <ul className="list-disc list-inside space-y-0.5">
+                <li>Colors from fills and backgrounds</li>
+                <li>Typography (fonts, sizes, weights)</li>
+                <li>Spacing and padding values</li>
+                <li>Border radius values</li>
+                <li>Shadow effects</li>
+              </ul>
+            </div>
+
+            {/* Error message */}
+            {figmaError && (
+              <div className="flex items-center gap-2 p-3 rounded-lg bg-destructive/10 text-destructive text-sm">
+                <AlertCircle className="h-4 w-4 flex-shrink-0" />
+                {figmaError}
+              </div>
+            )}
+          </div>
+
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setFigmaDialogOpen(false);
+                setFigmaError(null);
+              }}
+              disabled={figmaImporting}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleFigmaImport}
+              disabled={figmaImporting || !figmaUrl.trim()}
+            >
+              {figmaImporting ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Importing...
+                </>
+              ) : (
+                <>
+                  <Link2 className="h-4 w-4 mr-2" />
+                  Import
+                </>
+              )}
             </Button>
           </DialogFooter>
         </DialogContent>

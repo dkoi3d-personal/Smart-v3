@@ -19,6 +19,7 @@ import {
   type BuildHistoryEntry,
   type MetricsSnapshot,
 } from '@/lib/build-history';
+import { getProjectDir } from '@/lib/project-paths';
 import path from 'path';
 import fs from 'fs/promises';
 
@@ -179,7 +180,7 @@ export async function POST(request: NextRequest) {
 }
 
 /**
- * Helper to get project directory from projects.json
+ * Helper to get project directory from projects.json or derive from projectId
  */
 async function getProjectDirectory(projectId: string): Promise<string | null> {
   try {
@@ -189,7 +190,19 @@ async function getProjectDirectory(projectId: string): Promise<string | null> {
     // Handle both array format and {projects: [...]} format
     const projects = Array.isArray(parsed) ? parsed : (parsed.projects || []);
     const project = projects.find((p: any) => p.projectId === projectId);
-    return project?.projectDirectory || null;
+
+    // Use stored projectDirectory or fallback to derived path
+    if (project?.projectDirectory) {
+      return project.projectDirectory;
+    }
+
+    // Fallback: derive from coding directory + projectId
+    // This handles cases where projectDirectory wasn't saved to projects.json
+    if (project) {
+      return getProjectDir(projectId);
+    }
+
+    return null;
   } catch {
     return null;
   }

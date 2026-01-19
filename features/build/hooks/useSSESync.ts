@@ -208,6 +208,32 @@ export function useSSESync({ projectId, autoConnect = false }: UseSSESyncOptions
       console.log('[SSESync] Connected to stream');
       setConnectionStatus('connected');
       setLastHeartbeat(Date.now());
+
+      // Fallback: Load initial state from disk in case SSE doesn't send tasks:loaded event
+      // This ensures cards are displayed even if the stream connects after build completion
+      fetch(`/api/build-history?projectId=${projectId}&includeStories=true`)
+        .then((r) => r.json())
+        .then((data) => {
+          const builds = data.builds || [];
+          const currentBuild = builds.find((b: any) => b.isCurrent);
+          const latestBuild = builds.length > 0 ? builds[builds.length - 1] : null;
+          const buildToLoad = currentBuild || latestBuild;
+
+          // Only set if store is currently empty (don't override SSE events)
+          // API returns tasks/epics directly on the build object (not nested in .stories)
+          const currentTasks = useBuildPageStore.getState().tasks;
+          const currentEpics = useBuildPageStore.getState().epics;
+
+          if (currentTasks.length === 0 && buildToLoad?.tasks?.length > 0) {
+            setTasks(buildToLoad.tasks);
+            console.log(`[SSESync] Fallback loaded ${buildToLoad.tasks.length} tasks from history`);
+          }
+          if (currentEpics.length === 0 && buildToLoad?.epics?.length > 0) {
+            setEpics(buildToLoad.epics);
+            console.log(`[SSESync] Fallback loaded ${buildToLoad.epics.length} epics from history`);
+          }
+        })
+        .catch((err) => console.warn('[SSESync] Failed to load fallback state:', err));
     };
 
     eventSource.onmessage = handleEvent;

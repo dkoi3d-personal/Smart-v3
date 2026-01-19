@@ -635,12 +635,14 @@ export const EPIC_API_CATALOG: EpicApiDefinition[] = [
   },
 
   // ===== BILLING CATEGORY =====
+  // NOTE: Epic's public sandbox does NOT provide billing/financial test data.
+  // These APIs only work in production environments with proper agreements.
   {
     id: 'coverage',
     resourceType: 'Coverage',
     category: 'billing',
     displayName: 'Insurance Coverage',
-    description: 'Insurance plans, member IDs, coverage details',
+    description: 'Insurance plans, member IDs, coverage details (production only - no sandbox data)',
     icon: CreditCard,
     color: 'emerald',
     components: [
@@ -656,14 +658,14 @@ export const EPIC_API_CATALOG: EpicApiDefinition[] = [
     canSearch: true,
     requires: ['patient'],
     exampleQueries: ['Get insurance info', 'View coverage details'],
-    sandboxTestData: true,
+    sandboxTestData: false, // Epic sandbox does NOT have billing data
   },
   {
     id: 'explanation-of-benefit',
     resourceType: 'ExplanationOfBenefit',
     category: 'billing',
     displayName: 'Explanation of Benefits',
-    description: 'EOB statements showing what insurance paid',
+    description: 'EOB statements showing what insurance paid (production only - no sandbox data)',
     icon: CreditCard,
     color: 'emerald',
     components: [
@@ -679,7 +681,7 @@ export const EPIC_API_CATALOG: EpicApiDefinition[] = [
     canSearch: true,
     requires: ['patient'],
     exampleQueries: ['Get EOB statements', 'View payment breakdown'],
-    sandboxTestData: true,
+    sandboxTestData: false, // Epic sandbox does NOT have billing data
   },
 
   // ===== PROVIDERS CATEGORY =====

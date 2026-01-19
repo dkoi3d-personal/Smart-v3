@@ -154,6 +154,7 @@ import {
   useResearchSuggestions,
   useOverviewMode,
   useUserPrompt,
+  loadFromLocalStorage,
 } from '@/features/build/stores';
 import {
   startNewBuildOnExistingProject,
@@ -273,10 +274,57 @@ export default function BuildPage() {
     resetStore,
   } = useBuildPageStore();
 
-  // Reset store when projectId changes (switching projects)
+  // Load current build data when projectId changes, then reset non-critical state
   useEffect(() => {
-    resetStore();
-  }, [projectId, resetStore]);
+    async function initializeBuildPage() {
+      let loadedTasks = false;
+      let loadedEpics = false;
+
+      try {
+        // First, fetch build history to get current/latest build data
+        const response = await fetch(`/api/build-history?projectId=${projectId}&includeStories=true`);
+        if (response.ok) {
+          const data = await response.json();
+          const builds = data.builds || [];
+
+          // Find the most recent build (either current or latest archived)
+          const currentBuild = builds.find((b: any) => b.isCurrent);
+          const latestBuild = builds.length > 0 ? builds[builds.length - 1] : null;
+          const buildToLoad = currentBuild || latestBuild;
+
+          // Load tasks and epics from the build before resetting other state
+          // API returns tasks/epics directly on the build object (not nested in .stories)
+          if (buildToLoad?.tasks?.length > 0) {
+            setTasks(buildToLoad.tasks);
+            loadedTasks = true;
+            console.log(`[BuildPage] Loaded ${buildToLoad.tasks.length} tasks from build history`);
+          }
+          if (buildToLoad?.epics?.length > 0) {
+            setEpics(buildToLoad.epics);
+            loadedEpics = true;
+            console.log(`[BuildPage] Loaded ${buildToLoad.epics.length} epics from build history`);
+          }
+
+          // Set phase based on build status
+          if (buildToLoad?.status === 'in_progress') {
+            setPhase('building');
+          } else if (buildToLoad?.status === 'completed') {
+            setPhase('completed');
+          } else {
+            setPhase('idle');
+          }
+        }
+      } catch (err) {
+        console.warn('[BuildPage] Failed to load build history:', err);
+      }
+
+      // NOTE: localStorage backup is only used as last resort when API completely fails
+      // We do NOT load from localStorage if we got ANY data from API, to prevent stale data mixing
+      // The localStorage backup is mainly for crash recovery during an active build
+    }
+
+    initializeBuildPage();
+  }, [projectId, resetStore, setTasks, setEpics, setPhase, setProjectDirectory]);
 
   // Local state that's NOT in the store (specific to this page)
   const [deploymentUrl, setDeploymentUrl] = useState<string | null>(null);

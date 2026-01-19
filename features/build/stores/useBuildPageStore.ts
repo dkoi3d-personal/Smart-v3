@@ -344,6 +344,55 @@ const initialState: BuildPageState = {
 };
 
 // ============================================================================
+// localStorage Backup Utilities
+// ============================================================================
+
+const STORAGE_KEY_PREFIX = 'build-page-backup';
+
+function getStorageKey(projectId: string, type: 'tasks' | 'epics'): string {
+  return `${STORAGE_KEY_PREFIX}:${projectId}:${type}`;
+}
+
+function saveToLocalStorage(projectId: string | undefined, tasks: Task[], epics: Epic[]): void {
+  if (!projectId || typeof window === 'undefined') return;
+  try {
+    if (tasks.length > 0) {
+      localStorage.setItem(getStorageKey(projectId, 'tasks'), JSON.stringify(tasks));
+    }
+    if (epics.length > 0) {
+      localStorage.setItem(getStorageKey(projectId, 'epics'), JSON.stringify(epics));
+    }
+  } catch (err) {
+    console.warn('[BuildStore] Failed to save to localStorage:', err);
+  }
+}
+
+export function loadFromLocalStorage(projectId: string): { tasks: Task[]; epics: Epic[] } {
+  if (typeof window === 'undefined') return { tasks: [], epics: [] };
+  try {
+    const tasksStr = localStorage.getItem(getStorageKey(projectId, 'tasks'));
+    const epicsStr = localStorage.getItem(getStorageKey(projectId, 'epics'));
+    return {
+      tasks: tasksStr ? JSON.parse(tasksStr) : [],
+      epics: epicsStr ? JSON.parse(epicsStr) : [],
+    };
+  } catch (err) {
+    console.warn('[BuildStore] Failed to load from localStorage:', err);
+    return { tasks: [], epics: [] };
+  }
+}
+
+export function clearLocalStorageBackup(projectId: string): void {
+  if (typeof window === 'undefined') return;
+  try {
+    localStorage.removeItem(getStorageKey(projectId, 'tasks'));
+    localStorage.removeItem(getStorageKey(projectId, 'epics'));
+  } catch (err) {
+    console.warn('[BuildStore] Failed to clear localStorage:', err);
+  }
+}
+
+// ============================================================================
 // Store Creation
 // ============================================================================
 
@@ -363,39 +412,81 @@ export const useBuildPageStore = create<BuildPageState & BuildPageActions>()(
       setIterationRequest: (iterationRequest) => set({ iterationRequest }, false, 'setIterationRequest'),
 
       // Support both direct value and functional update: setEpics(newEpics) or setEpics(prev => [...prev, newEpic])
+      // Also saves to localStorage as backup
       setEpics: (epicsOrFn) =>
         set(
-          (state) => ({
-            epics: typeof epicsOrFn === 'function' ? epicsOrFn(state.epics) : epicsOrFn,
-          }),
+          (state) => {
+            const newEpics = typeof epicsOrFn === 'function' ? epicsOrFn(state.epics) : epicsOrFn;
+            // Save to localStorage as backup (use projectDirectory as unique key)
+            if (state.projectDirectory) {
+              saveToLocalStorage(state.projectDirectory, state.tasks, newEpics);
+            }
+            return { epics: newEpics };
+          },
           false,
           'setEpics'
         ),
-      addEpic: (epic) => set((state) => ({ epics: [...state.epics, epic] }), false, 'addEpic'),
+      addEpic: (epic) =>
+        set(
+          (state) => {
+            const newEpics = [...state.epics, epic];
+            if (state.projectDirectory) {
+              saveToLocalStorage(state.projectDirectory, state.tasks, newEpics);
+            }
+            return { epics: newEpics };
+          },
+          false,
+          'addEpic'
+        ),
       updateEpic: (epicId, updates) =>
         set(
-          (state) => ({
-            epics: state.epics.map((e) => (e.id === epicId ? { ...e, ...updates } : e)),
-          }),
+          (state) => {
+            const newEpics = state.epics.map((e) => (e.id === epicId ? { ...e, ...updates } : e));
+            if (state.projectDirectory) {
+              saveToLocalStorage(state.projectDirectory, state.tasks, newEpics);
+            }
+            return { epics: newEpics };
+          },
           false,
           'updateEpic'
         ),
 
       // Support both direct value and functional update: setTasks(newTasks) or setTasks(prev => [...prev, newTask])
+      // Also saves to localStorage as backup
       setTasks: (tasksOrFn) =>
         set(
-          (state) => ({
-            tasks: typeof tasksOrFn === 'function' ? tasksOrFn(state.tasks) : tasksOrFn,
-          }),
+          (state) => {
+            const newTasks = typeof tasksOrFn === 'function' ? tasksOrFn(state.tasks) : tasksOrFn;
+            // Save to localStorage as backup (use projectDirectory as unique key)
+            if (state.projectDirectory) {
+              saveToLocalStorage(state.projectDirectory, newTasks, state.epics);
+            }
+            return { tasks: newTasks };
+          },
           false,
           'setTasks'
         ),
-      addTask: (task) => set((state) => ({ tasks: [...state.tasks, task] }), false, 'addTask'),
+      addTask: (task) =>
+        set(
+          (state) => {
+            const newTasks = [...state.tasks, task];
+            if (state.projectDirectory) {
+              saveToLocalStorage(state.projectDirectory, newTasks, state.epics);
+            }
+            return { tasks: newTasks };
+          },
+          false,
+          'addTask'
+        ),
       updateTask: (taskId, updates) =>
         set(
-          (state) => ({
-            tasks: state.tasks.map((t) => (t.id === taskId ? { ...t, ...updates } : t)),
-          }),
+          (state) => {
+            const newTasks = state.tasks.map((t) => (t.id === taskId ? { ...t, ...updates } : t));
+            if (state.projectDirectory) {
+              saveToLocalStorage(state.projectDirectory, newTasks, state.epics);
+            }
+            return { tasks: newTasks };
+          },
           false,
           'updateTask'
         ),

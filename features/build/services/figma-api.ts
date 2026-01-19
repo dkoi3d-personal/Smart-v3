@@ -15,6 +15,7 @@ export interface IconInfo {
   contextLabel?: string;
   contextPath?: string;
   isIllustration?: boolean;
+  description?: string; // Human-readable description of what the icon visually shows
 }
 
 export interface FigmaDesignContext {

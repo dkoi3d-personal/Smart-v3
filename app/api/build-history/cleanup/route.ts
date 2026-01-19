@@ -31,23 +31,36 @@ export async function POST(request: NextRequest) {
     }
 
     // Archive if we have metadata OR stories (handles cloned repos with stories but no metadata)
+    let archiveResult = { archived: false, buildNumber: 0 };
     if (existingMetadata || hasStories) {
       if (existingMetadata) {
         console.log(`[Cleanup] Found existing build ${existingMetadata.buildNumber} (status: ${existingMetadata.status}), archiving...`);
       } else {
         console.log('[Cleanup] Found stories without metadata (cloned repo), archiving...');
       }
-      await archiveCurrentBuild(projectDirectory);
-      console.log('[Cleanup] Archived existing build');
+
+      // IMPORTANT: Wait for archive to fully complete before cleanup
+      archiveResult = await archiveCurrentBuild(projectDirectory);
+
+      if (archiveResult.archived) {
+        console.log(`[Cleanup] Successfully archived build ${archiveResult.buildNumber}`);
+      } else {
+        console.log('[Cleanup] Archive returned without archiving (may already be archived)');
+      }
     } else {
       console.log('[Cleanup] No existing build to archive');
     }
 
-    // Clean up build artifacts (deletes figma-context, figma-frames, stories, etc.)
+    // Clean up build artifacts ONLY after archive is confirmed complete
+    // This prevents race conditions where cleanup runs before archive finishes
     await cleanupBuildArtifacts(projectDirectory);
     console.log('[Cleanup] Cleaned up build artifacts');
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({
+      success: true,
+      archived: archiveResult.archived,
+      buildNumber: archiveResult.buildNumber,
+    });
 
   } catch (error) {
     console.error('[Cleanup] Error:', error);

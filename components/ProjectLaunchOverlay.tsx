@@ -21,10 +21,10 @@ import {
 } from 'lucide-react';
 
 const funnyMessages = [
-  // Ochsner AI Studio themed messages
-  { icon: Zap, text: "Ochsner AI Studio is spinning up...", subtext: "Building smarter, shipping faster" },
+  // Employers AI Studio themed messages
+  { icon: Zap, text: "Employers AI Studio is spinning up...", subtext: "Building smarter, shipping faster" },
   { icon: Brain, text: "Studio agents are syncing...", subtext: "Collective intelligence activated" },
-  { icon: Rocket, text: "Launching Ochsner AI Studio...", subtext: "Your idea is about to become reality" },
+  { icon: Rocket, text: "Launching Employers AI Studio...", subtext: "Your idea is about to become reality" },
   { icon: Sparkles, text: "Studio magic in progress...", subtext: "Watch your vision come to life" },
 
   // Agent personality messages
@@ -56,7 +56,7 @@ const funnyMessages = [
   { icon: Sparkles, text: "Generating witty variable names...", subtext: "const pizzaTime = new Date()" },
   { icon: Coffee, text: "Optimizing the snack break schedule...", subtext: "AI work-life balance is important" },
   { icon: Zap, text: "Converting caffeine to code...", subtext: "It's basically alchemy" },
-  { icon: Cpu, text: "Ochsner AI Studio is thinking hard...", subtext: "Neurons firing at maximum capacity" },
+  { icon: Cpu, text: "Employers AI Studio is thinking hard...", subtext: "Neurons firing at maximum capacity" },
   { icon: GitBranch, text: "Branching into possibilities...", subtext: "Every great app starts with git init" },
 ];
 

@@ -441,12 +441,12 @@ export async function cleanupBuildArtifacts(projectDir: string): Promise<void> {
   console.log('[Build History] Cleaning up build artifacts for fresh start...');
 
   // Files to DELETE (pure build artifacts)
+  // NOTE: figma-context.json is now PRESERVED for reference in subsequent builds
   const filesToDelete = [
     STORIES_FILE,           // .agile-stories.json
     AGENT_MESSAGES_FILE,    // .agent-messages.json
     BUILD_LOGS_FILE,        // .build-logs.json
     TEST_RESULTS_FILE,      // .vitest-results.json
-    'figma-context.json',   // MUST delete so new extraction replaces it
     'figma-screens.json',   // Large screens data file
     'project-state.json',   // Clear old build state (tasks, epics from previous builds)
   ];
@@ -486,17 +486,12 @@ export async function cleanupBuildArtifacts(projectDir: string): Promise<void> {
   // NOTE: We intentionally KEEP these files:
   // - design-tokens.json (tokens are implemented in codebase, diff detection handles updates)
   // - figma-icons/ (SVGs may be imported in components)
-  // We DELETE figma-context.json so PO never sees stale data from previous builds
+  // - figma-context.json (preserved for reference in subsequent builds)
 
-  // CRITICAL: Create an empty stories file to prevent git from restoring old stories
-  // When the file doesn't exist, Claude CLI might restore it from git HEAD
-  // Creating an empty file ensures the PO starts fresh
-  const emptyStories = { tasks: [], epics: [], lastUpdated: new Date().toISOString() };
-  await fs.writeFile(
-    path.join(projectDir, STORIES_FILE),
-    JSON.stringify(emptyStories, null, 2)
-  );
-  console.log('[Build History] Created empty .agile-stories.json to prevent git restore');
+  // NOTE: We do NOT create an empty stories file here anymore.
+  // The new build initialization (resetForNewBuild) will create the stories file.
+  // This prevents a race condition where the UI resets before stories are properly archived,
+  // and allows the build page to load existing stories from history before starting fresh.
 
   console.log('[Build History] Build artifacts cleaned up');
 }
@@ -596,11 +591,20 @@ export async function completeBuild(
   // Archive the completed build immediately (don't wait for next build to start)
   const archiveResult = await archiveCurrentBuild(projectDir);
 
-  // Delete the stale .build-metadata.json since it's now archived
+  // Delete the stale build files since they're now archived
   if (archiveResult.archived) {
+    // Delete metadata file
     try {
       await fs.unlink(path.join(projectDir, BUILD_METADATA_FILE));
       console.log(`[Build History] Cleaned up .build-metadata.json after archiving build ${metadata.buildNumber}`);
+    } catch {
+      // File already deleted or doesn't exist
+    }
+
+    // Delete stories file (prevents duplicate archiving on next build start)
+    try {
+      await fs.unlink(path.join(projectDir, STORIES_FILE));
+      console.log(`[Build History] Cleaned up .agile-stories.json after archiving build ${metadata.buildNumber}`);
     } catch {
       // File already deleted or doesn't exist
     }

@@ -69,8 +69,10 @@ export class StoryFileManager {
     }
 
     const sessionStartTime = sessionCreatedAt.getTime();
-    // Allow 1 hour buffer for clock skew, but reject anything older
-    const maxAgeMs = 60 * 60 * 1000; // 1 hour
+    // Allow 400 days buffer (more than 1 year) to handle clock skew between different sources
+    // e.g., Date.now() on server vs session createdAt from database/API
+    // The staleness check is mainly to catch stories restored from git after weeks/months
+    const maxAgeMs = 400 * 24 * 60 * 60 * 1000; // 400 days
 
     if (taskTimestamp < sessionStartTime - maxAgeMs) {
       const taskAge = Math.round((sessionStartTime - taskTimestamp) / (1000 * 60 * 60));

@@ -142,12 +142,12 @@ TASK FORMAT:
 5. ENSURE all non-foundation stories have dependsOn: ["story-foundation"]
 
 RULES:
-- Create 10-35 stories depending on complexity
+- Create 5-60 stories to fully cover all requirements
 - story-foundation is ALWAYS the first story
 - ALL other stories depend on story-foundation
 - Every feature mentioned = at least one story
 - Each story needs 2-4 specific acceptance criteria
-- Use unique IDs: epic-{timestamp} and story-{timestamp}
+- Use unique IDs with CURRENT timestamp: epic-{TIMESTAMP} and story-{TIMESTAMP} where TIMESTAMP = current Unix milliseconds (will be provided in context)
 - ⚠️ NO AUTH unless requirements explicitly ask for login/signup!
 
 === AUTH DETECTION ===
@@ -284,6 +284,26 @@ This enables concurrent database access and prevents "database is locked" errors
 3. If error mentions "hooks in Server Component" → add 'use client' at TOP of file
 4. If error mentions "Html/Head/Main/NextScript" → you're using Pages Router patterns, fix to App Router
 5. If stuck after 3 attempts, set status to "failed" and add result describing the error
+
+=== NEXT.JS API ROUTE RULES ===
+🚨 ALL API routes that use searchParams OR database (Prisma) MUST include:
+   export const dynamic = 'force-dynamic';
+
+This prevents Next.js build errors when the database isn't ready during static analysis.
+
+Example API route:
+\`\`\`typescript
+import { NextRequest, NextResponse } from 'next/server';
+import { prisma } from '@/lib/prisma';
+
+// REQUIRED for routes using searchParams or database
+export const dynamic = 'force-dynamic';
+
+export async function GET(request: NextRequest) {
+  const searchParams = request.nextUrl.searchParams;
+  // ... rest of handler
+}
+\`\`\`
 
 === NEXT.JS SSR CRITICAL RULES ===
 ⚠️ STALE CACHE FIX: If you see "Html imported outside _document" or similar errors:
@@ -529,6 +549,31 @@ PRISMA WORKFLOW (use local binary, NOT npx!):
 ./node_modules/.bin/prisma db seed      # Run seed script
 \`\`\`
 
+=== 🖼️ ICONS & IMAGES IN SEED DATA ===
+When writing imageUrl fields in prisma/seed.ts, you MUST use ACTUAL files from public/figma-icons/:
+
+✅ CORRECT - Use files that EXIST:
+\`\`\`typescript
+// FIRST: Check what files exist in public/figma-icons/
+// Then use the EXACT filename:
+imageUrl: '/figma-icons/illustration-this-week.svg',  // File exists!
+imageUrl: '/figma-icons/icon-submit-weight.svg',      // File exists!
+\`\`\`
+
+❌ WRONG - Never invent filenames:
+\`\`\`typescript
+// These files DON'T EXIST - will show broken images!
+imageUrl: '/figma-icons/illustration-healthy-eating.svg',  // INVENTED!
+imageUrl: '/images/missions/healthy-eating.jpg',           // WRONG PATH!
+\`\`\`
+
+🔍 BEFORE using an imageUrl, VERIFY THE FILE EXISTS:
+1. Read public/figma-icons/icon-manifest.json to see available icons
+2. Or run: ls public/figma-icons/ to list actual files
+3. Use the EXACT filename from the list
+
+⚠️ If the acceptance criteria references an image that doesn't exist, look for the closest match in icon-manifest.json or leave imageUrl empty.
+
 === FEATURE STORIES ===
 After setup, build features:
 - Edit app/page.tsx for the main page
@@ -732,9 +777,95 @@ const checkEpicConnection = async () => {
 
 REMEMBER: Always use http://localhost:3000 for ALL Epic API calls!
 
-=== STYLING ===
+=== STYLING & RESPONSIVE DESIGN (CRITICAL!) ===
 Use Tailwind classes directly - it's already configured!
-Example: <div className="flex items-center p-4 bg-blue-500 text-white">
+
+🚨 ALL COMPONENTS MUST BE RESPONSIVE! Use mobile-first design:
+
+RESPONSIVE BREAKPOINTS (mobile-first - add classes for LARGER screens):
+- Default: Mobile (< 640px) - base styles
+- sm: (≥640px) - Small tablets
+- md: (≥768px) - Tablets
+- lg: (≥1024px) - Laptops
+- xl: (≥1280px) - Desktops
+
+RESPONSIVE PATTERNS - Use these everywhere:
+
+1. RESPONSIVE GRID (stack on mobile, columns on larger):
+\`\`\`tsx
+<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+\`\`\`
+
+2. RESPONSIVE FLEX (stack or wrap on mobile):
+\`\`\`tsx
+<div className="flex flex-col sm:flex-row gap-4">
+\`\`\`
+
+3. RESPONSIVE PADDING/MARGIN:
+\`\`\`tsx
+<div className="p-2 sm:p-4 lg:p-6">
+\`\`\`
+
+4. RESPONSIVE TEXT:
+\`\`\`tsx
+<h1 className="text-xl sm:text-2xl lg:text-4xl">
+\`\`\`
+
+5. HIDE/SHOW ON BREAKPOINTS:
+\`\`\`tsx
+<span className="hidden sm:inline">Full text</span>
+<span className="sm:hidden">Short</span>
+\`\`\`
+
+6. RESPONSIVE WIDTH:
+\`\`\`tsx
+<div className="w-full sm:w-auto lg:w-1/2">
+\`\`\`
+
+7. RESPONSIVE SIDEBAR LAYOUT:
+\`\`\`tsx
+<div className="flex flex-col lg:flex-row">
+  <aside className="w-full lg:w-64 lg:shrink-0">...</aside>
+  <main className="flex-1">...</main>
+</div>
+\`\`\`
+
+❌ WRONG - Fixed widths break on mobile:
+<div className="w-[400px]"> ← Overflows on mobile!
+
+✅ CORRECT - Responsive widths:
+<div className="w-full max-w-md"> ← Constrains width but never overflows
+
+BUILT-IN RESPONSIVE UTILITY CLASSES (use these!):
+- container-responsive → Auto-padding container
+- grid-responsive → 1/2/3 column responsive grid
+- card-responsive → Card that stacks on mobile
+- layout-sidebar → Sidebar layout (stacks on mobile)
+- layout-sidebar-nav → Sidebar navigation
+- layout-sidebar-content → Main content area
+- text-heading-1/2/3 → Responsive heading sizes
+- btn-group-responsive → Button group that stacks on mobile
+- form-grid → 2-column form layout
+- form-grid-3 → 3-column form layout
+- desktop-only → Hidden on mobile
+- mobile-only → Hidden on desktop
+
+Example component with responsive design:
+\`\`\`tsx
+<div className="container-responsive">
+  <h1 className="text-heading-1 mb-4">Dashboard</h1>
+  <div className="layout-sidebar">
+    <nav className="layout-sidebar-nav">
+      {/* Sidebar */}
+    </nav>
+    <main className="layout-sidebar-content">
+      <div className="grid-responsive">
+        {/* Cards */}
+      </div>
+    </main>
+  </div>
+</div>
+\`\`\`
 
 === REACT HYDRATION - CRITICAL! ===
 ⚠️ NEVER write code that causes hydration mismatches (server/client content differs)!
@@ -817,6 +948,11 @@ After tests complete, you MUST update the story status in .agile-stories.json:
 - If ALL tests pass: Set status to "done"
 - If any test fails: Set status to "failed" and add "result" with error message
 
+🚫 NEVER mark a story as "failed" BEFORE running tests!
+- If no test file exists → CREATE the test file first, then run tests
+- If build fails → mark as "failed" (this is the only exception before tests run)
+- Only set status to "failed" AFTER you run tests and they actually fail
+
 ⚠️ JEST IS ALREADY SET UP - DO NOT reinstall or reconfigure!
 The scaffold has already created jest.config.js, jest.setup.js, and installed all dependencies.
 Just write tests and run them.
@@ -855,9 +991,10 @@ WORKFLOW:
    - You MUST verify the full build compiles!
    - If build fails: Set story to "failed" with error message and SKIP tests
 4. Write test file(s) that verify EACH acceptance criterion
+   ⚠️ DO NOT mark story as "failed" just because test file doesn't exist - CREATE IT!
 5. Run tests: npm test -- --coverage --passWithNoTests
 6. Parse the output: total tests, passed, failed, coverage %
-7. 🚨 MANDATORY: Update the story in .agile-stories.json:
+7. 🚨 MANDATORY: Update the story in .agile-stories.json ONLY AFTER running tests:
 
 If ALL tests pass:
 \`\`\`json
@@ -959,7 +1096,7 @@ NEVER just say "tests complete" - you MUST call the tool to update the system.`,
   security: {
     name: 'Security',
     color: '#EF4444', // red
-    systemPrompt: `You are the Security Agent, a DevSecOps expert and compliance auditor for Ochsner AI Studio.
+    systemPrompt: `You are the Security Agent, a DevSecOps expert and compliance auditor for Employers AI Studio.
 
 🛡️ INSURANCE CONTEXT: This application handles sensitive Workers' Compensation insurance data including PII (Personally Identifiable Information), claims data, and financial information.
 All security assessments MUST evaluate SOC 2, state insurance regulations, and NIST compliance requirements.
@@ -1076,7 +1213,7 @@ ANNOUNCE what you're scanning with insurance context. Be thorough!`,
   fixer: {
     name: 'Fixer',
     color: '#F59E0B', // amber
-    systemPrompt: `You are the Fixer agent, an expert debugger and error resolution specialist for Ochsner AI Studio.
+    systemPrompt: `You are the Fixer agent, an expert debugger and error resolution specialist for Employers AI Studio.
 
 🔧 YOUR PRIMARY MISSION: Keep fixing errors until the app is FULLY USABLE.
 

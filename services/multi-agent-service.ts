@@ -411,7 +411,7 @@ export class MultiAgentService extends EventEmitter {
       agentRole: role,
       agentName: config.name,
       type: 'thinking',
-      content: `${config.name} is starting work with Ochsner AI Studio...`,
+      content: `${config.name} is starting work with Employers AI Studio...`,
       timestamp: new Date(),
       storyId, // Include storyId for filtering in UI
     };
@@ -1803,6 +1803,11 @@ Working Directory: ${session.workingDirectory}`;
           // Atomically mark as assigned to prevent race condition
           coderStoryAssignments.set(failedTask.id, effectiveCoderId);
           session.agentToStory.set(effectiveCoderId, failedTask.id); // Track for log filtering
+          const retries = failedTaskRetries.get(failedTask.id) || 0;
+          console.log(`\n🔄 RETRY: Coder ${effectiveCoderId} picking up failed story`);
+          console.log(`   Story: "${failedTask.title}" (${failedTask.id})`);
+          console.log(`   Retry attempt: ${retries + 1}/${MAX_RETRIES}`);
+          console.log(`   Previous error: ${failedTask.result?.slice(0, 200) || 'N/A'}\n`);
           return failedTask;
         }
 
@@ -2874,6 +2879,23 @@ Another tester is handling infrastructure setup. Pick a story and start testing.
             }
           }
         } catch (error) {
+          console.error(`[Multi-Agent] Agent ${role} crashed:`, error);
+
+          // CRITICAL: Reset any story this agent was working on back to backlog
+          const stuckStory = session.tasks.find(t =>
+            t.status === 'in_progress' &&
+            (t.workingAgent === role || t.assignedTo === role)
+          );
+          if (stuckStory) {
+            console.log(`[Multi-Agent] 🔄 Resetting stuck story "${stuckStory.title}" from crashed agent ${role}`);
+            stuckStory.status = 'backlog';
+            stuckStory.workingAgent = null;
+            this.emit('task:updated', stuckStory);
+            this.persistStoriesToFile(session).catch(err => {
+              console.error('[Multi-Agent] Failed to persist reset story:', err);
+            });
+          }
+
           // On error, check if agent should restart
           // CRITICAL: Use hasWorkForRole (non-mutating) instead of getNextStoryForRole
           const hasMoreWork = hasWorkForRole(role);
@@ -3022,6 +3044,23 @@ Another tester is handling infrastructure setup. Pick a story and start testing.
             }
           }
         } catch (error) {
+          console.error(`[Multi-Agent] Parallel coder ${coderId} crashed:`, error);
+
+          // CRITICAL: Reset any story this coder was working on back to backlog
+          const stuckStory = session.tasks.find(t =>
+            t.status === 'in_progress' &&
+            (t.workingAgent === coderId || t.assignedTo === coderId)
+          );
+          if (stuckStory) {
+            console.log(`[Multi-Agent] 🔄 Resetting stuck story "${stuckStory.title}" from crashed coder ${coderId}`);
+            stuckStory.status = 'backlog';
+            stuckStory.workingAgent = null;
+            this.emit('task:updated', stuckStory);
+            this.persistStoriesToFile(session).catch(err => {
+              console.error('[Multi-Agent] Failed to persist reset story:', err);
+            });
+          }
+
           releaseFileLocks(coderId);
           pendingNextCalls.delete(coderId); // Clear pending call on error
           // CRITICAL: Use hasWorkForRole (non-mutating) instead of getNextStoryForRole
@@ -3197,6 +3236,23 @@ Another tester is handling infrastructure setup. Pick a story and start testing.
             }
           }
         } catch (error) {
+          console.error(`[Multi-Agent] Parallel tester ${testerId} crashed:`, error);
+
+          // CRITICAL: Reset any story this tester was working on back to testing (so another tester can pick it up)
+          const stuckStory = session.tasks.find(t =>
+            t.status === 'testing' &&
+            (t.workingAgent === testerId || t.assignedTo === testerId)
+          );
+          if (stuckStory) {
+            console.log(`[Multi-Agent] 🔄 Resetting stuck story "${stuckStory.title}" from crashed tester ${testerId}`);
+            stuckStory.workingAgent = null;
+            stuckStory.assignedTo = null;
+            this.emit('task:updated', stuckStory);
+            this.persistStoriesToFile(session).catch(err => {
+              console.error('[Multi-Agent] Failed to persist reset story:', err);
+            });
+          }
+
           pendingNextCalls.delete(testerId); // Clear pending call on error
           // CRITICAL: Use hasWorkForRole (non-mutating) instead of getNextStoryForRole
           const hasMoreWork = hasWorkForRole('tester', testerId);
@@ -3272,6 +3328,20 @@ Another tester is handling infrastructure setup. Pick a story and start testing.
 
     // Cleanup audit event listeners
     cleanupAuditListeners();
+
+    // Reset any stuck in_progress stories to backlog (cleanup on build completion)
+    let stuckCount = 0;
+    session.tasks.forEach(task => {
+      if (task.status === 'in_progress') {
+        task.status = 'backlog';
+        task.workingAgent = null;
+        stuckCount++;
+      }
+    });
+    if (stuckCount > 0) {
+      console.log(`[MultiAgentService] 🔄 Reset ${stuckCount} stuck in_progress stories to backlog on build completion`);
+      await this.persistStoriesToFile(session);
+    }
 
     let completionMessage = `Build complete! ${doneCount}/${session.tasks.length} stories done.`;
 
@@ -3656,6 +3726,25 @@ START NOW: Use list_files("**/*") to see the project structure.`;
           this.emit('agent:status', { role, status: 'idle', projectId: session.projectId });
         }
       });
+
+      // Reset stuck stories: in_progress or testing without active agent → backlog
+      let resetCount = 0;
+      session.tasks.forEach(task => {
+        if (task.status === 'in_progress' || (task.status === 'testing' && task.workingAgent)) {
+          task.status = 'backlog';
+          task.workingAgent = null;
+          resetCount++;
+        }
+      });
+      if (resetCount > 0) {
+        console.log(`[MultiAgentService] 🔄 Reset ${resetCount} stuck stories to backlog`);
+        // Persist the reset stories to file
+        if (session.workingDirectory) {
+          this.persistStoriesToFile(session).catch(err => {
+            console.error('[MultiAgentService] Failed to persist reset stories:', err);
+          });
+        }
+      }
 
       // Emit stop message
       this.emitAgentMessage(session, {

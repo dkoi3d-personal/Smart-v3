@@ -30,4 +30,7 @@ export {
   useError,
   // File selectors
   useFileContents,
+  // localStorage backup utilities
+  loadFromLocalStorage,
+  clearLocalStorageBackup,
 } from './useBuildPageStore';

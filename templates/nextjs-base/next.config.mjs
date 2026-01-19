@@ -2,7 +2,7 @@
 const nextConfig = {
   // Force clean build to avoid stale cache issues
   cleanDistDir: true,
-  // Enable strict mode for better debugging
+  // Disable static optimization that can cause issues
   reactStrictMode: true,
   // Transpile packages for proper ESM support
   transpilePackages: [],

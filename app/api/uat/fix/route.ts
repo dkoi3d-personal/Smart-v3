@@ -66,7 +66,7 @@ export async function POST(request: NextRequest) {
           // Use the existing ClaudeSubscriptionService
           for await (const message of claudeSubscriptionService.runAgent(prompt, {
             model: 'sonnet',
-            maxTurns: 10,
+            maxTurns: 25, // Increased for complex fixes
             permissionMode: 'bypassPermissions',
             workingDirectory: projectDir,
           })) {
@@ -111,27 +111,51 @@ export async function POST(request: NextRequest) {
 }
 
 function buildFixPrompt(bug: any, additionalInstructions?: string): string {
+  // Build structured prompt for better AI understanding
+  const categoryHints: Record<string, string> = {
+    ui: 'Look in React components, CSS/Tailwind classes, or style files',
+    functionality: 'Check event handlers, state management, and business logic',
+    data: 'Examine API routes, data fetching, Prisma queries, or state updates',
+    navigation: 'Look at routing, Link components, redirects, and navigation handlers',
+    form: 'Check form validation, input handling, and submission logic',
+    performance: 'Look for inefficient renders, missing memoization, or heavy computations',
+    other: 'Search across the codebase for related functionality',
+  };
+
+  const categoryHint = categoryHints[bug.category] || categoryHints.other;
+
   let prompt = `Fix this bug in the codebase:
 
-BUG TITLE: ${bug.title}
+=== BUG REPORT ===
+TITLE: ${bug.title}
+CATEGORY: ${bug.category || 'other'}
+SEVERITY: ${bug.severity || 'medium'}
+${bug.affectedArea ? `AFFECTED AREA: ${bug.affectedArea}` : ''}
+REPRODUCIBILITY: ${bug.reproducibility || 'always'}
 
-DESCRIPTION: ${bug.description}
+=== PROBLEM ===
+${bug.actual || bug.description}
 
-STEPS TO REPRODUCE:
-${bug.steps || 'Not provided'}
+${bug.expected ? `=== EXPECTED BEHAVIOR ===\n${bug.expected}` : ''}
 
-EXPECTED BEHAVIOR: ${bug.expected || 'Not provided'}
+${bug.steps ? `=== STEPS TO REPRODUCE ===\n${bug.steps}` : ''}
 
-ACTUAL BEHAVIOR: ${bug.actual || 'Not provided'}
+${bug.errorMessages ? `=== ERROR MESSAGES ===\n${bug.errorMessages}` : ''}
 
-Please:
-1. Find the relevant files
-2. Identify the root cause
-3. Fix the bug
-4. Make sure the fix doesn't break anything else`;
+=== INSTRUCTIONS ===
+1. SEARCH: ${categoryHint}
+2. IDENTIFY: Find the root cause of the bug
+3. FIX: Make the minimal changes needed to fix the issue
+4. VERIFY: Ensure your fix doesn't break anything else
+
+IMPORTANT:
+- DO NOT run npm run build or npm run dev
+- DO NOT stop until you have actually edited the file(s) to fix the bug
+- If you identify the issue, you MUST edit the file to fix it
+- After editing, confirm what you changed`;
 
   if (additionalInstructions) {
-    prompt += `\n\nADDITIONAL INSTRUCTIONS:\n${additionalInstructions}`;
+    prompt += `\n\n=== ADDITIONAL CONTEXT ===\n${additionalInstructions}`;
   }
 
   return prompt;

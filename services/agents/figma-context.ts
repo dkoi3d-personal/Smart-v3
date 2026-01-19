@@ -288,22 +288,28 @@ EVERY UI story MUST include these acceptance criteria:
 ### Icons & Illustrations (REQUIRED for any screen with cards/icons)
 ${icons.length > 0 ? `🚨 **MANDATORY**: Every story with visual elements MUST include specific illustration/icon file paths.
 
-**Illustrations are pre-downloaded in \`public/figma-icons/\` - USE THESE EXACT PATHS:**
-${illustrations.slice(0, 20).map((i: any) => `- "${i.contextLabel}" → \`/figma-icons/${i.fileName}\``).join('\n')}${illustrations.length > 20 ? `\n(+ ${illustrations.length - 20} more in manifest)` : ''}
+**⚠️ CRITICAL: ONLY USE FILENAMES FROM THIS LIST - DO NOT INVENT PATHS:**
+${illustrations.slice(0, 30).map((i: any) => `- "${i.contextLabel}" → \`/figma-icons/${i.fileName}\``).join('\n')}${illustrations.length > 30 ? `\n(+ ${illustrations.length - 30} more - check \`public/figma-icons/icon-manifest.json\` for full list)` : ''}
 
-**REQUIRED Acceptance Criteria Format for Stories with Icons/Illustrations:**
-- ✅ "Program Overview card displays illustration from \`/figma-icons/illustration-program-overview.svg\`"
-- ✅ "Library card displays illustration from \`/figma-icons/illustration-library.svg\`"
-- ✅ "TabBar Learn icon uses \`/figma-icons/icon-learn.svg\`"
-- ❌ NEVER write vague criteria like "displays appropriate icon" - ALWAYS specify the exact file path!
+**🚫 NEVER INVENT FILENAMES - ONLY USE EXACT PATHS FROM THE LIST ABOVE**
+- ✅ Copy the EXACT path from the list above (e.g., \`/figma-icons/${illustrations[0]?.fileName || 'icon-example.svg'}\`)
+- ❌ DO NOT invent filenames like "illustration-healthy-eating.svg" - these DO NOT EXIST
+- ❌ DO NOT guess semantic names - use the ACTUAL extracted filenames
 
-⚠️ If you don't include the exact \`/figma-icons/...\` path, coders will make up wrong paths like \`/images/...\` and the icons won't render!
+**If the image you need is NOT in the list above:**
+1. Look for the closest match by contextLabel
+2. If no match exists, DO NOT reference an image - note that the icon needs to be extracted from Figma
 
-🚨 **SEED DATA / DATABASE CONTENT MUST USE FIGMA-ICONS PATHS:**
-When creating Prisma seed data or any DB records with imageUrl fields:
-- ✅ \`imageUrl: "/figma-icons/illustration-healthy-eating.png"\`
-- ❌ \`imageUrl: "/images/missions/healthy-eating.jpg"\` (WRONG - path doesn't exist!)
-Coders MUST read \`public/figma-icons/icon-manifest.json\` to find actual filenames before hardcoding image paths.` : ''}
+**REQUIRED Acceptance Criteria Format:**
+- ✅ "Program Overview card uses illustration from \`/figma-icons/${illustrations[0]?.fileName || 'actual-filename-from-list.svg'}\`"
+- ❌ NEVER write made-up paths like "/figma-icons/illustration-my-feature.svg" unless it's in the list!
+
+🚨 **SEED DATA / DATABASE CONTENT:**
+When creating Prisma seed data with imageUrl fields, ONLY use paths from the list above:
+- ✅ \`imageUrl: "/figma-icons/${illustrations[0]?.fileName || 'actual-filename.svg'}"\` (from list)
+- ❌ \`imageUrl: "/figma-icons/invented-name.svg"\` (WRONG - will cause broken images!)
+
+Coders MUST verify paths exist in \`public/figma-icons/\` before using them.` : ''}
 
 ### Functional (Based on UI Pattern)
 ${generatePatternBasedAC(screens)}
