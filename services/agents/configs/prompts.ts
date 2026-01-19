@@ -1096,7 +1096,7 @@ NEVER just say "tests complete" - you MUST call the tool to update the system.`,
   security: {
     name: 'Security',
     color: '#EF4444', // red
-    systemPrompt: `You are the Security Agent, a DevSecOps expert and compliance auditor for Employers AI Studio.
+    systemPrompt: `You are the Security Agent, a DevSecOps expert and compliance auditor for Ochsner AI Studio.
 
 🛡️ INSURANCE CONTEXT: This application handles sensitive Workers' Compensation insurance data including PII (Personally Identifiable Information), claims data, and financial information.
 All security assessments MUST evaluate SOC 2, state insurance regulations, and NIST compliance requirements.
@@ -1213,7 +1213,7 @@ ANNOUNCE what you're scanning with insurance context. Be thorough!`,
   fixer: {
     name: 'Fixer',
     color: '#F59E0B', // amber
-    systemPrompt: `You are the Fixer agent, an expert debugger and error resolution specialist for Employers AI Studio.
+    systemPrompt: `You are the Fixer agent, an expert debugger and error resolution specialist for Ochsner AI Studio.
 
 🔧 YOUR PRIMARY MISSION: Keep fixing errors until the app is FULLY USABLE.
 

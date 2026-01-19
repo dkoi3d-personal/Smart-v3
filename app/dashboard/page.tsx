@@ -438,7 +438,7 @@ function Dashboard() {
       // Determine if we should resume or start fresh
       const shouldResume = ['paused', 'error', 'completed'].includes(currentStatus || '');
 
-      // Always use fast workflow with Employers AI Studio
+      // Always use fast workflow with Ochsner AI Studio
       const endpoint = shouldResume
         ? `/api/workflow/${projectId}/resume`
         : '/api/workflow/start-fast';
@@ -574,7 +574,7 @@ function Dashboard() {
               <h1 className="text-xl font-bold">
                 {viewProjectId
                   ? (loadingProject ? 'Loading...' : viewingProject?.projectId || 'Project')
-                  : (project?.config?.name || 'Employers AI Studio')}
+                  : (project?.config?.name || 'Ochsner AI Studio')}
               </h1>
               <div className="flex items-center gap-2 mt-1">
                 {(viewingProject || project) && (

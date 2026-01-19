@@ -56,6 +56,7 @@ export {
 // Default design systems
 export { getModernDarkDesignSystem } from './defaults/modern-dark';
 export { getOchsnerHealthDesignSystem } from './defaults/ochsner-health';
+export { getSmartCycleAIDesignSystem } from './defaults/smartcycle-ai';
 
 // Parsers
 export {

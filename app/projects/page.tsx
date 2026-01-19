@@ -483,9 +483,9 @@ export default function ProjectsPage() {
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              {/* Employers AI Branding */}
+              {/* Ochsner AI Branding */}
               <div className="flex items-center gap-3 pr-4 border-r border-border/50">
-                <img src="/smartcycle-logo.svg" alt="Employers AI" className="h-10 w-10" />
+                <img src="/smartcycle-logo.svg" alt="Ochsner AI" className="h-10 w-10" />
                 <div className="flex flex-col">
                   <span className="text-base font-bold text-slate-700 dark:text-slate-200 leading-tight">Employers</span>
                   <span className="text-base font-bold text-slate-700 dark:text-slate-200 leading-tight">AI</span>
@@ -494,7 +494,7 @@ export default function ProjectsPage() {
               <div className="flex items-center gap-3">
                 <ShieldCheck className="h-8 w-8 text-blue-600" />
                 <div>
-                  <h1 className="text-2xl font-bold">Employers AI Studio Projects</h1>
+                  <h1 className="text-2xl font-bold">Ochsner AI Studio Projects</h1>
                   <p className="text-sm text-muted-foreground mt-1">
                     {projects.size} total &bull; {activeCount} active &bull; {completedCount} completed
                   </p>
@@ -689,7 +689,7 @@ export default function ProjectsPage() {
                   <Briefcase className="h-12 w-12 text-blue-600 mx-auto mb-4" />
                   <h3 className="font-semibold text-lg mb-2">Build Your First App</h3>
                   <p className="text-muted-foreground mb-4">
-                    Employers AI Studio agents will build secure, compliant applications automatically.
+                    Ochsner AI Studio agents will build secure, compliant applications automatically.
                   </p>
                   <Button onClick={() => router.push('/')} className="bg-blue-600 hover:bg-blue-700">
                     <ShieldCheck className="h-4 w-4 mr-2" />

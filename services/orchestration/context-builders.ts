@@ -5,6 +5,7 @@
  * Extracted from multi-agent-service.ts for maintainability.
  */
 
+import type { Task } from '../agents/types';
 import {
   FILE_HYGIENE_INSTRUCTIONS,
   TESTER_FILE_HYGIENE,
@@ -24,13 +25,39 @@ export interface ContextBuilderOptions {
   skipFoundation: boolean;
   isNewProject: boolean;
   quickSettings: QuickSettings;
+  // NEW fields for PO context continuity and cycling
+  completedFeatures?: string;      // Summary from build history
+  previousStories?: Task[];        // Current build's stories (for pass 2)
+  refinementCycle?: number;        // Which pass (1 or 2)
 }
 
 /**
  * Build context for Product Owner agent
  */
 export function buildProductOwnerContext(options: ContextBuilderOptions): string {
-  const { requirements, existingFiles, skipFoundation, isNewProject, quickSettings } = options;
+  const { requirements, existingFiles, skipFoundation, isNewProject, quickSettings, completedFeatures, previousStories, refinementCycle } = options;
+
+  // Section for completed features from previous builds
+  const completedFeaturesSection = completedFeatures || '';
+
+  // For refinement pass 2, include previous stories for review
+  const refinementInstructions = refinementCycle === 2 && previousStories ? `
+=== REFINEMENT PASS (Cycle ${refinementCycle}) ===
+Review and refine these stories from pass 1:
+
+${previousStories.map((s, i) => `${i + 1}. [${s.id}] ${s.title} (${s.priority || 'medium'})
+   ${s.description}
+   Criteria: ${(s.acceptanceCriteria || []).join('; ')}`).join('\n\n')}
+
+REFINEMENT TASKS:
+1. Check for missing edge cases
+2. Verify acceptance criteria are testable
+3. Ensure dependencies are correct
+4. Add integration/polish stories if needed
+5. Verify story points (1-8 scale)
+
+Update .agile-stories.json with refinements.
+` : '';
 
   // For iteration builds on existing projects
   const iterationBuildInstructions = skipFoundation || !isNewProject ? `
@@ -87,7 +114,9 @@ Use this base timestamp for generating story and epic IDs: ${baseTimestamp}
 === PROJECT REQUIREMENTS ===
 ${requirements}
 
+${completedFeaturesSection}
 ${iterationBuildInstructions}
+${refinementInstructions}
 
 === YOUR TASK ===
 Create a COMPREHENSIVE set of epics and stories that fully cover ALL requirements above.

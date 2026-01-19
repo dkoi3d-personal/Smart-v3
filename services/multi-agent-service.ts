@@ -43,6 +43,7 @@ import {
 import { promptGenerator } from '@/lib/services/prompt-generator';
 import { getComponentLibraryPromptForProject } from '@/lib/design-systems/prompt-generator';
 import { loadAIConfig, generateEnvVars } from '@/lib/ai-config/ai-config-store';
+import { getCompletedFeaturesSummary } from '@/lib/build-history';
 import { scaffoldProject, needsScaffolding } from '@/services/project-scaffold-service';
 import { getAuditService, AuditService, GitInfo } from './audit-service';
 
@@ -411,7 +412,7 @@ export class MultiAgentService extends EventEmitter {
       agentRole: role,
       agentName: config.name,
       type: 'thinking',
-      content: `${config.name} is starting work with Employers AI Studio...`,
+      content: `${config.name} is starting work with Ochsner AI Studio...`,
       timestamp: new Date(),
       storyId, // Include storyId for filtering in UI
     };
@@ -1384,9 +1385,26 @@ Working Directory: ${session.workingDirectory}`;
     const isNewProject = !hasPackageJson && !isExistingProject;
     console.log(`[Multi-Agent] Project detection: hasPackageJson=${hasPackageJson}, isExistingProject=${isExistingProject}, isNewProject=${isNewProject}`);
 
+    // Load completed features from build history for PO context continuity
+    const completedFeatures = await getCompletedFeaturesSummary(session.workingDirectory);
+    if (completedFeatures) {
+      const featureLines = completedFeatures.split('\n').filter(l => l.trim().startsWith('-')).length;
+      console.log(`[Multi-Agent] 👔 PO Context: Loaded completed features summary (${featureLines} completed stories from previous builds)`);
+    } else {
+      console.log(`[Multi-Agent] 👔 PO Context: No previous build history found (fresh project)`);
+    }
+
     // Build agent contexts using extracted context builders
     // Note: skipFoundation is deprecated, using isExistingProject instead
-    const contextOptions = { requirements, existingFiles, skipFoundation: isExistingProject, isNewProject, quickSettings };
+    const contextOptions = {
+      requirements,
+      existingFiles,
+      skipFoundation: isExistingProject,
+      isNewProject,
+      quickSettings,
+      completedFeatures,     // PO context continuity
+      refinementCycle: 1,    // PO cycling - start with cycle 1
+    };
     const productOwnerContext = buildProductOwnerContext(contextOptions);
     const coderContext = buildCoderContext(contextOptions);
     const testerContext = buildTesterContext(requirements, existingFiles);
@@ -1402,15 +1420,19 @@ Working Directory: ${session.workingDirectory}`;
     let coderRelaunchCount = 0;
     const MAX_CODER_RELAUNCHES = 3; // Limit relaunch attempts to prevent infinite loops
 
+    // PO cycling - run refinement pass for better story quality
+    let productOwnerCycleCount = 0;
+    const MAX_PO_CYCLES = 2;
+
     // Start Product Owner immediately
     if (agentsToRun.includes('product_owner')) {
-      console.log(`[Multi-Agent] 👔 Starting Product Owner agent`);
+      console.log(`[Multi-Agent] 👔 Starting Product Owner agent (cycle 1/${MAX_PO_CYCLES})`);
       yield {
         id: `msg-${this.generateId()}`,
         agentRole: 'product_owner',
         agentName: 'Product Owner',
         type: 'thinking',
-        content: 'Creating epics and user stories...',
+        content: `Creating epics and user stories (pass 1/${MAX_PO_CYCLES})...`,
         timestamp: new Date(),
       };
       generators.set('product_owner', this.runAgent('product_owner', session, productOwnerContext, undefined, agentConfig));
@@ -2828,7 +2850,71 @@ Another tester is handling infrastructure setup. Pick a story and start testing.
               // CRITICAL: Use hasWorkForRole (non-mutating) instead of getNextStoryForRole
               const hasMoreWork = hasWorkForRole(role);
 
-              if (hasMoreWork && !allStoriesDone()) {
+              // PO cycling - run refinement pass for better story quality
+              if (role === 'product_owner' && productOwnerCycleCount < MAX_PO_CYCLES - 1) {
+                productOwnerCycleCount++;
+                console.log(`[Multi-Agent] 👔 PO Cycling: Starting refinement pass ${productOwnerCycleCount + 1}/${MAX_PO_CYCLES}`);
+
+                // Brief pause to let stories sync to file
+                await new Promise(resolve => setTimeout(resolve, 2000));
+
+                // Reload stories from file to get the latest
+                const storiesFile = path.join(session.workingDirectory, '.agile-stories.json');
+                try {
+                  await this.storyFileManager.syncStoriesFromFile(session, storiesFile, 'coordinator', 'Coordinator');
+                  console.log(`[Multi-Agent] 👔 PO Cycling: Loaded ${session.tasks.length} stories for refinement`);
+                } catch (syncError) {
+                  console.error(`[Multi-Agent] 👔 PO Cycling: Failed to sync stories, continuing anyway:`, syncError);
+                }
+
+                // Skip refinement if no stories were created
+                if (session.tasks.length === 0) {
+                  console.log(`[Multi-Agent] 👔 PO Cycling: No stories to refine, skipping refinement pass`);
+                  completed.add('product_owner');
+                  yield {
+                    id: `msg-${this.generateId()}`,
+                    agentRole: 'coordinator',
+                    agentName: 'Coordinator',
+                    type: 'chat',
+                    content: `Product Owner completed (no stories to refine)`,
+                    timestamp: new Date(),
+                  };
+                } else {
+                  // Build refinement context for cycle 2
+                  const refinementContextOptions = {
+                    requirements,
+                    existingFiles,
+                    skipFoundation: isExistingProject,
+                    isNewProject,
+                    quickSettings,
+                    completedFeatures,
+                    previousStories: [...session.tasks],
+                    refinementCycle: productOwnerCycleCount + 1,
+                  };
+                  const refinementContext = buildProductOwnerContext(refinementContextOptions);
+
+                  // Clear completion state and relaunch
+                  completed.delete('product_owner');
+                  generators.delete('product_owner');
+                  started.delete('product_owner');
+                  pendingNextCalls.delete('product_owner');
+
+                  // Emit status update for UI
+                  this.emit('agent:status', { role: 'product_owner', status: 'working', agentId: 'product_owner' });
+
+                  generators.set('product_owner', this.runAgent('product_owner', session, refinementContext, undefined, agentConfig));
+                  started.add('product_owner');
+
+                  yield {
+                    id: `msg-${this.generateId()}`,
+                    agentRole: 'coordinator',
+                    agentName: 'Coordinator',
+                    type: 'chat',
+                    content: `Product Owner starting refinement pass ${productOwnerCycleCount + 1}/${MAX_PO_CYCLES} (${session.tasks.length} stories to review)...`,
+                    timestamp: new Date(),
+                  };
+                }
+              } else if (hasMoreWork && !allStoriesDone()) {
                 // Restart agent with fresh context for next story
                 const freshContext = getFreshContext(role);
                 if (freshContext) {

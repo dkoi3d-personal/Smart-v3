@@ -2323,7 +2323,7 @@ ${bugErrorMessages ? `ERROR MESSAGES:\n${bugErrorMessages}` : ''}`.trim();
                 <div className="p-3 border-b bg-gradient-to-r from-orange-950/50 to-red-950/30 flex items-center justify-between">
                   <h3 className="font-semibold text-sm flex items-center gap-2">
                     <Terminal className="h-4 w-4 text-orange-500" />
-                    <span className="text-orange-400">Employers AI</span>
+                    <span className="text-orange-400">Ochsner AI</span>
                     {claudeSessionId && (
                       <Badge variant="outline" className="text-[9px] px-1.5 py-0 text-orange-400/70 border-orange-900/50">
                         {claudeSessionId.slice(0, 8)}...
@@ -2366,7 +2366,7 @@ ${bugErrorMessages ? `ERROR MESSAGES:\n${bugErrorMessages}` : ''}`.trim();
                     value={chatInput}
                     onChange={(e) => setChatInput(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && runChatCommand(false)}
-                    placeholder="Ask Employers AI..."
+                    placeholder="Ask Ochsner AI..."
                     className="font-mono text-xs bg-[#0d1117] border-orange-900/50"
                     disabled={isChatRunning}
                   />

@@ -748,6 +748,69 @@ export async function loadArchivedStories(projectDir: string, buildNumber: numbe
   }
 }
 
+/**
+ * Get a summary of all completed features from build history.
+ * Used to provide context to Product Owner about what's already been built.
+ */
+export async function getCompletedFeaturesSummary(projectDir: string): Promise<string> {
+  const history = await loadBuildHistory(projectDir);
+  const completedBuilds = history.filter(b => b.status === 'completed');
+
+  if (completedBuilds.length === 0) {
+    return '';
+  }
+
+  const featuresByBuild: string[] = [];
+
+  for (const build of completedBuilds) {
+    const stories = await loadArchivedStories(projectDir, build.buildNumber);
+    if (!stories || !stories.tasks) continue;
+
+    const doneStories = stories.tasks.filter((t: any) =>
+      t.status === 'done' || t.status === 'completed'
+    );
+
+    if (doneStories.length === 0) continue;
+
+    // Group by epic
+    const epicMap = new Map<string, any[]>();
+    for (const story of doneStories) {
+      const epicId = story.epicId || 'ungrouped';
+      if (!epicMap.has(epicId)) epicMap.set(epicId, []);
+      epicMap.get(epicId)!.push(story);
+    }
+
+    // Get epic titles
+    const epicTitles = new Map<string, string>();
+    if (stories.epics) {
+      for (const epic of stories.epics) {
+        epicTitles.set(epic.id, epic.title);
+      }
+    }
+
+    // Format
+    const buildFeatures: string[] = [];
+    for (const [epicId, epicStories] of epicMap) {
+      const epicTitle = epicTitles.get(epicId) || 'Other Features';
+      const storyList = epicStories.map((s: any) => `    - ${s.title}`).join('\n');
+      buildFeatures.push(`  ${epicTitle}:\n${storyList}`);
+    }
+
+    featuresByBuild.push(`Build ${build.buildNumber} (${build.prompt.slice(0, 50)}...):\n${buildFeatures.join('\n')}`);
+  }
+
+  if (featuresByBuild.length === 0) return '';
+
+  return `
+=== COMPLETED FEATURES FROM PREVIOUS BUILDS ===
+DO NOT create stories for these unless user explicitly requests changes.
+
+${featuresByBuild.join('\n\n')}
+
+Review this list before creating stories!
+`;
+}
+
 // =============================================================================
 // Migration from Old System
 // =============================================================================

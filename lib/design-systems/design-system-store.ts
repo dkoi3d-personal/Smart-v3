@@ -18,6 +18,7 @@ import type {
 } from './types';
 import { getModernDarkDesignSystem } from './defaults/modern-dark';
 import { getOchsnerHealthDesignSystem } from './defaults/ochsner-health';
+import { getSmartCycleAIDesignSystem } from './defaults/smartcycle-ai';
 
 // =============================================================================
 // Constants
@@ -28,6 +29,7 @@ const DESIGN_SYSTEMS_DIR = path.join(DATA_DIR, 'design-systems');
 const CONFIG_FILE = path.join(DESIGN_SYSTEMS_DIR, '_config.json');
 const MODERN_DARK_FILE = path.join(DESIGN_SYSTEMS_DIR, 'modern-dark.json');
 const OCHSNER_HEALTH_FILE = path.join(DESIGN_SYSTEMS_DIR, 'ochsner-health.json');
+const SMARTCYCLE_AI_FILE = path.join(DESIGN_SYSTEMS_DIR, 'smartcycle-ai.json');
 
 // =============================================================================
 // Directory Management
@@ -60,12 +62,20 @@ export async function ensureDesignSystemsDir(): Promise<void> {
     await fs.writeFile(OCHSNER_HEALTH_FILE, JSON.stringify(ochsnerHealth, null, 2));
   }
 
+  // Ensure SmartCycle AI exists
+  try {
+    await fs.access(SMARTCYCLE_AI_FILE);
+  } catch {
+    const smartcycleAI = getSmartCycleAIDesignSystem();
+    await fs.writeFile(SMARTCYCLE_AI_FILE, JSON.stringify(smartcycleAI, null, 2));
+  }
+
   // Ensure config exists
   try {
     await fs.access(CONFIG_FILE);
   } catch {
     const defaultConfig: DesignSystemConfig = {
-      defaultDesignSystemId: 'modern-dark',
+      defaultDesignSystemId: 'smartcycle-ai',
       projectOverrides: {},
       updatedAt: new Date().toISOString(),
     };

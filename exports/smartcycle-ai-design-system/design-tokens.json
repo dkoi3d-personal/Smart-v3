@@ -1,0 +1,188 @@
+{
+  "name": "SmartCycle AI",
+  "version": "1.0.0",
+  "description": "A dark, modern design system with purple accents for AI development workflows",
+
+  "colors": {
+    "background": {
+      "value": "#171717",
+      "oklch": "oklch(0.10 0 0)",
+      "description": "Main page background"
+    },
+    "foreground": {
+      "value": "#fafafa",
+      "oklch": "oklch(0.985 0 0)",
+      "description": "Primary text color"
+    },
+    "card": {
+      "value": "#262626",
+      "oklch": "oklch(0.15 0 0)",
+      "description": "Card/surface background"
+    },
+    "cardForeground": {
+      "value": "#fafafa",
+      "oklch": "oklch(0.985 0 0)",
+      "description": "Card text color"
+    },
+    "popover": {
+      "value": "#262626",
+      "oklch": "oklch(0.15 0 0)",
+      "description": "Popover/dropdown background"
+    },
+    "popoverForeground": {
+      "value": "#fafafa",
+      "oklch": "oklch(0.985 0 0)",
+      "description": "Popover text color"
+    },
+    "primary": {
+      "value": "#8b5cf6",
+      "oklch": "oklch(0.65 0.25 265)",
+      "description": "Primary purple accent"
+    },
+    "primaryForeground": {
+      "value": "#fafafa",
+      "oklch": "oklch(0.985 0 0)",
+      "description": "Text on primary background"
+    },
+    "secondary": {
+      "value": "#404040",
+      "oklch": "oklch(0.25 0 0)",
+      "description": "Secondary/subtle background"
+    },
+    "secondaryForeground": {
+      "value": "#fafafa",
+      "oklch": "oklch(0.985 0 0)",
+      "description": "Text on secondary background"
+    },
+    "muted": {
+      "value": "#383838",
+      "oklch": "oklch(0.22 0 0)",
+      "description": "Muted/disabled background"
+    },
+    "mutedForeground": {
+      "value": "#a3a3a3",
+      "oklch": "oklch(0.65 0 0)",
+      "description": "Muted/secondary text"
+    },
+    "accent": {
+      "value": "#404040",
+      "oklch": "oklch(0.25 0 0)",
+      "description": "Accent background"
+    },
+    "accentForeground": {
+      "value": "#fafafa",
+      "oklch": "oklch(0.985 0 0)",
+      "description": "Text on accent background"
+    },
+    "destructive": {
+      "value": "#ef4444",
+      "oklch": "oklch(0.60 0.25 25)",
+      "description": "Error/delete actions"
+    },
+    "destructiveForeground": {
+      "value": "#fafafa",
+      "description": "Text on destructive background"
+    },
+    "border": {
+      "value": "#525252",
+      "oklch": "oklch(0.35 0 0)",
+      "description": "Border color"
+    },
+    "input": {
+      "value": "#404040",
+      "oklch": "oklch(0.30 0 0)",
+      "description": "Input background"
+    },
+    "ring": {
+      "value": "#8b5cf6",
+      "oklch": "oklch(0.65 0.25 265)",
+      "description": "Focus ring color"
+    }
+  },
+
+  "chartColors": {
+    "chart1": { "value": "#8b5cf6", "description": "Purple" },
+    "chart2": { "value": "#22c55e", "description": "Green" },
+    "chart3": { "value": "#f59e0b", "description": "Amber" },
+    "chart4": { "value": "#a855f7", "description": "Violet" },
+    "chart5": { "value": "#ef4444", "description": "Red" }
+  },
+
+  "statusColors": {
+    "success": { "value": "#22c55e", "description": "Green - Success states" },
+    "warning": { "value": "#f59e0b", "description": "Amber - Warning states" },
+    "error": { "value": "#ef4444", "description": "Red - Error states" },
+    "info": { "value": "#3b82f6", "description": "Blue - Info states" }
+  },
+
+  "agentColors": {
+    "coordinator": { "value": "#8b5cf6", "description": "Purple - Coordinator agent" },
+    "productOwner": { "value": "#3b82f6", "description": "Blue - Product Owner agent" },
+    "coder": { "value": "#22c55e", "description": "Green - Coder agent" },
+    "tester": { "value": "#f59e0b", "description": "Amber - Tester agent" },
+    "security": { "value": "#ef4444", "description": "Red - Security agent" },
+    "fixer": { "value": "#f97316", "description": "Orange - Fixer agent" }
+  },
+
+  "typography": {
+    "fontFamily": {
+      "sans": "Inter, Geist Sans, system-ui, -apple-system, sans-serif",
+      "mono": "Geist Mono, JetBrains Mono, Fira Code, monospace"
+    },
+    "fontSize": {
+      "xs": { "size": "0.75rem", "lineHeight": "1rem" },
+      "sm": { "size": "0.875rem", "lineHeight": "1.25rem" },
+      "base": { "size": "1rem", "lineHeight": "1.5rem" },
+      "lg": { "size": "1.125rem", "lineHeight": "1.75rem" },
+      "xl": { "size": "1.25rem", "lineHeight": "1.75rem" },
+      "2xl": { "size": "1.5rem", "lineHeight": "2rem" },
+      "3xl": { "size": "1.875rem", "lineHeight": "2.25rem" },
+      "4xl": { "size": "2.25rem", "lineHeight": "2.5rem" },
+      "5xl": { "size": "3rem", "lineHeight": "1.1" }
+    },
+    "fontWeight": {
+      "normal": 400,
+      "medium": 500,
+      "semibold": 600,
+      "bold": 700
+    }
+  },
+
+  "spacing": {
+    "unit": 4,
+    "scale": [0, 1, 2, 3, 4, 5, 6, 8, 10, 12, 16, 20, 24, 32, 40, 48, 64]
+  },
+
+  "borderRadius": {
+    "none": "0",
+    "sm": "0.375rem",
+    "md": "0.5rem",
+    "lg": "0.625rem",
+    "xl": "1rem",
+    "2xl": "1.5rem",
+    "full": "9999px"
+  },
+
+  "shadows": {
+    "sm": "0 1px 2px 0 rgb(0 0 0 / 0.3)",
+    "md": "0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.3)",
+    "lg": "0 10px 15px -3px rgb(0 0 0 / 0.4), 0 4px 6px -4px rgb(0 0 0 / 0.3)",
+    "xl": "0 20px 25px -5px rgb(0 0 0 / 0.4), 0 8px 10px -6px rgb(0 0 0 / 0.3)",
+    "glowPurple": "0 0 20px rgba(139, 92, 246, 0.3)",
+    "glowGreen": "0 0 20px rgba(34, 197, 94, 0.3)"
+  },
+
+  "transitions": {
+    "duration": {
+      "fast": "150ms",
+      "normal": "200ms",
+      "slow": "300ms"
+    },
+    "easing": {
+      "default": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "in": "cubic-bezier(0.4, 0, 1, 1)",
+      "out": "cubic-bezier(0, 0, 0.2, 1)",
+      "inOut": "cubic-bezier(0.4, 0, 0.2, 1)"
+    }
+  }
+}
